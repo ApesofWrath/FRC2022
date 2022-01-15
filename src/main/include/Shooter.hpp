@@ -34,6 +34,8 @@ public:
 
     inline void setState(ShooterState state) { m_state = state; };
 
+    inline void setState(ShooterState state) { m_State = state; };
+
 private:
 
     std::shared_ptr<TalonFX> m_motor1;
