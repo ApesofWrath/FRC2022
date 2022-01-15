@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <frc/TimedRobot.h>
+<<<<<<< HEAD
 #include <frc/Joystick.h>
 #include <frc/Compressor.h>
 
@@ -13,6 +14,9 @@
 #include "Intake.hpp"
 
 #include "Drive/DriveBase.hpp"
+=======
+#include <Shooter.hpp>
+>>>>>>> cfa75ea (add shooter class & give it a state machine)
 
 class Robot : public frc::TimedRobot {
  public:
