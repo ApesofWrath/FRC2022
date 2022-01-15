@@ -3,8 +3,10 @@
 // the WPILib BSD license file in the root directory of this project.
 #pragma once
 
+#include <memory>
 #include <frc/TimedRobot.h>
 #include <Shooter.hpp>
+#include <frc/Joystick.h>
 
 class Robot : public frc::TimedRobot {
  public:
@@ -22,4 +24,8 @@ class Robot : public frc::TimedRobot {
 
   void TestInit() override;
   void TestPeriodic() override;
+private:
+
+  std::shared_ptr<Shooter> m_Shooter;
+  std::shared_ptr<frc::Joystick> m_Joystick;
 };

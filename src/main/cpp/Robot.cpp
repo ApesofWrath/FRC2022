@@ -4,14 +4,30 @@
 
 #include "Robot.hpp"
 
-void Robot::RobotInit() {}
+void Robot::RobotInit() {
+    m_Shooter = std::make_shared<Shooter>();
+    m_Joystick = std::make_shared<frc::Joystick>(0);
+}
+
 void Robot::RobotPeriodic() {}
 
 void Robot::AutonomousInit() {}
 void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {}
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopPeriodic() {
+    if (m_Joystick->GetRawButton(1)) {
+        m_Shooter->setState(ShooterState::Shoot);
+    } else if (m_Joystick->GetRawButton(2)) {
+        m_Shooter->setState(ShooterState::Waiting);
+    } else if (m_Joystick->GetRawButton(3)) {
+        m_Shooter->setState(ShooterState::Reverse);
+    } else {
+        m_Shooter->setState(ShooterState::Stop);
+    }
+
+    m_Shooter->shooterStateMachine();
+}
 
 void Robot::DisabledInit() {}
 void Robot::DisabledPeriodic() {}
