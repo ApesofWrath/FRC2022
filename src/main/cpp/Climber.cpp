@@ -40,33 +40,35 @@ void Climber::climberStateMachine()
     frc::SmartDashboard::PutNumber("Sensor Pos Talon2", climber_talon2->GetSelectedSensorVelocity());
     frc::SmartDashboard::PutNumber("Sensor Velocity Talon2", climber_talon2->GetSelectedSensorVelocity());
 
+    frc::SmartDashboard::PutNumber("curr state", (int) current_state);
+
     switch (current_state)
     {
         case States::STOP_CLIMB:
-            if (last_state != States::STOP_CLIMB) {
+            // if (last_state != States::STOP_CLIMB) {
                 Stop();
-            }
+            // }
             last_state = States::STOP_CLIMB;
             break;
 
         case States::DOWN_CLIMB:
-            if (last_state != States::DOWN_CLIMB) {
+            // if (last_state != States::DOWN_CLIMB) {
                 Down();
-            }
+            // }
             last_state = States::DOWN_CLIMB;
             break;
             
         case States::UP_CLIMB:
-            if (last_state != States::UP_CLIMB) {
+            // if (last_state != States::UP_CLIMB) {
                 Up();
-            }
+            // }
             last_state = States::UP_CLIMB;
             break;
 
         case States::ZERO_CLIMB:
-            if (last_state != States::ZERO_CLIMB) {
+            // if (last_state != States::ZERO_CLIMB) {
                 Zero();
-            }
+            // }
             last_state = States::ZERO_CLIMB;
             break;
     }
