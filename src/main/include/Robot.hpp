@@ -5,6 +5,7 @@
 #pragma once
 
 #include <frc/TimedRobot.h>
+#include <frc/Joystick.h>
 
 class Robot : public frc::TimedRobot {
  public:
@@ -22,4 +23,10 @@ class Robot : public frc::TimedRobot {
 
   void TestInit() override;
   void TestPeriodic() override;
+
+
+  private:
+    
+    std::shared_ptr<frc::Joystick> m_Joystick;
+    std::shared_ptr<Climber> m_Climber;
 };

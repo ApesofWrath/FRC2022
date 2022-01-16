@@ -4,14 +4,26 @@
 
 #include "Robot.hpp"
 
-void Robot::RobotInit() {}
+void Robot::RobotInit() {
+  m_Joystick = std::make_shared<frc::Joystick>(0);
+  m_Climber = std::make_shared<Climber>();
+}
 void Robot::RobotPeriodic() {}
 
 void Robot::AutonomousInit() {}
 void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {}
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopPeriodic() {
+  if (m_Joystick->GetRawButton(6)) {
+   
+   m_Climber->current_state = Climber::STATES::UP_CLIMB;
+  } else if (m_Joystick->GetRawButton(8)) {
+
+  } else if (m_Joystick->GetRawButton(7)) {
+    
+  }
+}
 
 void Robot::DisabledInit() {}
 void Robot::DisabledPeriodic() {}

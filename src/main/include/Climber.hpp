@@ -1,16 +1,17 @@
+#include <iostream>
 #include <string>
 #include <ctre/Phoenix.h>
 
 class Climber {
     private:
-    
+
         WPI_TalonFX *climber_talon1;
         WPI_TalonFX *climber_talon2;
 
     public:
     
     enum States {
-        STOP_CLIMB, UP_CLIMB, DOWN_CLIMB
+        STOP_CLIMB, UP_CLIMB, DOWN_CLIMB, ZERO_CLIMB
     };
 
     States current_state;
@@ -21,11 +22,9 @@ class Climber {
     void Stop();
     void Up();
     void Down();
-    void StateMachine();
+    void Zero();
+    void climberStateMachine();
 
-    const double idle_speed = 0.0;
-    const double up_speed = 0.3;
-    const double down_speed = -0.3;
-
+    //inline void setState(States state) { }
 };
 
