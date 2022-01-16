@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "Robot.hpp"
+#include "Climber.hpp"
 
 void Robot::RobotInit() {
   m_Joystick = std::make_shared<frc::Joystick>(0);
@@ -17,7 +18,7 @@ void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
   if (m_Joystick->GetRawButton(6)) {
    
-   m_Climber->current_state = Climber::STATES::UP_CLIMB;
+   m_Climber->current_state = Climber::States::UP_CLIMB;
   } else if (m_Joystick->GetRawButton(8)) {
 
   } else if (m_Joystick->GetRawButton(7)) {
