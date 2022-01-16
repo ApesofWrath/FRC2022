@@ -3,6 +3,14 @@
 #include <iostream>
 #include <string>
 #include <ctre/Phoenix.h>
+#include <frc/smartdashboard/SmartDashboard.h>
+
+enum class States {
+    STOP_CLIMB, 
+    UP_CLIMB, 
+    DOWN_CLIMB, 
+    ZERO_CLIMB
+};
 
 class Climber {
     private:
@@ -12,9 +20,7 @@ class Climber {
 
     public:
     
-    enum States {
-        STOP_CLIMB, UP_CLIMB, DOWN_CLIMB, ZERO_CLIMB
-    };
+     
 
     States current_state;
     States last_state;
@@ -27,6 +33,6 @@ class Climber {
     void Zero();
     void climberStateMachine();
 
-    //inline void setState(States state) { }
+    
 };
 

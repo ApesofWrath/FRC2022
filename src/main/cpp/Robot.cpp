@@ -6,7 +6,7 @@
 
 
 void Robot::RobotInit() {
-  m_Joystick = std::make_shared<frc::Joystick>(0);
+  m_Joystick = std::make_unique<frc::Joystick>(0);
   m_Climber = std::make_shared<Climber>();
 }
 void Robot::RobotPeriodic() {}
@@ -18,12 +18,24 @@ void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
   if (m_Joystick->GetRawButton(6)) {
    
-   m_Climber->current_state = Climber::States::UP_CLIMB;
+   m_Climber->current_state = States::UP_CLIMB;
+   
   } else if (m_Joystick->GetRawButton(8)) {
 
+    m_Climber->current_state = States::DOWN_CLIMB;
+    
   } else if (m_Joystick->GetRawButton(7)) {
     
+    m_Climber->current_state = States::STOP_CLIMB;
+
+  } else if (m_Joystick->GetRawButton(5)) {
+
+    m_Climber->current_state = States::ZERO_CLIMB;
+
   }
+
+  m_Climber->climberStateMachine();
+  
 }
 
 void Robot::DisabledInit() {}
