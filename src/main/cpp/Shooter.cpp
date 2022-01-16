@@ -27,6 +27,9 @@ void Shooter::reverse() {
 }
 
 void Shooter::shooterStateMachine() {
+
+    frc::SmartDashboard::PutNumber("Shooter RPM", sensorUnitsToRPM(m_Motor->GetSelectedSensorVelocity()));
+
     switch(m_State) {
         case ShooterState::Init:
             frc::SmartDashboard::PutString("ShooterState", "Init");

@@ -5,7 +5,11 @@
 
 constexpr float reverseSpeed = -1.f;
 constexpr float shootSpeed = 1.f;
-constexpr float waitingSpeed = .2f;
+constexpr float waitingSpeed = .35f;
+
+constexpr float sensorUnitsToRPM(float su) {
+    return su / 2048.0 * 600.0;
+}
 
 enum class ShooterState {
     Init,
