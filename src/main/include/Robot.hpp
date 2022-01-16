@@ -6,6 +6,7 @@
 
 #include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
+#include "Climber.hpp"
 
 class Robot : public frc::TimedRobot {
  public:
