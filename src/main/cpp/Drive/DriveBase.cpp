@@ -4,6 +4,12 @@ DriveBase::DriveBase(frc::Joystick *joy_throttle, frc::Joystick *joy_wheel) {
     m_joy_throttle = joy_throttle;
     m_joy_wheel = joy_wheel;
     
+    m_falcon_left1 = new WPI_TalonFX(668);
+    m_falcon_left2 = new WPI_TalonFX(668);
+    m_falcon_right1 = new WPI_TalonFX(668);
+    m_falcon_right2 = new WPI_TalonFX(668);
+
+
     m_falcon_right1->SetInverted(true);
     m_falcon_right2->SetInverted(true);
 
