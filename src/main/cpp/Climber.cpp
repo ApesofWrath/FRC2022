@@ -5,7 +5,7 @@ Climber::Climber()
     climber_talon1 = new WPI_TalonFX(1);
     climber_talon2 = new WPI_TalonFX(2);
 
-    climber_talon1->Config_kP(0, 0.00001);
+    climber_talon1->Config_kP(0, 0.005);
     climber_talon1->Config_kI(0, 0);
     climber_talon1->Config_kD(0, 0);
 
@@ -14,33 +14,32 @@ Climber::Climber()
 
 void Climber::Stop()
 {
-    climber_talon1->Set(ControlMode::PercentOutput, 0);
+    climber_talon1->Set(ControlMode::PercentOutput, 0.05);
 }
 
 void Climber::Up()
 {
-    climber_talon1->Set(ControlMode::PercentOutput, .1);
+    climber_talon1->Set(ControlMode::Position, 2040);
 }
 
 void Climber::Down()
 {
-    climber_talon1->Set(ControlMode::Velocity, .1);
+    climber_talon1->Set(ControlMode::Position, -2040);
 }
 
 void Climber::Zero()
 {
-    climber_talon1->Set(ControlMode::Velocity, .1);
+    // climber_talon1->SetSelectedSensorPosition(0);
 }
 
 void Climber::climberStateMachine() 
 {
-
-    frc::SmartDashboard::PutNumber("Sensor Pos Talon1", climber_talon1->GetSelectedSensorVelocity());
+    frc::SmartDashboard::PutNumber("Sensor Pos Talon1", climber_talon1->GetSelectedSensorPosition());
     frc::SmartDashboard::PutNumber("Sensor Velocity Talon1", climber_talon1->GetSelectedSensorVelocity());
-    frc::SmartDashboard::PutNumber("Sensor Pos Talon2", climber_talon2->GetSelectedSensorVelocity());
+    frc::SmartDashboard::PutNumber("Sensor Pos Talon2", climber_talon2->GetSelectedSensorPosition());
     frc::SmartDashboard::PutNumber("Sensor Velocity Talon2", climber_talon2->GetSelectedSensorVelocity());
 
-    frc::SmartDashboard::PutNumber("curr state", (int) current_state);
+    frc::SmartDashboard::PutNumber("Curr State", (int) current_state);
 
     switch (current_state)
     {
