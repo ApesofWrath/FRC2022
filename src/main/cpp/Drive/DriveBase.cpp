@@ -60,12 +60,12 @@ void DriveBase::Controller() {
     frc::SmartDashboard::PutNumber("current yaw", curr_yaw);
 
     yaw_error = target_yaw - curr_yaw;
-    yaw_delta = 
+    yaw_delta = yaw_error - last_yaw_error;
 
     target_l = target_l - (target_yaw * (MAX_Y_RPM / MAX_YAW_RATE));
     target_r = target_r - (target_yaw * (MAX_Y_RPM / MAX_YAW_RATE));
 
-    yaw_out = (kP_yaw * yaw_error) + (yaw_delta * last_yaw_error);
+    yaw_out = (K_P_YAW * yaw_error) + (yaw_delta * last_yaw_error);
 
     target_r += yaw_out;
     target_l -= yaw_out;
@@ -85,12 +85,43 @@ void DriveBase::Controller() {
         kF_r = 1 / MAX_Y_RPM_R_FORWARDS;
     }
 
-    ff_r = kF_r * target_r;
-    ff_l = kF_l * target_l;
+    ff_r_out = kF_r * target_r;
+    ff_l_out = kF_l * target_l;
     
+    curr_l_v = SENSOR_TIMESETP_MINUTE_CONVERSION * TICKS_PER_ROT * m_falcon_left1->GetSelectedSensorVelocity();
+    curr_r_v = SENSOR_TIMESETP_MINUTE_CONVERSION * TICKS_PER_ROT * m_falcon_right1->GetSelectedSensorVelocity();
 
+    l_error = target_l - curr_l_v;
+    r_error = target_r - curr_r_v;
+
+    p_l_out = K_P_L * l_error;
+    p_r_out = K_P_R * r_error;
+
+    d_l_out = K_D_L * (l_error - last_l_error);
+    d_r_out = K_D_R * (r_error - last_r_error);
+
+    total_out_l = p_l_out + d_l_out + ff_l_out;
+    total_out_r = p_r_out + d_r_out + ff_r_out; 
+
+    if(total_out_l > 1.0) {
+        total_out_l = 1.0;
+    } else if(total_out_l < -1.0) {
+        total_out_l = -1.0;
+    }
+
+    if(total_out_r > 1.0) {
+        total_out_r = 1.0;
+    } else if(total_out_r < -1.0) {
+        total_out_r = -1.0;
+    }
+
+    m_falcon_left1->Set(total_out_l);
+    m_falcon_right1->Set(total_out_r);
 
     last_yaw_error = yaw_error;
+    last_l_error = l_error;
+    last_r_error = r_error;
+
 }
 
 void DriveBase::ChecklrLimits() {
@@ -107,10 +138,3 @@ void DriveBase::ChecklrLimits() {
 	}
 }
 
-void DriveBase::UpdatelVelocity() {
-
-}
-
-void DriveBase::UpdaterVelocity() {
-
-}
