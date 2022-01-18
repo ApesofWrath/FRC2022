@@ -46,17 +46,17 @@ void DriveBase::Controller() {
     int reverse_throttle;
 
     if (throttle > 0.0) {
-		reverse_throttle = 1.0;
+		reverse_throttle = 1;
 	} else {
-		reverse_throttle = -1.0;
+		reverse_throttle = -1;
 	}
 
     int reverse_wheel;
 
-    if (throttle > 0.0) {
-		reverse_wheel = 1.0;
+    if (wheel > 0.0) {
+		reverse_wheel = 1;
 	} else {
-		reverse_wheel = -1.0;
+		reverse_wheel = -1;
 	}
 
     target_l = MAX_Y_RPM * reverse_throttle * (throttle * throttle); // 
@@ -78,8 +78,8 @@ void DriveBase::Controller() {
     yaw_error = target_yaw - curr_yaw;
     yaw_delta = yaw_error - last_yaw_error;
 
-    target_l = target_l - (target_yaw * (MAX_Y_RPM / MAX_YAW_RATE));
-    target_r = target_r - (target_yaw * (MAX_Y_RPM / MAX_YAW_RATE));
+    target_l -= (target_yaw * (MAX_Y_RPM / MAX_YAW_RATE));
+    target_r += (target_yaw * (MAX_Y_RPM / MAX_YAW_RATE));
 
     yaw_out = (K_P_YAW * yaw_error) + (yaw_delta * last_yaw_error);
 
