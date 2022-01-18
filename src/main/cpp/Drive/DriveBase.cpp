@@ -43,9 +43,25 @@ void DriveBase::Controller() {
     throttle = m_joy_throttle->GetY();
     wheel = m_joy_wheel->GetX();
 
-    target_l = MAX_Y_RPM * -1.0 * (throttle * throttle); // 
+    int reverse_throttle;
+
+    if (throttle > 0.0) {
+		reverse_throttle = 1.0;
+	} else {
+		reverse_throttle = -1.0;
+	}
+
+    int reverse_wheel;
+
+    if (throttle > 0.0) {
+		reverse_wheel = 1.0;
+	} else {
+		reverse_wheel = -1.0;
+	}
+
+    target_l = MAX_Y_RPM * reverse_throttle * (throttle * throttle); // 
     target_r = target_l;
-    target_yaw = MAX_Y_RPM * (wheel * wheel);
+    target_yaw = MAX_Y_RPM * reverse_wheel * (wheel * wheel);
 
     ChecklrLimits();
 
@@ -125,16 +141,16 @@ void DriveBase::Controller() {
 }
 
 void DriveBase::ChecklrLimits() {
-    if (target_l > MAX_Y_RPM) {
-		target_l = MAX_Y_RPM;
-	} else if (target_l < -MAX_Y_RPM) {
-		target_l = -MAX_Y_RPM;
-	}
+        if (target_l > MAX_Y_RPM) {
+            target_l = MAX_Y_RPM;
+        } else if (target_l < -MAX_Y_RPM) {
+            target_l = -MAX_Y_RPM;
+        }
 
-	if (target_r > MAX_Y_RPM) {
-		target_r = MAX_Y_RPM;
-	} else if (target_r < -MAX_Y_RPM) {
-		target_r = -MAX_Y_RPM;
-	}
+        if (target_r > MAX_Y_RPM) {
+            target_r = MAX_Y_RPM;
+        } else if (target_r < -MAX_Y_RPM) {
+            target_r = -MAX_Y_RPM;
+        }
 }
 
