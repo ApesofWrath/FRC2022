@@ -5,6 +5,9 @@
 #pragma once
 
 #include <frc/TimedRobot.h>
+#include <frc/Joystick.h>
+
+#include "Drive/DriveBase.hpp"
 
 class Robot : public frc::TimedRobot {
  public:
@@ -22,4 +25,9 @@ class Robot : public frc::TimedRobot {
 
   void TestInit() override;
   void TestPeriodic() override;
+
+  private:
+  DriveBase *m_drive;
+  frc::Joystick *m_joy_op;
+  WPI_TalonFX *m_talon;
 };

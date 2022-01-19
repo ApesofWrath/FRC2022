@@ -8,7 +8,7 @@
 
 class DriveBase{
 public:
-    DriveBase(frc::Joystick *joy_throttle, frc::Joystick *joy_wheel);
+    DriveBase(frc::Joystick *joy_op);
     void Controller();
 
     /**
@@ -56,7 +56,6 @@ private:
 
     AHRS *ahrs;
 
-    frc::Joystick *m_joy_throttle;
-    frc::Joystick *m_joy_wheel;
+    frc::Joystick *m_joy_op;
 
 };

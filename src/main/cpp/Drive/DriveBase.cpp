@@ -1,14 +1,12 @@
 #include "Drive/DriveBase.hpp"
 
-DriveBase::DriveBase(frc::Joystick *joy_throttle, frc::Joystick *joy_wheel) {
-    m_joy_throttle = joy_throttle;
-    m_joy_wheel = joy_wheel;
-    
-    m_falcon_left1 = new WPI_TalonFX(668);
+DriveBase::DriveBase(frc::Joystick *joy_op) {
+    m_joy_op = joy_op;
+       
+    m_falcon_left1 = new WPI_TalonFX(1);
     m_falcon_left2 = new WPI_TalonFX(668);
     m_falcon_right1 = new WPI_TalonFX(668);
     m_falcon_right2 = new WPI_TalonFX(668);
-
 
     m_falcon_right1->SetInverted(true);
     m_falcon_right2->SetInverted(true);
@@ -40,8 +38,8 @@ DriveBase::DriveBase(frc::Joystick *joy_throttle, frc::Joystick *joy_wheel) {
 }
 
 void DriveBase::Controller() {
-    throttle = m_joy_throttle->GetY();
-    wheel = m_joy_wheel->GetX();
+    throttle = m_joy_op->GetRawAxis(1);
+    wheel = m_joy_op->GetRawAxis(4);
 
     int reverse_throttle;
 
@@ -131,8 +129,8 @@ void DriveBase::Controller() {
         total_out_r = -1.0;
     }
 
-    m_falcon_left1->Set(total_out_l);
-    m_falcon_right1->Set(total_out_r);
+    m_falcon_left1->Set(total_out_l / 10);
+    m_falcon_right1->Set(total_out_r / 10);
 
     last_yaw_error = yaw_error;
     last_l_error = l_error;

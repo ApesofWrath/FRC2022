@@ -4,14 +4,21 @@
 
 #include "Robot.hpp"
 
-void Robot::RobotInit() {}
+void Robot::RobotInit() {
+  m_joy_op = new frc::Joystick(0);
+  m_drive = new DriveBase(m_joy_op);
+  m_talon = new WPI_TalonFX(0);
+
+}
 void Robot::RobotPeriodic() {}
 
 void Robot::AutonomousInit() {}
 void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {}
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopPeriodic() {
+  m_drive->Controller();
+}
 
 void Robot::DisabledInit() {}
 void Robot::DisabledPeriodic() {}
