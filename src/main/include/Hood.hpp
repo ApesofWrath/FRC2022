@@ -27,7 +27,7 @@ public:
 
     void HoodStateMachine();
 
-    void setState(HoodState state) {m_State = state;}
+    void setState(HoodState state) {m_LastState = m_State; m_State = state;}
     HoodState getState();
 
 private:
