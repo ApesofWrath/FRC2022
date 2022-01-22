@@ -15,12 +15,10 @@ enum class States {
 class Climber {
     private:
 
-        WPI_TalonFX *climber_talon1;
-        WPI_TalonFX *climber_talon2;
+        TalonFX *climber_talon1;
+        TalonFX *climber_talon2;
 
     public:
-    
-     
 
     States current_state;
     States last_state;
@@ -31,8 +29,6 @@ class Climber {
     void Up();
     void Down();
     void Zero();
-    void climberStateMachine();
-
-    
+    void climberStateMachine();   
 };
 

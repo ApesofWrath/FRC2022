@@ -22,7 +22,7 @@ void Robot::TeleopPeriodic() {
    
   } else if (m_Joystick->GetRawButton(8)) {
 
-    m_Climber->current_state = States::DOWN_CLIMB;
+    m_Climber->current_state = States::ZERO_CLIMB;
     
   } else if (m_Joystick->GetRawButton(7)) {
     
@@ -30,7 +30,7 @@ void Robot::TeleopPeriodic() {
 
   } else if (m_Joystick->GetRawButton(5)) {
 
-    m_Climber->current_state = States::ZERO_CLIMB;
+    m_Climber->current_state = States::DOWN_CLIMB;
 
   }
 

@@ -2,10 +2,11 @@
 
 Climber::Climber()
 {
-    climber_talon1 = new WPI_TalonFX(1);
-    climber_talon2 = new WPI_TalonFX(2);
+    climber_talon1 = new TalonFX(1);
+    climber_talon2 = new TalonFX(2);
 
-    climber_talon1->Config_kP(0, 0.005);
+    climber_talon1->ConfigFactoryDefault();
+    climber_talon1->Config_kP(0, 0.0005);
     climber_talon1->Config_kI(0, 0);
     climber_talon1->Config_kD(0, 0);
 
@@ -14,17 +15,27 @@ Climber::Climber()
 
 void Climber::Stop()
 {
-    climber_talon1->Set(ControlMode::PercentOutput, 0.05);
+    //climber_talon1->Config_kP(0, 0.0005);
+    //climber_talon1->Config_kI(0, 0);
+    //climber_talon1->Config_kD(0, 0);
+    climber_talon1->Set(TalonFXControlMode::PercentOutput, 0.0);
+    
 }
 
 void Climber::Up()
 {
-    climber_talon1->Set(ControlMode::Position, 2040);
+    //climber_talon1->Config_kP(0, 0.0005);
+    //climber_talon1->Config_kI(0, 0);
+    //climber_talon1->Config_kD(0, 0);
+    climber_talon1->Set(TalonFXControlMode::PercentOutput, 0.1);
 }
 
 void Climber::Down()
 {
-    climber_talon1->Set(ControlMode::Position, -2040);
+    //climber_talon1->Config_kP(0, 0.0005);
+    //climber_talon1->Config_kI(0, 0);
+    //climber_talon1->Config_kD(0, 0);
+    climber_talon1->Set(TalonFXControlMode::PercentOutput, -0.1);
 }
 
 void Climber::Zero()
