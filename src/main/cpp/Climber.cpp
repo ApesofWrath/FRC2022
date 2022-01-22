@@ -7,8 +7,8 @@ Climber::Climber()
 
     climber_talon1->ConfigFactoryDefault();
     climber_talon1->Config_kP(0, 0.005);
-    climber_talon1->Config_kI(0, 0);
-    climber_talon1->Config_kD(0, 0);
+    climber_talon1->Config_kI(0, 0.0);
+    climber_talon1->Config_kD(0, 0.0001);
 
     climber_talon2->Follow(*climber_talon1);
 }
@@ -18,7 +18,7 @@ void Climber::Stop()
     //climber_talon1->Config_kP(0, 0.0005);
     //climber_talon1->Config_kI(0, 0);
     //climber_talon1->Config_kD(0, 0);
-    climber_talon1->Set(TalonFXControlMode::Position, 0);
+    climber_talon1->Set(TalonFXControlMode::Position, 0.0);
     
 }
 
@@ -27,7 +27,7 @@ void Climber::Up()
     //climber_talon1->Config_kP(0, 0.0005);
     //climber_talon1->Config_kI(0, 0);
     //climber_talon1->Config_kD(0, 0);
-    climber_talon1->Set(TalonFXControlMode::Velocity, 12000);
+    climber_talon1->Set(TalonFXControlMode::Position, 20480.0);
 }
 
 void Climber::Down()
@@ -35,12 +35,14 @@ void Climber::Down()
     //climber_talon1->Config_kP(0, 0.0005);
     //climber_talon1->Config_kI(0, 0);
     //climber_talon1->Config_kD(0, 0);
-    climber_talon1->Set(TalonFXControlMode::Velocity, -12000);
+    climber_talon1->Set(TalonFXControlMode::Position, -20480.0);
 }
 
 void Climber::Zero()
 {
-    // climber_talon1->SetSelectedSensorPosition(0);
+    climber_talon1->SetSelectedSensorPosition(0.0);
+    climber_talon1->Set(TalonFXControlMode::Position, 0);
+
 }
 
 void Climber::climberStateMachine() 
