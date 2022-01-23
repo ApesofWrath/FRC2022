@@ -20,14 +20,19 @@ class Hood {
 public:
 
     Hood();
-
+    void init();
+    void upperWall();
+    void upperFarWall();
+    void upperLaunchPad();
+    void lowerWall();
+    
 
     inline float getTargetPosition() { return m_TargetPosition; };
     void setTargetPosition(float angle);
 
     void HoodStateMachine();
 
-    void setState(HoodState state) {m_LastState = m_State; m_State = state;}
+    inline void setState(HoodState state) {m_LastState = m_State; m_State = state;}
     HoodState getState();
 
 private:

@@ -7,6 +7,27 @@ Hood::Hood() {
     m_Motor = std::make_shared<TalonFX>(0);
 }
 
+void Hood::init(){
+
+}
+
+void Hood::upperWall(){
+    
+}
+
+void Hood::upperFarWall(){
+
+} 
+
+void Hood::upperLaunchPad(){
+
+}
+
+void Hood::lowerWall(){
+
+}
+
+
 void Hood::HoodStateMachine() {
     switch (m_State) {
         case HoodState::Init:
@@ -17,28 +38,28 @@ void Hood::HoodStateMachine() {
         case HoodState::LowerWall:
             frc::SmartDashboard::PutString("HoodState", "LowerWall");
             if (m_LastState != HoodState::LowerWall) {
-
+                lowerWall();
             }
             m_LastState = HoodState::LowerWall;
         break;
         case HoodState::UpperFarWall:
             frc::SmartDashboard::PutString("HoodState", "UpperFarWall");
             if (m_LastState != HoodState::UpperFarWall) {
-                
+                upperFarWall();
             }
             m_LastState = HoodState::UpperFarWall;
         break;
         case HoodState::UpperLaunchpad:
             frc::SmartDashboard::PutString("HoodState", "UpperLaunchpad");
             if (m_LastState != HoodState::UpperLaunchpad) {
-                
+                upperLaunchPad();
             }
             m_LastState = HoodState::UpperLaunchpad;
         break;
         case HoodState::UpperWall:
             frc::SmartDashboard::PutString("HoodState", "UpperWall");
             if (m_LastState != HoodState::UpperWall) {
-              
+              upperWall();
             }
             m_LastState = HoodState::UpperWall;
         break;
