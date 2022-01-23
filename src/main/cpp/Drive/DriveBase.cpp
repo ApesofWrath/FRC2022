@@ -7,8 +7,8 @@ DriveBase::DriveBase(frc::Joystick *joy_op) {
        
     m_falcon_left1 = new WPI_TalonFX(10);
     m_falcon_left2 = new WPI_TalonFX(12);
-    m_falcon_right1 = new WPI_TalonFX(13);
-    m_falcon_right2 = new WPI_TalonFX(11);
+    m_falcon_right1 = new WPI_TalonFX(11);
+    m_falcon_right2 = new WPI_TalonFX(13);
 
     m_falcon_left1->ConfigFactoryDefault();
     m_falcon_right1->ConfigFactoryDefault();
@@ -41,7 +41,7 @@ DriveBase::DriveBase(frc::Joystick *joy_op) {
     m_falcon_left1->SetNeutralMode(NeutralMode::Brake);
     m_falcon_left2->SetNeutralMode(NeutralMode::Brake);
 
-    ahrs = new AHRS(frc::SerialPort::kUSB);
+    ahrs = new AHRS(frc::SerialPort::kMXP);
 }
 
 void DriveBase::Controller() {
@@ -89,8 +89,8 @@ void DriveBase::Controller() {
 }
 
 void DriveBase::OldController() {
-    throttle = m_joy_op->GetRawAxis(1); 
-    wheel = m_joy_op->GetRawAxis(4);
+    throttle = m_joy_op->GetRawAxis(1);
+    wheel = -m_joy_op->GetRawAxis(4);
 
     double reverse_throttle;
 
@@ -123,8 +123,8 @@ void DriveBase::OldController() {
 
     LOG_V(target_yaw);
 
-    target_l -= (target_yaw);
-    target_r += (target_yaw);
+    target_l -= (target_yaw * MAX_Y_RPM / MAX_YAW_RATE);
+    target_r += (target_yaw * MAX_Y_RPM / MAX_YAW_RATE);
 
     frc::SmartDashboard::PutNumber("target_l after", target_l);
     frc::SmartDashboard::PutNumber("target_r after", target_r);
@@ -135,6 +135,8 @@ void DriveBase::OldController() {
 	}
 
     yaw_out = (K_P_YAW * yaw_error);
+    LOG_V(yaw_out);
+
 
     target_l -= yaw_out;
     target_r += yaw_out;
@@ -197,11 +199,11 @@ void DriveBase::OldController() {
     LOG_V(total_out_l);
     LOG_V(total_out_r);
 
-    total_out_l *= 0.25;
-    total_out_r *= 0.25;
+    // total_out_l *= 0.25;
+    // total_out_r *= 0.25;
 
-    m_falcon_left1->Set(TalonFXControlMode::PercentOutput, total_out_l);
-    m_falcon_right1->Set(TalonFXControlMode::PercentOutput, total_out_r);
+    m_falcon_left1->Set(TalonFXControlMode::PercentOutput, total_out_l * kOutputPercent);
+    m_falcon_right1->Set(TalonFXControlMode::PercentOutput, total_out_r * kOutputPercent);
 
     last_yaw_error = yaw_error;
     last_l_error = l_error;
