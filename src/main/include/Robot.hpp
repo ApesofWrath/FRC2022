@@ -6,6 +6,7 @@
 
 #include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
+
 #include "Climber.hpp"
 
 class Robot : public frc::TimedRobot {
@@ -27,7 +28,6 @@ class Robot : public frc::TimedRobot {
 
 
   private:
-    
     std::unique_ptr<frc::Joystick> m_Joystick;
     std::shared_ptr<Climber> m_Climber;
 };

@@ -6,9 +6,10 @@ Climber::Climber()
     climber_talon2 = new TalonFX(2);
 
     climber_talon1->ConfigFactoryDefault();
-    climber_talon1->Config_kP(0, 0.005);
-    climber_talon1->Config_kI(0, 0.0);
-    climber_talon1->Config_kD(0, 0.0001);
+    climber_talon1->Config_kP(0, 0.02428);
+    climber_talon1->Config_kI(0, 0.001);
+    climber_talon1->Config_kD(0, 0.00025795);
+    climber_talon1->Config_IntegralZone(0, 1024, 50);
 
     climber_talon2->Follow(*climber_talon1);
 }
@@ -27,7 +28,7 @@ void Climber::Up()
     //climber_talon1->Config_kP(0, 0.0005);
     //climber_talon1->Config_kI(0, 0);
     //climber_talon1->Config_kD(0, 0);
-    climber_talon1->Set(TalonFXControlMode::Position, 20480.0);
+    climber_talon1->Set(TalonFXControlMode::Position, 40480.0);
 }
 
 void Climber::Down()
@@ -35,7 +36,7 @@ void Climber::Down()
     //climber_talon1->Config_kP(0, 0.0005);
     //climber_talon1->Config_kI(0, 0);
     //climber_talon1->Config_kD(0, 0);
-    climber_talon1->Set(TalonFXControlMode::Position, -20480.0);
+    climber_talon1->Set(TalonFXControlMode::Position, -40480.0);
 }
 
 void Climber::Zero()
@@ -48,16 +49,16 @@ void Climber::Zero()
 void Climber::climberStateMachine() 
 {
     //Talon1 Smart Dashboard
-    frc::SmartDashboard::PutNumber("Talon1 Voltage", climber_talon1->GetMotorOutputVoltage());
-    frc::SmartDashboard::PutNumber("Talon1 Percent Out", climber_talon1->GetMotorOutputPercent());
+    // frc::SmartDashboard::PutNumber("Talon1 Voltage", climber_talon1->GetMotorOutputVoltage());
+    // frc::SmartDashboard::PutNumber("Talon1 Percent Out", climber_talon1->GetMotorOutputPercent());
     frc::SmartDashboard::PutNumber("Sensor Pos Talon1", climber_talon1->GetSelectedSensorPosition());
-    frc::SmartDashboard::PutNumber("Sensor Velocity Talon1", climber_talon1->GetSelectedSensorVelocity());
+    // frc::SmartDashboard::PutNumber("Sensor Velocity Talon1", climber_talon1->GetSelectedSensorVelocity());
     
     //Talon2 Smart Dashboard
-    frc::SmartDashboard::PutNumber("Talon2 Voltage", climber_talon2->GetMotorOutputVoltage());
-    frc::SmartDashboard::PutNumber("Talon2 Percent Out", climber_talon2->GetMotorOutputPercent());
+    // frc::SmartDashboard::PutNumber("Talon2 Voltage", climber_talon2->GetMotorOutputVoltage());
+    // frc::SmartDashboard::PutNumber("Talon2 Percent Out", climber_talon2->GetMotorOutputPercent());
     frc::SmartDashboard::PutNumber("Sensor Pos Talon2", climber_talon2->GetSelectedSensorPosition());
-    frc::SmartDashboard::PutNumber("Sensor Velocity Talon2", climber_talon2->GetSelectedSensorVelocity());
+    // frc::SmartDashboard::PutNumber("Sensor Velocity Talon2", climber_talon2->GetSelectedSensorVelocity());
 
     frc::SmartDashboard::PutNumber("Curr State", (int) current_state);
 

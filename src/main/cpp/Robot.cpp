@@ -8,6 +8,7 @@
 void Robot::RobotInit() {
   m_Joystick = std::make_unique<frc::Joystick>(0);
   m_Climber = std::make_shared<Climber>();
+  
 }
 void Robot::RobotPeriodic() {}
 
