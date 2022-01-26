@@ -12,6 +12,8 @@
 #include "Hood.hpp"
 #include "Intake.hpp"
 
+#include "Drive/DriveBase.hpp"
+
 class Robot : public frc::TimedRobot {
  public:
   void RobotInit() override;
@@ -35,7 +37,8 @@ private:
   std::shared_ptr<Hood> m_hood;
   std::shared_ptr<Intake> m_intake;
 
-  std::shared_ptr<frc::Joystick> m_joystick;
   std::shared_ptr<frc::Compressor> m_compressor;
 
+  DriveBase *m_drive;
+  frc::Joystick *m_joy_op;
 };
