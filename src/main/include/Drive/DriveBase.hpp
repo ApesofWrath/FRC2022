@@ -9,14 +9,12 @@
 class DriveBase{
 public:
     DriveBase(frc::Joystick *joy_op);
-    void OldController();
     void Controller();
 
     /**
      * Makes sure that the target left and right RPM don't
      * exceed the maximum velocity
      */
-    void OldChecklrLimits();
     void ChecklrLimits();
 
     double target_l = 0, 

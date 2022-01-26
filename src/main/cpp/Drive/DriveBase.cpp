@@ -46,50 +46,6 @@ DriveBase::DriveBase(frc::Joystick *joy_op) {
 
 void DriveBase::Controller() {
     throttle = m_joy_op->GetRawAxis(1);
-    wheel = m_joy_op->GetRawAxis(4);
-
-    int reverse_throttle;
-
-    if (throttle > 0.0) {
-		reverse_throttle = 1;
-	} else {
-		reverse_throttle = -1;
-	}
-
-    int reverse_wheel;
-
-    if (wheel > 0.0) {
-		reverse_wheel = 1;
-	} else {
-		reverse_wheel = -1;
-	}
-
-    target_l = TICKS_PER_ROT * MAX_Y_RPM * reverse_throttle * (throttle * throttle); // 
-    target_r = target_l;
-    target_yaw = TICKS_PER_ROT * MAX_Y_RPM * reverse_wheel * (wheel * wheel);
-
-    ChecklrLimits();
-
-    curr_yaw_rate = -1.0 * ahrs->GetRate();
-    if(curr_yaw_rate > curr_max_yaw_rate) {
-        curr_max_yaw_rate = curr_yaw_rate;
-    }
-
-    frc::SmartDashboard::PutNumber("target_r before", target_r);
-	frc::SmartDashboard::PutNumber("target_l ", target_l);
-    frc::SmartDashboard::PutNumber("max yaw", curr_max_yaw_rate);
-    frc::SmartDashboard::PutNumber("current yaw", curr_yaw_rate);
-
-    yaw_error = target_yaw - curr_yaw_rate;
-    yaw_delta = yaw_error - last_yaw_error;
-
-    target_l -= TICKS_PER_ROT * (target_yaw * (MAX_Y_RPM / MAX_YAW_RATE));
-    target_r += TICKS_PER_ROT * (target_yaw * (MAX_Y_RPM / MAX_YAW_RATE));
-
-}
-
-void DriveBase::OldController() {
-    throttle = m_joy_op->GetRawAxis(1);
     wheel = -m_joy_op->GetRawAxis(4);
 
     double reverse_throttle;
@@ -114,7 +70,7 @@ void DriveBase::OldController() {
     target_r = target_l;
     target_yaw = MAX_YAW_RATE * reverse_wheel * (wheel * wheel * wheel * wheel);
 
-    OldChecklrLimits();
+    ChecklrLimits();
 
     curr_yaw_rate = -ahrs->GetRate();
 
@@ -142,7 +98,7 @@ void DriveBase::OldController() {
     target_l -= yaw_out;
     target_r += yaw_out;
 
-    OldChecklrLimits();
+    ChecklrLimits();
 
     // Setting Feed Forward Values
     if(target_l < 0.0) {
@@ -212,7 +168,7 @@ void DriveBase::OldController() {
 
 }
 
-void DriveBase::OldChecklrLimits() {
+void DriveBase::ChecklrLimits() {
         if (target_l > MAX_Y_RPM) {
             target_l = MAX_Y_RPM;
         } else if (target_l < -MAX_Y_RPM) {
@@ -223,19 +179,5 @@ void DriveBase::OldChecklrLimits() {
             target_r = MAX_Y_RPM;
         } else if (target_r < -MAX_Y_RPM) {
             target_r = -MAX_Y_RPM;
-        }
-}
-
-void DriveBase::ChecklrLimits() {
-        if (target_l > MAX_Y_RPM * TICKS_PER_ROT) {
-            target_l = MAX_Y_RPM * TICKS_PER_ROT;
-        } else if (target_l < -MAX_Y_RPM * TICKS_PER_ROT) {
-            target_l = -MAX_Y_RPM * TICKS_PER_ROT;
-        }
-
-        if (target_r > MAX_Y_RPM * TICKS_PER_ROT) {
-            target_r = MAX_Y_RPM * TICKS_PER_ROT;
-        } else if (target_r < -MAX_Y_RPM * TICKS_PER_ROT) {
-            target_r = -MAX_Y_RPM * TICKS_PER_ROT;
         }
 }

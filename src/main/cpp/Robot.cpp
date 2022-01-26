@@ -17,7 +17,7 @@ void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
-  m_drive->OldController();
+  m_drive->Controller();
 }
 
 void Robot::DisabledInit() {}
