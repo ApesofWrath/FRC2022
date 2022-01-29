@@ -6,6 +6,7 @@
 
 #include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 
 #include "Drive/DriveBase.hpp"
 
@@ -29,5 +30,12 @@ class Robot : public frc::TimedRobot {
   private:
   DriveBase *m_drive;
   frc::Joystick *m_joy_op;
-  WPI_TalonFX *m_talon;
+  TalonFX *m_talon1;
+  TalonFX *m_talon2;
+  TalonFX *m_talon3;
+  TalonFX *m_talon4;
+  AHRS *ahrs;
+
+  double max_rpm = 0;
+  double max_yaw = 0;
 };
