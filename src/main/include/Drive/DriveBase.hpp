@@ -6,12 +6,26 @@
 #include <frc/SerialPort.h>
 #include <AHRS.h>
 
-class DriveBase{
+enum class States {
+    JOY_THROTTLE,
+    JOY_THROTTLE_NO_BUTTONS,
+    JOY_TRIGGERS
+};
+
+class DriveBase {
 public:
     DriveBase(frc::Joystick *joy_op);
     void Controller();
     void SetCoastNeutral();
     void SetBrakeNeutral();
+
+    double GetJoyThrottle();
+    double GetJoyThrottleNoButtons();
+    double GetJoyTriggers();
+
+    double modifier;
+
+    States current_state;
 
     /**
      * Makes sure that the target left and right RPM don't

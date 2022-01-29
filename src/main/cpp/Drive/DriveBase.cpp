@@ -48,8 +48,58 @@ DriveBase::DriveBase(frc::Joystick *joy_op) {
     ahrs = new AHRS(frc::SerialPort::kUSB);
 }
 
+double DriveBase::GetJoyThrottle() {
+    if (m_joy_op->GetRawButton(6)) {
+        modifier = 0.50;
+    } else if (m_joy_op->GetRawButton(5)) {
+        modifier = 0.25;
+    } else {
+        modifier = 1.0;
+    }
+
+    return m_joy_op->GetRawAxis(1); 
+}
+
+double DriveBase::GetJoyThrottleNoButtons() {
+    double modifier = 1.0;
+    return m_joy_op->GetRawAxis(1);
+}
+
+double DriveBase::GetJoyTriggers() {
+    double modifier = 1.0;
+    return m_joy_op->GetRawAxis(2) - m_joy_op->GetRawAxis(3);
+}
+
 void DriveBase::Controller() {
-    throttle = m_joy_op->GetRawAxis(1);
+    switch (current_state)
+    {
+    case States::JOY_THROTTLE:
+        throttle = GetJoyThrottle();
+        break;
+
+    case States::JOY_THROTTLE_NO_BUTTONS:
+        throttle = GetJoyThrottleNoButtons();
+        break;
+
+    case States::JOY_TRIGGERS:
+        throttle = GetJoyTriggers();
+        break;
+    }
+
+    if (m_joy_op->GetRawButton(1)) {
+
+        current_state = States::JOY_THROTTLE;
+
+    } else if (m_joy_op->GetRawButton(2)) {
+
+        current_state = States::JOY_THROTTLE_NO_BUTTONS;
+        
+    } else if (m_joy_op->GetRawButton(3)) {
+
+        current_state = States::JOY_TRIGGERS;
+
+    }
+    
     wheel = -m_joy_op->GetRawAxis(4);
 
     double reverse_throttle;
@@ -163,8 +213,8 @@ void DriveBase::Controller() {
     // total_out_l *= 0.25;
     // total_out_r *= 0.25;
 
-    m_falcon_left1->Set(TalonFXControlMode::PercentOutput, total_out_l * kOutputPercent);
-    m_falcon_right1->Set(TalonFXControlMode::PercentOutput, total_out_r * kOutputPercent);
+    m_falcon_left1->Set(TalonFXControlMode::PercentOutput, total_out_l * (kOutputPercent * modifier));
+    m_falcon_right1->Set(TalonFXControlMode::PercentOutput, total_out_r * (kOutputPercent * modifier));
 
     last_yaw_error = yaw_error;
     last_l_error = l_error;
@@ -199,3 +249,4 @@ void DriveBase::SetCoastNeutral() {
     m_falcon_left1->SetNeutralMode(NeutralMode::Coast);
     m_falcon_left2->SetNeutralMode(NeutralMode::Coast);
 }
+

@@ -11,6 +11,7 @@ void Robot::RobotInit() {
 void Robot::RobotPeriodic() {}
 
 void Robot::AutonomousInit() {}
+
 void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
