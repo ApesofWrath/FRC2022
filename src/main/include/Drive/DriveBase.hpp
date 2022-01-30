@@ -22,7 +22,9 @@ public:
     double GetJoyThrottle();
     double GetJoyThrottleNoButtons();
     double GetJoyTriggers();
+    void JoyTankControl();
 
+    void OutputControl();
     double modifier;
 
     States current_state;

@@ -48,7 +48,7 @@ DriveBase::DriveBase(frc::Joystick *joy_op) {
     ahrs = new AHRS(frc::SerialPort::kUSB);
 }
 
-double DriveBase::GetJoyThrottle() {
+void DriveBase::OutputControl() {
     if (m_joy_op->GetRawButton(6)) {
         modifier = 0.50;
     } else if (m_joy_op->GetRawButton(5)) {
@@ -56,6 +56,10 @@ double DriveBase::GetJoyThrottle() {
     } else {
         modifier = 1.0;
     }
+}
+
+double DriveBase::GetJoyThrottle() {
+    OutputControl();
 
     return m_joy_op->GetRawAxis(1); 
 }
@@ -66,8 +70,14 @@ double DriveBase::GetJoyThrottleNoButtons() {
 }
 
 double DriveBase::GetJoyTriggers() {
-    double modifier = 1.0;
+    OutputControl();
+
     return m_joy_op->GetRawAxis(2) - m_joy_op->GetRawAxis(3);
+}
+
+void DriveBase::JoyTankControl() {
+    m_falcon_left1->Set(TalonFXControlMode::PercentOutput, m_joy_op->GetRawAxis(1));
+    m_falcon_right1->Set(TalonFXControlMode::PercentOutput, m_joy_op->GetRawAxis(5));
 }
 
 void DriveBase::Controller() {
