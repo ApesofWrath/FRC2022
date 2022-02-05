@@ -7,10 +7,16 @@
 #include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
 
+#include <AHRS.h>
+
 #include "Drive/DriveBase.hpp"
+#include "RobotContainer.hpp"
+#include "Auton/Auton.hpp"
+
+#include <frc2/command/Command.h>
 
 class Robot : public frc::TimedRobot {
- public:
+public:
   void RobotInit() override;
   void RobotPeriodic() override;
 
@@ -26,8 +32,13 @@ class Robot : public frc::TimedRobot {
   void TestInit() override;
   void TestPeriodic() override;
 
-  private:
+private:
   DriveBase *m_drive;
   frc::Joystick *m_joy_op;
   WPI_TalonFX *m_talon;
+  AutonDrive *m_AutonDrive;
+  RobotContainer *m_Container;
+  AHRS* m_AHRS;
+
+  frc2::Command* m_AutonomousCommand = nullptr;
 };

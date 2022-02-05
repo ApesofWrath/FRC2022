@@ -2,7 +2,7 @@
 
 #define LOG_V(var) frc::SmartDashboard::PutNumber(#var , var)
 
-DriveBase::DriveBase(frc::Joystick *joy_op) {
+DriveBase::DriveBase(frc::Joystick *joy_op, AHRS* ahrs) : m_AHRS{ahrs} {
     m_joy_op = joy_op;
        
     m_falcon_left1 = new WPI_TalonFX(10);
@@ -41,7 +41,6 @@ DriveBase::DriveBase(frc::Joystick *joy_op) {
     m_falcon_left1->SetNeutralMode(NeutralMode::Brake);
     m_falcon_left2->SetNeutralMode(NeutralMode::Brake);
 
-    ahrs = new AHRS(frc::SerialPort::kMXP);
 }
 
 void DriveBase::Controller() {
@@ -72,7 +71,7 @@ void DriveBase::Controller() {
 
     ChecklrLimits();
 
-    curr_yaw_rate = -ahrs->GetRate();
+    curr_yaw_rate = -m_AHRS->GetRate();
 
     frc::SmartDashboard::PutNumber("target_r before", target_r);
 	frc::SmartDashboard::PutNumber("target_l before", target_l);

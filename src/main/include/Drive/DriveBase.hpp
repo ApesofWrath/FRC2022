@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Drive/DriveConstants.hpp"
 
 #include <ctre/phoenix.h>
@@ -6,9 +8,9 @@
 #include <frc/SerialPort.h>
 #include <AHRS.h>
 
-class DriveBase{
+class DriveBase {
 public:
-    DriveBase(frc::Joystick *joy_op);
+    DriveBase(frc::Joystick *joy_op, AHRS* ahrs);
     void Controller();
 
     /**
@@ -54,8 +56,9 @@ private:
     WPI_TalonFX *m_falcon_left1, *m_falcon_left2, 
         *m_falcon_right1, *m_falcon_right2;
 
-    AHRS *ahrs;
-
     frc::Joystick *m_joy_op;
+
+    AHRS *m_AHRS;
+
 
 };
