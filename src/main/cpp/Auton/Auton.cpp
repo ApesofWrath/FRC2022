@@ -33,7 +33,10 @@ AutonDrive::AutonDrive(int left1, int left2, int right1, int right2, AHRS* ahrs_
 }
 
 void AutonDrive::Periodic() {
-    getWheelSpeeds();
+    auto wspeeds = getWheelSpeeds();
+    frc::SmartDashboard::PutNumber("LeftPos", left1_drive.GetSelectedSensorPosition() * kMetersPerTick);
+    frc::SmartDashboard::PutNumber("RightPos", right1_drive.GetSelectedSensorPosition() * kMetersPerTick);
+
     odometry->Update(frc::Rotation2d(units::degree_t(getHeading())),
         units::meter_t(left1_drive.GetSelectedSensorPosition() * kMetersPerTick),
         units::meter_t(right1_drive.GetSelectedSensorPosition() * kMetersPerTick)
@@ -44,8 +47,8 @@ void AutonDrive::tankDriveVolts(units::volt_t left, units::volt_t right) {
     left_motors.SetVoltage(left);
     right_motors.SetVoltage(right);
 
-    frc::SmartDashboard::PutNumber("v left", left());
-    frc::SmartDashboard::PutNumber("v right", right());
+    frc::SmartDashboard::PutNumber("v left", left.value());
+    frc::SmartDashboard::PutNumber("v right", right.value());
     drive.Feed();
 }
 
