@@ -5,8 +5,7 @@
 #include <memory>
 
 constexpr float reverseSpeed = -0.6f;
-constexpr float redShootSpeed = 3675.0f * 2048.0 / 600.0; //3200 close // 3850 far - 3700-3730ish
-constexpr float blueShootSpeed = 3800.0f * 2048.0 / 600.0; //3200 close // 3850 far blue 3800
+constexpr float shootSpeed = 3675.0f * 2048.0 / 600.0; //3200 close // 3675 far - 3700-3730ish <- real
 constexpr float waitingSpeed = .35f;
 
 constexpr float sensorUnitsToRPM(float su) {
