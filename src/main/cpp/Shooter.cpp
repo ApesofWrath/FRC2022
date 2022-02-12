@@ -15,7 +15,11 @@ Shooter::Shooter() {
     m_motor2->SetInverted(true);
 }
 
+<<<<<<< HEAD
 void Shooter::Shoot() {
+=======
+void Shooter::shoot() { // Use GetAlliance() to change RPM if needed
+>>>>>>> f4b2bbe (Fix compilation errors, Add PF control, Adjust P and F values)
     m_motor1->Set(ControlMode::Velocity, shootSpeed);
 }
 
