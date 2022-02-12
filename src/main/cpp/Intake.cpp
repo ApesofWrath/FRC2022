@@ -1,12 +1,10 @@
-#include <Intake.hpp>
-#include <Shooter.hpp>
-#include <frc/smartdashboard/SmartDashboard.h>
+#include "Intake.hpp"
 
 Intake::Intake() {
     m_Motor = std::make_shared<TalonFX>(0);
 }
 
-void Shooter::intake() {
+void Intake::intake() {
     m_Motor->Set(ControlMode::PercentOutput, intakeSpeed);
 }
 

@@ -2,10 +2,7 @@
 
 #include <ctre/Phoenix.h>
 #include <memory>
-
-constexpr float reverseSpeed = -1;
-constexpr float intakeSpeed = 1;
-constexpr float waitingSpeed = .1;
+#include <frc/smartdashboard/SmartDashboard.h>
 
 enum class IntakeState {
     Init,
@@ -28,6 +25,10 @@ public:
 
     void setState(IntakeState state) {m_LastState = m_State; m_State = state;};
     IntakeState getState();
+
+    double reverseSpeed = -1.0;
+    double intakeSpeed = 1.0;
+    double waitingSpeed = 0.1;
 
 private:
     std::shared_ptr<TalonFX> m_Motor;
