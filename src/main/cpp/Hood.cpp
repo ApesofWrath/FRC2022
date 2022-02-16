@@ -1,30 +1,27 @@
 #include <Hood.hpp>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <Robot.hpp>
 
-// use buttons 4 and 5 for hood adjustment
+// use buttons Y and B for hood adjustment (Button IDs 4 and 2\)
 
 Hood::Hood() {
-    m_Motor = std::make_shared<TalonFX>(0);
+    // Use PCM channels 3 and 6 for the hood solenoid
+    m_DoubleSolenoid = new frc::DoubleSolenoid(3, frc::PneumaticsModuleType::CTREPCM, 3, 6);
 }
 
+// does not move hood
 void Hood::init(){
-
+    m_DoubleSolenoid->Set(frc::DoubleSolenoid::Value::kOff);
 }
 
-void Hood::upperWall(){
-    
+// moves hood up
+void Hood::up(){
+    m_DoubleSolenoid->Set(frc::DoubleSolenoid::Value::kForward);
 }
 
-void Hood::upperFarWall(){
-
-} 
-
-void Hood::upperLaunchPad(){
-
-}
-
-void Hood::lowerWall(){
-
+// moves hood down
+void Hood::down(){
+    m_DoubleSolenoid->Set(frc::DoubleSolenoid::Value::kReverse);
 }
 
 
@@ -35,33 +32,19 @@ void Hood::HoodStateMachine() {
             m_LastState = HoodState::Init;
             m_State = HoodState::Init;
         break;
-        case HoodState::LowerWall:
-            frc::SmartDashboard::PutString("HoodState", "LowerWall");
-            if (m_LastState != HoodState::LowerWall) {
-                lowerWall();
+        case HoodState::Up:
+            frc::SmartDashboard::PutString("HoodState", "Up");
+            if (m_LastState != HoodState::Up) {
+                up();
             }
-            m_LastState = HoodState::LowerWall;
+            m_LastState = HoodState::Up;
         break;
-        case HoodState::UpperFarWall:
-            frc::SmartDashboard::PutString("HoodState", "UpperFarWall");
-            if (m_LastState != HoodState::UpperFarWall) {
-                upperFarWall();
+        case HoodState::Down:
+            frc::SmartDashboard::PutString("HoodState", "Down");
+            if (m_LastState != HoodState::Down) {
+                down();
             }
-            m_LastState = HoodState::UpperFarWall;
-        break;
-        case HoodState::UpperLaunchpad:
-            frc::SmartDashboard::PutString("HoodState", "UpperLaunchpad");
-            if (m_LastState != HoodState::UpperLaunchpad) {
-                upperLaunchPad();
-            }
-            m_LastState = HoodState::UpperLaunchpad;
-        break;
-        case HoodState::UpperWall:
-            frc::SmartDashboard::PutString("HoodState", "UpperWall");
-            if (m_LastState != HoodState::UpperWall) {
-              upperWall();
-            }
-            m_LastState = HoodState::UpperWall;
+            m_LastState = HoodState::Down;
         break;
     }
 }

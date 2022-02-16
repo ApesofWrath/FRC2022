@@ -1,18 +1,14 @@
 #pragma once
 
 #include <ctre/Phoenix.h>
+#include <frc/DoubleSolenoid.h>
 #include <memory>
 #include <unordered_map>
 
-constexpr float hoodSpeed = .1;
-constexpr int hoodMotor = 1;
-
 enum class HoodState {
     Init,
-    UpperWall,
-    UpperFarWall,
-    UpperLaunchpad,
-    LowerWall
+    Up,
+    Down
 };
 
 
@@ -21,10 +17,8 @@ public:
 
     Hood();
     void init();
-    void upperWall();
-    void upperFarWall();
-    void upperLaunchPad();
-    void lowerWall();
+    void up();
+    void down();
     
 
     inline float getTargetPosition() { return m_TargetPosition; };
@@ -37,7 +31,7 @@ public:
 
 private:
     std::unordered_map<HoodState,float> m_PositionMap;
-    std::shared_ptr<TalonFX> m_Motor;
+    frc::DoubleSolenoid *m_DoubleSolenoid;
 
     float m_TargetPosition;
 
