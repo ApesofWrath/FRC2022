@@ -1,6 +1,5 @@
-#include <Hood.hpp>
+#include "Hood.hpp"
 #include <frc/smartdashboard/SmartDashboard.h>
-#include <Robot.hpp>
 
 // use buttons Y and B for hood adjustment (Button IDs 4 and 2\)
 
