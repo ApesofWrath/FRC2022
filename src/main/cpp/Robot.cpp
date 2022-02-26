@@ -13,8 +13,6 @@ void Robot::RobotInit() {
     m_joy_op = new frc::Joystick(0);
     m_drive = new DriveBase(m_joy_op);
 }
-    m_Shooter = std::make_shared<Shooter>();
-}
 
 void Robot::RobotPeriodic() {}
 
@@ -40,22 +38,23 @@ void Robot::TeleopPeriodic() {
         m_intake->setState(IntakeState::STOP);
     }
   m_drive->Controller();
-    if (m_Joystick->GetRawButton(1)) {
-        m_Shooter->setState(ShooterState::Shoot);
-    } else if (m_Joystick->GetRawButton(2)) {
-        m_Shooter->setState(ShooterState::Waiting);
-    } else if (m_Joystick->GetRawButton(3)) {
-        m_Shooter->setState(ShooterState::Reverse);
+    if (m_joy_op->GetRawButton(1)) {
+        m_shooter->setState(ShooterState::SHOOT);
+        m_intake->setState(IntakeState::GO);
+    } else if (m_joy_op->GetRawButton(2)) {
+        m_shooter->setState(ShooterState::WAITING);
+        m_intake->setState(IntakeState::WAITING);
+    } else if (m_joy_op->GetRawButton(3)) {
+        m_shooter->setState(ShooterState::REVERSE);
+        m_intake->setState(IntakeState::REVERSE);
     } else {
-        m_Shooter->setState(ShooterState::Stop);
+        m_shooter->setState(ShooterState::STOP);
+        m_intake->setState(IntakeState::STOP);
     }
 
-    m_Shooter->shooterStateMachine();
-}
-
-    if(m_joystick->GetRawButton(5)) {
+    if(m_joy_op->GetRawButton(5)) {
         m_hood->setState(HoodState::UP);
-    } else if(m_joystick->GetRawButton(6)) {
+    } else if(m_joy_op->GetRawButton(6)) {
         m_hood->setState(HoodState::DOWN);
     }
 

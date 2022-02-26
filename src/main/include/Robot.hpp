@@ -40,6 +40,13 @@ private:
 
   std::shared_ptr<frc::Compressor> m_compressor;
 
+private:
   DriveBase *m_drive;
   frc::Joystick *m_joy_op;
+  std::shared_ptr<Shooter> m_shooter;
+
+  std::shared_ptr<Hood> m_hood;
+  std::shared_ptr<Intake> m_intake;
+  std::shared_ptr<frc::Compressor> m_compressor;
+
 };
