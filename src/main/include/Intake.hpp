@@ -1,29 +1,33 @@
 #pragma once
 
 #include <ctre/Phoenix.h>
+#include <frc/DoubleSolenoid.h>
 #include <memory>
 #include <frc/smartdashboard/SmartDashboard.h>
 
+#include "rev/CANSparkMax.h"
+
 enum class IntakeState {
-    Init,
-    Stop,
-    Waiting,
-    Intake,
-    Reverse
+    INIT,
+    STOP,
+    WAITING,
+    GO,
+    REVERSE
 };
 
 class Intake {
 public:
 
     Intake();
-    void stop();
-    void waiting();
-    void intake();
-    void reverse();
+    void Init();
+    void Stop();
+    void Waiting();
+    void Go();
+    void Reverse();
 
     void IntakeStateMachine();
 
-    void setState(IntakeState state) {m_LastState = m_State; m_State = state;};
+    void setState(IntakeState state) {m_last_state = m_state; m_state = state;};
     IntakeState getState();
 
     double reverseSpeed = -1.0;
@@ -31,8 +35,11 @@ public:
     double waitingSpeed = 0.1;
 
 private:
-    std::shared_ptr<TalonFX> m_Motor;
+    std::shared_ptr<rev::CANSparkMax> m_intake_spark;
+    std::shared_ptr<frc::DoubleSolenoid> m_left_solenoid;
+    std::shared_ptr<frc::DoubleSolenoid> m_right_solenoid;
 
-    IntakeState m_LastState, m_State = IntakeState::Init;
+
+    IntakeState m_last_state, m_state = IntakeState::INIT;
 
 };

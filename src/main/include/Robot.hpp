@@ -5,8 +5,12 @@
 
 #include <memory>
 #include <frc/TimedRobot.h>
-#include <Shooter.hpp>
 #include <frc/Joystick.h>
+#include <frc/Compressor.h>
+
+#include "Shooter.hpp"
+#include "Hood.hpp"
+#include "Intake.hpp"
 
 class Robot : public frc::TimedRobot {
  public:
@@ -24,8 +28,14 @@ class Robot : public frc::TimedRobot {
 
   void TestInit() override;
   void TestPeriodic() override;
+  
 private:
 
-  std::shared_ptr<Shooter> m_Shooter;
-  std::shared_ptr<frc::Joystick> m_Joystick;
+  std::shared_ptr<Shooter> m_shooter;
+  std::shared_ptr<Hood> m_hood;
+  std::shared_ptr<Intake> m_intake;
+
+  std::shared_ptr<frc::Joystick> m_joystick;
+  std::shared_ptr<frc::Compressor> m_compressor;
+
 };

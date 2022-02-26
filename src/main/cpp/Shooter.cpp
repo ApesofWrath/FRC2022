@@ -15,65 +15,60 @@ Shooter::Shooter() {
     m_motor2->SetInverted(true);
 }
 
-void Shooter::shoot() { // Use GetAlliance() to change RPM if needed
+void Shooter::Shoot() {
     m_motor1->Set(ControlMode::Velocity, shootSpeed);
 }
 
-void Shooter::intake() {
-
-}
-
-void Shooter::stop() {
+void Shooter::Stop() {
     m_motor1->Set(ControlMode::PercentOutput, 0.0f);
 }
 
-void Shooter::waiting() {
+void Shooter::Waiting() {
     m_motor1->Set(ControlMode::PercentOutput, waitingSpeed);
 }
 
-void Shooter::reverse() {
+void Shooter::Reverse() {
     m_motor1->Set(ControlMode::PercentOutput, reverseSpeed);
 }
 
-void Shooter::shooterStateMachine() {
-    frc::SmartDashboard::PutNumber("alliaance", frc::DriverStation::GetAlliance());
+void Shooter::ShooterStateMachine() {
     frc::SmartDashboard::PutNumber("Shooter RPM", sensorUnitsToRPM(m_motor2->GetSelectedSensorVelocity()));
     frc::SmartDashboard::PutNumber("Shooter Pos", sensorUnitsToRPM(m_motor2->GetSelectedSensorPosition()));
     frc::SmartDashboard::PutNumber("Shooter percent out", m_motor1->GetMotorOutputPercent());
 
-    switch(m_State) {
-        case ShooterState::Init:
+    switch(m_state) {
+        case ShooterState::INIT:
             frc::SmartDashboard::PutString("ShooterState", "Init");
-            m_LastState = ShooterState::Init;
-            m_State = ShooterState::Stop;
+            m_last_state = ShooterState::INIT;
+            m_state = ShooterState::STOP;
         break;
-        case ShooterState::Stop:
+        case ShooterState::STOP:
             frc::SmartDashboard::PutString("ShooterState", "Stop");
-            if (m_LastState != ShooterState::Stop) {
-                stop();
+            if (m_last_state != ShooterState::STOP) {
+                Stop();
             }
-            m_LastState = ShooterState::Stop;
+            m_last_state = ShooterState::STOP;
         break;
-        case ShooterState::Shoot:
+        case ShooterState::SHOOT:
             frc::SmartDashboard::PutString("ShooterState", "Shoot");
-            if (m_LastState != ShooterState::Shoot) {
-                shoot();
+            if (m_last_state != ShooterState::SHOOT) {
+                Shoot();
             }
-            m_LastState = ShooterState::Shoot;
+            m_last_state = ShooterState::SHOOT;
         break;
-        case ShooterState::Waiting:
+        case ShooterState::WAITING:
             frc::SmartDashboard::PutString("ShooterState", "Waiting");
-            if (m_LastState != ShooterState::Waiting) {
-                waiting();
+            if (m_last_state != ShooterState::WAITING) {
+                Waiting();
             }
-            m_LastState = ShooterState::Waiting;
+            m_last_state = ShooterState::WAITING;
         break;
-        case ShooterState::Reverse:
+        case ShooterState::REVERSE:
             frc::SmartDashboard::PutString("ShooterState", "Reverse");
-            if (m_LastState != ShooterState::Reverse) {
-                reverse();
+            if (m_last_state != ShooterState::REVERSE) {
+                Reverse();
             }
-            m_LastState = ShooterState::Reverse;
+            m_last_state = ShooterState::REVERSE;
         break;
     }
 }

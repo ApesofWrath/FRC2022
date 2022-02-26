@@ -10,45 +10,45 @@ Hood::Hood() {
 }
 
 // does not move hood
-void Hood::init(){
+void Hood::Init() {
     m_DoubleSolenoid->Set(frc::DoubleSolenoid::Value::kOff);
 }
 
 // moves hood up
-void Hood::up(){
+void Hood::Up() {
     m_DoubleSolenoid->Set(frc::DoubleSolenoid::Value::kForward);
 }
 
 // moves hood down
-void Hood::down(){
+void Hood::Down() {
     m_DoubleSolenoid->Set(frc::DoubleSolenoid::Value::kReverse);
 }
 
 
 void Hood::HoodStateMachine() {
-    switch (m_State) {
-        case HoodState::Init:
+    switch (m_state) {
+        case HoodState::INIT:
             frc::SmartDashboard::PutString("HoodState", "Init");
-            m_LastState = HoodState::Init;
-            m_State = HoodState::Init;
+            m_last_state = HoodState::INIT;
+            m_state = HoodState::INIT;
         break;
-        case HoodState::Up:
+        case HoodState::UP:
             frc::SmartDashboard::PutString("HoodState", "Up");
-            if (m_LastState != HoodState::Up) {
-                up();
+            if (m_last_state != HoodState::UP) {
+                Up();
             }
-            m_LastState = HoodState::Up;
+            m_last_state = HoodState::UP;
         break;
-        case HoodState::Down:
+        case HoodState::DOWN:
             frc::SmartDashboard::PutString("HoodState", "Down");
-            if (m_LastState != HoodState::Down) {
-                down();
+            if (m_last_state != HoodState::DOWN) {
+                Down();
             }
-            m_LastState = HoodState::Down;
+            m_last_state = HoodState::DOWN;
         break;
     }
 }
 
 HoodState Hood::getState() {
-    return m_State;
+    return m_state;
 }

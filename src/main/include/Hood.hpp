@@ -6,9 +6,9 @@
 #include <unordered_map>
 
 enum class HoodState {
-    Init,
-    Up,
-    Down
+    INIT,
+    UP,
+    DOWN
 };
 
 
@@ -16,9 +16,9 @@ class Hood {
 public:
 
     Hood();
-    void init();
-    void up();
-    void down();
+    void Init();
+    void Up();
+    void Down();
     
 
     inline float getTargetPosition() { return m_TargetPosition; };
@@ -26,7 +26,7 @@ public:
 
     void HoodStateMachine();
 
-    inline void setState(HoodState state) {m_LastState = m_State; m_State = state;}
+    inline void setState(HoodState state) {m_last_state = m_state; m_state = state;}
     HoodState getState();
 
 private:
@@ -35,7 +35,7 @@ private:
 
     float m_TargetPosition;
 
-    HoodState m_LastState, m_State = HoodState::Init;
+    HoodState m_last_state, m_state = HoodState::INIT;
 
     const float kP = 0;
     const float kI = 0;

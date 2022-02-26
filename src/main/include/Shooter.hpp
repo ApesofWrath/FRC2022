@@ -13,31 +13,31 @@ constexpr float sensorUnitsToRPM(float su) {
 }
 
 enum class ShooterState {
-    Init,
-    Stop,
-    Shoot,
-    Waiting,
-    Reverse
+    INIT,
+    STOP,
+    SHOOT,
+    WAITING,
+    REVERSE
 };
 
 class Shooter {
 public:
 
     Shooter();
-    void shoot();
-    void intake();
-    void stop();
-    void waiting();
-    void reverse();
+    void Shoot();
+    void Intake();
+    void Stop();
+    void Waiting();
+    void Reverse();
 
-    void shooterStateMachine();
+    void ShooterStateMachine();
 
-    inline void setState(ShooterState state) { m_State = state; };
+    inline void setState(ShooterState state) { m_state = state; };
 
 private:
 
     std::shared_ptr<TalonFX> m_motor1;
     std::shared_ptr<TalonFX> m_motor2;
 
-    ShooterState m_State, m_LastState;
+    ShooterState m_state, m_last_state;
 };
