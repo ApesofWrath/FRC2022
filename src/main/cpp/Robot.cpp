@@ -60,6 +60,7 @@ void Robot::TeleopPeriodic() {
 
     m_hood->HoodStateMachine();
     m_shooter->ShooterStateMachine();
+    m_intake->IntakeStateMachine();
 }
 
 void Robot::DisabledInit() {
