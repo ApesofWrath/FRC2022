@@ -6,25 +6,48 @@ Shooter::Shooter() {
     m_motor2 = std::make_shared<TalonFX>(1);
     m_motor1->ConfigFactoryDefault();
     m_motor2->ConfigFactoryDefault();
+    // m_motor1->ConfigClosedloopRamp(0.25);
+    // m_motor2->ConfigClosedloopRamp(0.25);
     m_motor1->SetNeutralMode(NeutralMode::Coast);
     m_motor2->SetNeutralMode(NeutralMode::Coast);
     m_motor2->Follow(*m_motor1);
     m_motor1->ConfigNominalOutputReverse(0.0);
     m_motor1->Config_kP(0, 0.086076 * 2, 50); // 9.8429E-05 // 0.086076 * 2
     m_motor1->Config_kF(0, 0.04973929, 50);
-    m_motor2->SetInverted(true);
+    // m_motor2->SetInverted(true);
+    // m_motor1->SetInverted(true);
 }
 
 void Shooter::Shoot() {
-    m_motor1->Set(ControlMode::Velocity, shootSpeed);
+    m_motor1->SetInverted(true);
+    m_motor2->SetInverted(true);
+    if(m_motor1->GetSelectedSensorVelocity() <= spooling_speed) {
+        m_motor1->ConfigClosedloopRamp(1.0);
+        m_motor2->ConfigClosedloopRamp(1.0);
+        m_motor1->Set(ControlMode::Velocity, spooling_speed);
+    } else {
+        m_motor1->ConfigClosedloopRamp(0.0);
+        m_motor2->ConfigClosedloopRamp(0.0);
+        m_motor1->Set(ControlMode::Velocity, shootSpeed);
+    }
+    // m_motor1->Set(ControlMode::PercentOutput, 0.1f);
 }
 
+/**
+ * Ramp up to about 300-500 rpm at idle using ClosedLoopRamp
+ * When shooting disable ClosedLoopRamp then set shooting RPM
+ */
+
 void Shooter::Stop() {
-    m_motor1->Set(ControlMode::PercentOutput, 0.0f);
+    m_motor1->ConfigClosedloopRamp(0.5);
+    m_motor2->ConfigClosedloopRamp(0.5);
+    m_motor1->SetInverted(false);
+    m_motor2->SetInverted(false);
+    m_motor1->Set(ControlMode::Velocity, waiting_speed);
 }
 
 void Shooter::Waiting() {
-    m_motor1->Set(ControlMode::PercentOutput, waitingSpeed);
+    // m_motor1->Set(ControlMode::PercentOutput, waitingSpeed);
 }
 
 void Shooter::Reverse() {

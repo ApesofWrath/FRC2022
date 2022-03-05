@@ -6,10 +6,11 @@
 
 constexpr float reverseSpeed = -0.6f;
 constexpr float shootSpeed = 3675.0f * 2048.0 / 600.0; //3200 close // 3675 far - 3700-3730ish <- real
-constexpr float waitingSpeed = .35f;
+constexpr float waiting_speed = 200.0f * 2048.0 / 600.0;
+constexpr float spooling_speed = 1000.0f * 2048.0 / 600.0;
 
 constexpr float sensorUnitsToRPM(float su) {
-    return su / 2048.0 * 600.0;
+    return su / 2048.00 * 600.0;
 }
 
 enum class ShooterState {
