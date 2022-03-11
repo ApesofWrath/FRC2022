@@ -1,11 +1,8 @@
 #include "Hood.hpp"
 #include <frc/smartdashboard/SmartDashboard.h>
 
-// use buttons Y and B for hood adjustment (Button IDs 4 and 2\)
-
 Hood::Hood() {
-    // Use PCM channels 3 and 6 for the hood solenoid
-    m_DoubleSolenoid = new frc::DoubleSolenoid(3, frc::PneumaticsModuleType::CTREPCM, 3, 6);
+    m_DoubleSolenoid = new frc::DoubleSolenoid(61, frc::PneumaticsModuleType::CTREPCM, 3, 4);
 }
 
 // does not move hood
