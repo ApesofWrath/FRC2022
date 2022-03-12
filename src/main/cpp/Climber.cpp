@@ -34,11 +34,17 @@ Climber::Climber()
     arm_talon2->Follow(*arm_talon1);
 }
 
+float Climber::CalculateAngle(float n) {
+    return (n / 360.0) * m_arm_gear_ratio * TICKS_PER_ROTATION;
+}
+
 void Climber::Init()
 {
-    m_solenoid->Set(frc::DoubleSolenoid::Value::kOff);
     climber_talon1->Set(TalonFXControlMode::PercentOutput, 0);
+    climber_talon2->Set(TalonFXControlMode::PercentOutput, 0);
     arm_talon1->Set(TalonFXControlMode::PercentOutput, 0);
+    arm_talon2->Set(TalonFXControlMode::PercentOutput, 0);
+    m_solenoid->Set(frc::DoubleSolenoid::Value::kOff);
 }
 
 void Climber::Stop()
@@ -46,9 +52,9 @@ void Climber::Stop()
     //climber_talon1->Config_kP(0, 0.0005);
     //climber_talon1->Config_kI(0, 0);
     //climber_talon1->Config_kD(0, 0);
-    climber_talon1->Set(TalonFXControlMode::Position, 0.0);
-    arm_talon1->Set(TalonFXControlMode::Position, 0);
-    m_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
+    climber_talon1->Set(TalonFXControlMode::PercentOutput, 0.0);
+    arm_talon1->Set(TalonFXControlMode::PercentOutput, 0.0);
+    m_solenoid->Set(frc::DoubleSolenoid::Value::kForward);
     
 }
 
@@ -58,8 +64,16 @@ void Climber::Up()
     //climber_talon1->Config_kI(0, 0);
     //climber_talon1->Config_kD(0, 0);
     climber_talon1->Set(TalonFXControlMode::Position, 40480.0);
-    arm_talon1->Set(TalonFXControlMode::Position, -307.2);
-    m_solenoid->Set(frc::DoubleSolenoid::Value::kForward);
+    m_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
+}
+
+void Climber::HighUp()
+{
+    climber_talon1->Set(TalonFXControlMode::Position, 40480.0);
+    m_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
+    if (climber_talon1->GetSelectedSensorPosition() >= 40480.0) {
+        arm_talon1->Set(TalonFXControlMode::Position, CalculateAngle(-15.0));
+    }
 }
 
 void Climber::Down()
@@ -67,9 +81,22 @@ void Climber::Down()
     //climber_talon1->Config_kP(0, 0.0005);
     //climber_talon1->Config_kI(0, 0);
     //climber_talon1->Config_kD(0, 0);
-    climber_talon1->Set(TalonFXControlMode::Position, -40480.0);
-    arm_talon1->Set(TalonFXControlMode::Position, 307.2);
-    m_solenoid->Set(frc::DoubleSolenoid::Value::kForward);
+    if (arm_talon1->GetSelectedSensorPosition() >= CalculateAngle(-15.0)) {
+        climber_talon1->Set(TalonFXControlMode::Position, -40480.0);
+        m_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
+    }
+    
+    //arm_talon1->Set(TalonFXControlMode::Position, calculateAngle(15.0));
+}
+
+void Climber::ArmReverse()
+{
+    arm_talon1->Set(TalonFXControlMode::Position, CalculateAngle(-15.0));
+}
+
+void Climber::ArmForward()
+{
+    arm_talon1->Set(TalonFXControlMode::Position, CalculateAngle(15.0));
 }
 
 void Climber::Zero()
@@ -101,7 +128,50 @@ void Climber::climberStateMachine()
     {
         case States::INIT:
             Init();
-            current_state = States::ZERO;
+            current_state = States::ZERO_CLIMB;
+            break;
+        
+        case States::STOP_CLIMB:
+            // if (last_state != States::STOP_CLIMB) {
+            Stop();
+            // }
+            last_state = States::STOP_CLIMB;
+            break;
+
+        case States::UP_CLIMB:
+            // if (last_state != States::UP_CLIMB) {
+            Up();
+            // }
+            last_state = States::UP_CLIMB;
+            break;
+        
+        case States::HIGH_UP:
+            HighUp();
+            last_state = States::HIGH_UP;
+            break;
+
+        case States::DOWN_CLIMB:
+            // if (last_state != States::DOWN_CLIMB) {
+            Down();
+            // }
+            last_state = States::DOWN_CLIMB;
+            break;
+
+        case States::ARM_REVERSE:
+            ArmReverse();
+            last_state = States::ARM_REVERSE;
+            break;
+
+        case States::ARM_FORWARD:
+            ArmForward();
+            last_state = States::ARM_FORWARD;
+            break;            
+
+        case States::ZERO_CLIMB:
+            // if (last_state != States::ZERO_CLIMB) {
+            Zero();
+            // }
+            last_state = States::ZERO_CLIMB;
             break;
     }
 }

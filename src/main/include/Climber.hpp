@@ -11,7 +11,10 @@ enum class States {
     STOP_CLIMB, 
     UP_CLIMB, 
     DOWN_CLIMB, 
-    ZERO_CLIMB
+    ZERO_CLIMB,
+    ARM_REVERSE,
+    ARM_FORWARD,
+    HIGH_UP
 };
 
 class Climber {
@@ -24,6 +27,7 @@ class Climber {
 
         std::shared_ptr<frc::DoubleSolenoid> m_solenoid;
 
+        const float TICKS_PER_ROTATION = 2048.0;
         float m_arm_gear_ratio = 1 / ((12.0 / 74.0) * (74.0 / 18.0) * (18.0 / 72.0) * (72.0 / 18.0) * (18.0 / 76.0));
 
     public:
@@ -33,11 +37,16 @@ class Climber {
 
     Climber();
 
+    float CalculateAngle(float n); 
     void Init();
     void Stop();
     void Up();
     void Down();
+    void ArmReverse();
+    void ArmForward();
     void Zero();
-    void climberStateMachine();   
+    void HighUp();
+    void climberStateMachine();
+    
 };
 
