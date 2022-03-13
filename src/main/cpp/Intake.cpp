@@ -27,12 +27,6 @@ void Intake::Stop() {
 
 void Intake::Waiting() {
     m_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
-    // m_right_solenoid->Set(frc::DoubleSolenoid::Value::kOff);
-    m_intake_spark->Set(-0.20);
-}
-
-void Intake::Reverse() {
-    m_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
     // m_left_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
     m_intake_spark->Set(0.50);
 }
@@ -43,35 +37,35 @@ void Intake::IntakeStateMachine() {
             frc::SmartDashboard::PutString("IntakeState", "Init");
             m_last_state = IntakeState::INIT;
             m_state = IntakeState::INIT;
-        break;
+            break;
         case IntakeState::STOP:
             frc::SmartDashboard::PutString("IntakeState", "Stop");
             if (m_last_state != IntakeState::STOP) {
                 Stop();
             }
             m_last_state = IntakeState::STOP;
-        break;
+            break;
         case IntakeState::WAITING:
             frc::SmartDashboard::PutString("IntakeState", "Waiting");
             if (m_last_state != IntakeState::WAITING) {
                 Waiting();
             }
             m_last_state = IntakeState::WAITING;
-        break;
+            break;
         case IntakeState::GO:
             frc::SmartDashboard::PutString("IntakeState", "Intake");
             if (m_last_state != IntakeState::GO) {
                 Go();
             }
             m_last_state = IntakeState::GO;
-        break;
+            break;
         case IntakeState::REVERSE:
             frc::SmartDashboard::PutString("IntakeState", "Reverse");
             if (m_last_state != IntakeState::REVERSE) {
                 Reverse();
             }
             m_last_state = IntakeState::REVERSE;
-        break;
+            break;
     }
 }
 

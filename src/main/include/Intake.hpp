@@ -18,7 +18,7 @@ enum class IntakeState {
 class Intake {
 public:
 
-    Intake();
+    void Intake();
     void Init();
     void Stop();
     void Waiting();
@@ -38,6 +38,7 @@ private:
     std::shared_ptr<rev::CANSparkMax> m_intake_spark;
     std::shared_ptr<frc::DoubleSolenoid> m_solenoid;
     std::shared_ptr<frc::DoubleSolenoid> m_right_solenoid;
+    
 
 
     IntakeState m_last_state, m_state = IntakeState::INIT;
