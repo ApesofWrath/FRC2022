@@ -18,7 +18,7 @@ enum class IntakeState {
 class Intake {
 public:
 
-    void Intake();
+    Intake();
     void Init();
     void Stop();
     void Waiting();

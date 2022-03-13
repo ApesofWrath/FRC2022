@@ -42,4 +42,4 @@ private:
     frc::DigitalInput input2{2};
 
     IndexerState m_last_state, m_state = IndexerState::INIT;
-}
+};

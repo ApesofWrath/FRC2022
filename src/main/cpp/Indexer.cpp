@@ -84,7 +84,7 @@ void Indexer::IndexerStateMachine()
     case IndexerState::INIT: 
             frc::SmartDashboard::PutString("IndexState", "Init");
             m_last_state = IndexerState::INIT;
-            m_state = IntakeState::INIT;
+            m_state = IndexerState::INIT;
         break;
     case IndexerState::WAITING:
             frc::SmartDashboard::PutString("IndexState", "Waiting");
@@ -120,9 +120,4 @@ void Indexer::IndexerStateMachine()
 IndexerState Indexer::GetState()
 {
     return m_state;
-}
-
-void Indexer::SetState(IndexerState state)
-{
-    m_state = state;
 }

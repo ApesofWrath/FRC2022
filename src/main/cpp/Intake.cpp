@@ -31,6 +31,10 @@ void Intake::Waiting() {
     m_intake_spark->Set(0.50);
 }
 
+void Intake::Reverse() {
+    
+}
+
 void Intake::IntakeStateMachine() {
     switch (m_state) {
         case IntakeState::INIT:
