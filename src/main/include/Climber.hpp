@@ -29,6 +29,8 @@ class Climber {
 
         const float TICKS_PER_ROTATION = 2048.0;
         float m_arm_gear_ratio = 1 / ((12.0 / 74.0) * (74.0 / 18.0) * (18.0 / 72.0) * (72.0 / 18.0) * (18.0 / 76.0));
+        float climb_up_val = 40480.0;
+        float climb_down_val = -40480.0;
 
     public:
 

@@ -29,5 +29,5 @@ class Robot : public frc::TimedRobot {
 
   private:
     std::unique_ptr<frc::Joystick> m_Joystick;
-    std::shared_ptr<Climber> m_Climber;
+    std::shared_ptr<Climber> m_climber;
 };
