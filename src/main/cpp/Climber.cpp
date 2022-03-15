@@ -4,10 +4,10 @@ Climber::Climber()
 {
     m_solenoid = std::make_shared<frc::DoubleSolenoid>(61, frc::PneumaticsModuleType::CTREPCM, 5, 6);
 
-    climber_talon1 = new TalonFX(1);
-    climber_talon2 = new TalonFX(2);
-    arm_talon1 = new TalonFX(3);
-    arm_talon2 = new TalonFX(4);
+    climber_talon1 = new TalonFX(30);
+    climber_talon2 = new TalonFX(31);
+    arm_talon1 = new TalonFX(32);
+    arm_talon2 = new TalonFX(33);
 
     climber_talon1->ConfigFactoryDefault();
     climber_talon2->ConfigFactoryDefault();
