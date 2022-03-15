@@ -75,7 +75,7 @@ void Climber::HighUp()
     climber_talon1->Set(TalonFXControlMode::Position, climb_up_val);
     m_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
     if (climber_talon1->GetSelectedSensorPosition() >= 38480.0) {
-        arm_talon1->Set(TalonFXControlMode::Position, CalculateAngle(-20.0));
+        arm_talon1->Set(TalonFXControlMode::Position, CalculateAngle(back_arm_angle));
     }
 }
 
@@ -96,12 +96,12 @@ void Climber::Down()
 void Climber::ArmReverse()
 {
 
-    arm_talon1->Set(TalonFXControlMode::Position, CalculateAngle(-20.0));
+    arm_talon1->Set(TalonFXControlMode::Position, CalculateAngle(back_arm_angle));
 }
 
 void Climber::ArmForward()
 {
-    arm_talon1->Set(TalonFXControlMode::Position, CalculateAngle(20.0));
+    arm_talon1->Set(TalonFXControlMode::Position, CalculateAngle(forward_arm_angle));
     if (arm_talon1->GetSelectedSensorPosition() >= CalculateAngle(18.0)) {
         current_state = States::HIGH_UP;
     }
