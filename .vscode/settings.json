@@ -77,6 +77,21 @@
     "streambuf": "cpp",
     "thread": "cpp",
     "cinttypes": "cpp",
-    "typeinfo": "cpp"
+    "typeinfo": "cpp",
+    "bit": "cpp",
+    "compare": "cpp",
+    "concepts": "cpp",
+    "ios": "cpp",
+    "xfacet": "cpp",
+    "xhash": "cpp",
+    "xiosbase": "cpp",
+    "xlocale": "cpp",
+    "xlocinfo": "cpp",
+    "xlocnum": "cpp",
+    "xmemory": "cpp",
+    "xstddef": "cpp",
+    "xstring": "cpp",
+    "xtr1common": "cpp",
+    "xutility": "cpp"
   }
 }

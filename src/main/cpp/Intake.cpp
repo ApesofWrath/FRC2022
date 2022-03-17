@@ -1,34 +1,35 @@
 #include "Intake.hpp"
 
 Intake::Intake() {
-    m_solenoid = std::make_shared<frc::DoubleSolenoid>(3, frc::PneumaticsModuleType::CTREPCM, 0, 1);
+    m_solenoid = std::make_shared<frc::DoubleSolenoid>(61, frc::PneumaticsModuleType::CTREPCM, 0, 1);
     // m_right_solenoid = std::make_shared<frc::DoubleSolenoid>(3, frc::PneumaticsModuleType::CTREPCM, 5, 9);
-    m_intake_spark = std::make_shared<rev::CANSparkMax>(9, rev::CANSparkMax::MotorType::kBrushless);
+    // IntakeMotor = std::make_shared<rev::CANSparkMax>(9, rev::CANSparkMax::MotorType::kBrushless);
+    IntakeMotor = new TalonFX(20);
 }
 
 void Intake::Init() {
     m_solenoid->Set(frc::DoubleSolenoid::Value::kOff);
     // m_right_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
-    m_intake_spark->Set(0.00);
+    IntakeMotor->Set(TalonFXControlMode::PercentOutput, 0.00);
 }
 
 void Intake::Go() {
     
     m_solenoid->Set(frc::DoubleSolenoid::Value::kForward);
     // m_right_solenoid->Set(frc::DoubleSolenoid::Value::kForward);
-    m_intake_spark->Set(-0.60); 
+    IntakeMotor->Set(TalonFXControlMode::PercentOutput, 0.25); 
 }
 
 void Intake::Stop() {
     m_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
     // m_right_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
-    m_intake_spark->Set(0.00);
+    IntakeMotor->Set(TalonFXControlMode::PercentOutput, 0.00);
 }
 
 void Intake::Waiting() {
     m_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
     // m_left_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
-    m_intake_spark->Set(0.50);
+    IntakeMotor->Set(TalonFXControlMode::PercentOutput, 0.00);
 }
 
 void Intake::Reverse() {

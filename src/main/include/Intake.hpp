@@ -38,7 +38,8 @@ private:
     std::shared_ptr<rev::CANSparkMax> m_intake_spark;
     std::shared_ptr<frc::DoubleSolenoid> m_solenoid;
     std::shared_ptr<frc::DoubleSolenoid> m_right_solenoid;
-    
+
+    TalonFX *IntakeMotor;
 
 
     IntakeState m_last_state, m_state = IntakeState::INIT;

@@ -6,10 +6,10 @@
 
 void Robot::RobotInit() {
     m_shooter = std::make_shared<Shooter>();
-    // m_hood = std::make_shared<Hood>();
+    m_hood = std::make_shared<Hood>();
     m_intake = std::make_shared<Intake>();
     
-    // m_compressor = std::make_shared<frc::Compressor>(3, frc::PneumaticsModuleType::CTREPCM);
+    m_compressor = std::make_shared<frc::Compressor>(61, frc::PneumaticsModuleType::CTREPCM);
     m_joy_op = new frc::Joystick(0);
     // m_drive = new DriveBase(m_joy_op);
 }
@@ -20,7 +20,7 @@ void Robot::AutonomousInit() {}
 void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
-    // m_compressor->EnableDigital();
+    m_compressor->EnableDigital();
 }
 void Robot::TeleopPeriodic() {
     if (m_joy_op->GetRawButton(1)) {
@@ -38,6 +38,12 @@ void Robot::TeleopPeriodic() {
     }
 //   m_drive->Controller();
 
+    if(m_joy_op->GetRawButton(9)) {
+        m_hood->setState(HoodState::DOWN);
+    } else if (m_joy_op->GetRawButton(10)) {
+        m_hood->setState(HoodState::UP);
+    }
+
     if(m_joy_op->GetRawButton(5)) {
         m_intake->setState(IntakeState::GO);
     } else if(m_joy_op->GetRawButton(6)) {
@@ -46,20 +52,29 @@ void Robot::TeleopPeriodic() {
         m_intake->setState(IntakeState::WAITING);
     }
 
+    if(m_joy_op->GetRawButton(7)) {
+        m_compressor->EnableDigital();
+    } else if(m_joy_op->GetRawButton(8)) {
+        m_compressor->Disable();
+    }
+
+    frc::SmartDashboard::PutNumber("Comp Press:", static_cast<float>(m_compressor->GetPressure()));
+    frc::SmartDashboard::PutBoolean("swithcch", m_compressor->GetPressureSwitchValue());
+
     // if(m_joy_op->GetRawButton(5)) {
     //     m_hood->setState(HoodState::UP);
     // } else if(m_joy_op->GetRawButton(6)) {
     //     m_hood->setState(HoodState::DOWN);
     // }
 
-    // m_hood->HoodStateMachine();
+    m_hood->HoodStateMachine();
     m_shooter->ShooterStateMachine();
     m_intake->IntakeStateMachine();
 }
 
 void Robot::DisabledInit() {
     
-//   m_compressor->Disable();
+  m_compressor->Disable();
 }
 void Robot::DisabledPeriodic() {}
 
