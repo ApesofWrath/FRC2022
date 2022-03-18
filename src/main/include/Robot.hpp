@@ -8,6 +8,11 @@
 #include <frc/Joystick.h>
 
 #include "Drive/DriveBase.hpp"
+#include "Climber.hpp"
+#include "Hood.hpp"
+#include "Intake.hpp"
+#include "Shooter.hpp"
+#include "Indexer.hpp"
 
 class Robot : public frc::TimedRobot {
  public:
@@ -28,6 +33,10 @@ class Robot : public frc::TimedRobot {
 
   private:
   DriveBase *m_drive;
+  Climber *m_climber;
+  Hood *m_hood;
+  Intake *m_intake;
+  Shooter *m_shooter;
+  Indexer *m_indexer;
   frc::Joystick *m_joy_op;
-  WPI_TalonFX *m_talon;
 };
