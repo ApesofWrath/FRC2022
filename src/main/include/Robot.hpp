@@ -9,6 +9,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 #include "Drive/DriveBase.hpp"
+#include "cameraserver/CameraServer.h"
 
 class Robot : public frc::TimedRobot {
  public:

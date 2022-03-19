@@ -7,6 +7,11 @@
 void Robot::RobotInit() {
   m_joy_op = new frc::Joystick(0);
   m_drive = new DriveBase(m_joy_op);
+
+  frc::CameraServer::StartAutomaticCapture();
+  cs::CvSink cvSink = frc::CameraServer::GetVideo();
+  cs::CvSource outputStream = frc::CameraServer::PutVideo("View", 320, 190);
+
 }
 void Robot::RobotPeriodic() {}
 
