@@ -12,7 +12,8 @@ enum class IntakeState {
     STOP,
     WAITING,
     GO,
-    REVERSE
+    REVERSE,
+    INDEXING
 };
 
 class Intake {
@@ -24,21 +25,24 @@ public:
     void Waiting();
     void Go();
     void Reverse();
+    void Indexing();
 
     void IntakeStateMachine();
 
     void setState(IntakeState state) {m_last_state = m_state; m_state = state;};
     IntakeState getState();
 
-    double reverseSpeed = -0.3;
-    double intakeSpeed = 0.3;
-    double waitingSpeed = 0.0;
+    inline bool isExtended() const noexcept { return m_state == IntakeState::GO; };
+
+    double reverseSpeed = -1.0;
+    double intakeSpeed = 1.0;
+    double waitingSpeed = 0.1;
 
 private:
-    std::shared_ptr<TalonFX> m_intake_motor;
     std::shared_ptr<frc::DoubleSolenoid> m_solenoid;
     std::shared_ptr<frc::DoubleSolenoid> m_right_solenoid;
 
+    std::shared_ptr<TalonFX> m_intake_motor;
 
     IntakeState m_last_state, m_state = IntakeState::INIT;
 

@@ -6,6 +6,8 @@
 #include <frc/DoubleSolenoid.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
+#include "Constants.hpp"
+
 enum class States {
     INIT,
     STOP_CLIMB, 
@@ -29,10 +31,14 @@ class Climber {
 
         const float TICKS_PER_ROTATION = 2048.0;
         float m_arm_gear_ratio = 1 / ((12.0 / 74.0) * (74.0 / 18.0) * (18.0 / 72.0) * (72.0 / 18.0) * (18.0 / 76.0));
-        float climb_up_val = 40480.0;
-        float climb_down_val = -40480.0;
+        float climb_up_val = 25.0;
+        float climb_slight_up_val = 5.0;
+        float climb_down_val = 0.0;
         float back_arm_angle = -10.0;
         float forward_arm_angle = 50.0;
+        int m_sequence_counter = 0;
+        float m_pulley_diameter = 1.287;
+        float m_elevator_ratio = (82.0 / 12.0);
 
     public:
 

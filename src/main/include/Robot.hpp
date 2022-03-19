@@ -6,6 +6,7 @@
 
 #include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
+#include <frc/Compressor.h>
 
 #include "Drive/DriveBase.hpp"
 #include "Climber.hpp"
@@ -13,6 +14,7 @@
 #include "Intake.hpp"
 #include "Shooter.hpp"
 #include "Indexer.hpp"
+#include "cameraserver/CameraServer.h"
 
 class Robot : public frc::TimedRobot {
  public:
@@ -32,11 +34,16 @@ class Robot : public frc::TimedRobot {
   void TestPeriodic() override;
 
   private:
+
   DriveBase *m_drive;
   Climber *m_climber;
-  Hood *m_hood;
-  Intake *m_intake;
-  Shooter *m_shooter;
-  Indexer *m_indexer;
+  std::shared_ptr<Shooter> m_shooter;
+  std::shared_ptr<Indexer> m_indexer;
+  std::shared_ptr<Hood> m_hood;
+  std::shared_ptr<Intake> m_intake;
+  std::shared_ptr<frc::Compressor> m_compressor;
   frc::Joystick *m_joy_op;
+
+  bool m_climb_time = false;
+  bool m_climb_mode = false;
 };
