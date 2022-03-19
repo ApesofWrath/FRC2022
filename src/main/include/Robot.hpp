@@ -11,6 +11,7 @@
 #include "Shooter.hpp"
 #include "Hood.hpp"
 #include "Intake.hpp"
+#include "Indexer.hpp"
 
 #include "Drive/DriveBase.hpp"
 #include "Shooter.hpp"
@@ -36,7 +37,7 @@ private:
   DriveBase *m_drive;
   frc::Joystick *m_joy_op;
   std::shared_ptr<Shooter> m_shooter;
-
+  std::shared_ptr<Indexer> m_indexer;
   std::shared_ptr<Hood> m_hood;
   std::shared_ptr<Intake> m_intake;
   std::shared_ptr<frc::Compressor> m_compressor;

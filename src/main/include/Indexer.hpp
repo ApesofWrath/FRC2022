@@ -30,16 +30,16 @@ public:
     IndexerState GetState();
 
     double reverseSpeed = -0.5;
-    double intakeSpeed = 0.25;
+    double intakeSpeed = 0.15;
     double shooterSpeed = 0.25;
-    double waitingSpeed = 0.1;
+    double waitingSpeed = 0.0;
  
 private:
-    std::shared_ptr<TalonFX> m_motor1;
-    std::shared_ptr<TalonFX> m_motor2;
+    std::shared_ptr<TalonFX> m_bottom_motor;
+    std::shared_ptr<TalonFX> m_top_motor;
     
-    frc::DigitalInput input1{1};
-    frc::DigitalInput input2{2};
+    frc::DigitalInput *bottom_input;
+    frc::DigitalInput *top_input;
 
     IndexerState m_last_state, m_state = IndexerState::INIT;
 };

@@ -14,7 +14,7 @@ void Intake::Init() {
 }
 
 void Intake::Go() {
-    
+    frc::SmartDashboard::PutBoolean("debug", true);
     m_solenoid->Set(frc::DoubleSolenoid::Value::kForward);
     // m_right_solenoid->Set(frc::DoubleSolenoid::Value::kForward);
     IntakeMotor->Set(TalonFXControlMode::PercentOutput, 0.25); 
@@ -27,6 +27,7 @@ void Intake::Stop() {
 }
 
 void Intake::Waiting() {
+    frc::SmartDashboard::PutBoolean("debug", false);
     m_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
     // m_left_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
     IntakeMotor->Set(TalonFXControlMode::PercentOutput, 0.00);

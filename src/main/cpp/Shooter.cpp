@@ -1,5 +1,4 @@
 #include <Shooter.hpp>
-#include <UnidirectionalTrapezoidalRamp.hpp>
 #include <frc/smartdashboard/SmartDashboard.h>
 
 Shooter::Shooter() {
@@ -22,16 +21,8 @@ void Shooter::Shoot() {
     m_motor1->SetInverted(true);
     m_motor2->SetInverted(true);
     float currentRPM = sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity());
-    if(m_motor1->GetSelectedSensorVelocity() <= spooling_speed) {
-        m_motor1->Set(ControlMode::Velocity, RPM_TO_TICKS * m_controller->calculateValue(currentRPM));
-        m_motor2->Set(ControlMode::Velocity, RPM_TO_TICKS * m_controller->calculateValue(currentRPM));
-        frc::SmartDashboard::PutBoolean("going", false);
-    } else {
-        m_motor1->Set(ControlMode::Velocity, RPM_TO_TICKS * m_controller->calculateValue(currentRPM));
-        m_motor2->Set(ControlMode::Velocity, RPM_TO_TICKS * m_controller->calculateValue(currentRPM));
-        frc::SmartDashboard::PutBoolean("going", true);
-    }
-    // m_motor1->Set(ControlMode::PercentOutput, 0.1f);
+    m_motor1->Set(ControlMode::Velocity, RPM_TO_TICKS * m_controller->calculateValue(currentRPM));
+    m_motor2->Set(ControlMode::Velocity, RPM_TO_TICKS * m_controller->calculateValue(currentRPM));
 }
 
 /**

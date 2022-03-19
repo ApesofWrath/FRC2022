@@ -129,7 +129,7 @@ public:
 	*/
 	inline double calculateValue(double currentValue) {
 		if (m_IsActive) {
-			return m_Ramp.calculateValueWithFeedback((clock::now() - m_RampStartTime).count(), currentValue);
+			return m_Ramp.calculateValueWithFeedback(std::chrono::duration_cast<duration>(clock::now() - m_RampStartTime).count(), currentValue);
 		}
 
 		return kInactiveValue;

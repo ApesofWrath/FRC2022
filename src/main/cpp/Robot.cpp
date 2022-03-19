@@ -8,7 +8,7 @@ void Robot::RobotInit() {
     m_shooter = std::make_shared<Shooter>();
     m_hood = std::make_shared<Hood>();
     m_intake = std::make_shared<Intake>();
-    
+    m_indexer = std::make_shared<Indexer>();
     m_compressor = std::make_shared<frc::Compressor>(61, frc::PneumaticsModuleType::CTREPCM);
     m_joy_op = new frc::Joystick(0);
     // m_drive = new DriveBase(m_joy_op);
@@ -24,6 +24,7 @@ void Robot::TeleopInit() {
 }
 void Robot::TeleopPeriodic() {
     if (m_joy_op->GetRawButton(1)) {
+        m_indexer->SetState(IndexerState::SHOOT);
         m_shooter->setState(ShooterState::SHOOT);
         // m_intake->setState(IntakeState::GO);
     } else if (m_joy_op->GetRawButton(2)) {
@@ -32,24 +33,19 @@ void Robot::TeleopPeriodic() {
     } else if (m_joy_op->GetRawButton(3)) {
         m_shooter->setState(ShooterState::REVERSE);
         // m_intake->setState(IntakeState::REVERSE);
-    } else {
-        m_shooter->setState(ShooterState::STOP);
-        // m_intake->setState(IntakeState::STOP);
-    }
-//   m_drive->Controller();
-
-    if(m_joy_op->GetRawButton(9)) {
+    } else if(m_joy_op->GetRawButton(9)) {
         m_hood->setState(HoodState::DOWN);
     } else if (m_joy_op->GetRawButton(10)) {
         m_hood->setState(HoodState::UP);
-    }
-
-    if(m_joy_op->GetRawButton(5)) {
+    } else if(m_joy_op->GetRawButton(5)) {
+        m_indexer->SetState(IndexerState::INTAKE);
         m_intake->setState(IntakeState::GO);
     } else if(m_joy_op->GetRawButton(6)) {
         m_intake->setState(IntakeState::STOP);
     } else {
         m_intake->setState(IntakeState::WAITING);
+        m_shooter->setState(ShooterState::STOP);
+        m_indexer->SetState(IndexerState::WAITING);
     }
 
     if(m_joy_op->GetRawButton(7)) {
@@ -66,7 +62,7 @@ void Robot::TeleopPeriodic() {
     // } else if(m_joy_op->GetRawButton(6)) {
     //     m_hood->setState(HoodState::DOWN);
     // }
-
+    m_indexer->IndexerStateMachine();
     m_hood->HoodStateMachine();
     m_shooter->ShooterStateMachine();
     m_intake->IntakeStateMachine();
