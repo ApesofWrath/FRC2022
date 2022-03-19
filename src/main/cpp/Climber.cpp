@@ -36,7 +36,7 @@ Climber::Climber()
 
 float Climber::CalculateAngle(float n)
 {
-    return (n / 360.0) * m_arm_gear_ratio * TICKS_PER_ROTATION;
+    return (n / 360.0) * m_arm_gear_ratio * TICKS_PER_ROT;
 }
 
 void Climber::Init()
