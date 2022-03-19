@@ -40,7 +40,7 @@ float Climber::CalculateAngle(float n)
 }
 
 float Climber::CalculateHeight(float n) {
-    return (n / (m_pulley_diameter * PI)) * TICKS_PER_ROT * m_elevator_ratio;
+    return n * TICKS_PER_ROT * m_elevator_ratio;
 }
 
 void Climber::Init()

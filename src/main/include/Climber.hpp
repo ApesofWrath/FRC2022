@@ -35,10 +35,10 @@ class Climber {
         const float m_elevator_ratio = (82.0 / 12.0);
         const float m_pulley_diameter = 1.287;
         
-        const float climb_up = 25.0;
-        const float climb_slight_up = 5.0;
+        const float climb_up = 5.0; // 25 in
+        const float climb_slight_up = 1.0; // 5 in 
         const float climb_down = 0.0;
-        const float climb_offset = 1;
+        const float climb_offset = 0.2; // 1 in
 
         const float back_arm_angle = -10.0;
         const float forward_arm_angle = 50.0;
