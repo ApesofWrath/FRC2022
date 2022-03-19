@@ -1,17 +1,23 @@
 #pragma once
 
 #include <ctre/Phoenix.h>
+#include <UnidirectionalTrapezoidalRamp.hpp>
 #include <frc/DriverStation.h>
 #include <memory>
 
 constexpr float reverseSpeed = -0.6f;
 constexpr float shootSpeed = 3675.0f * 2048.0 / 600.0; //3200 close // 3675 far - 3700-3730ish <- real
-constexpr float waiting_speed = 200.0f * 2048.0 / 600.0;
-constexpr float spooling_speed = 1000.0f * 2048.0 / 600.0;
+constexpr float waiting_speed = 200.0 * 2048.0 / 600.0;
+constexpr float spooling_speed = 1000.0 * 2048.0 / 600.0;
+
+constexpr float endpoint = 3675.0f;
+constexpr float rampTime = 1.25f;
 
 constexpr float sensorUnitsToRPM(float su) {
     return su / 2048.00 * 600.0;
 }
+
+constexpr float RPM_TO_TICKS = 2048.0 / 600.0;
 
 enum class ShooterState {
     INIT,
@@ -39,6 +45,7 @@ private:
 
     std::shared_ptr<TalonFX> m_motor1;
     std::shared_ptr<TalonFX> m_motor2;
+    UnidirectionalTrapezoidalRampController *m_controller;
 
     ShooterState m_state, m_last_state;
 };

@@ -1,13 +1,13 @@
 #include <Shooter.hpp>
+#include <UnidirectionalTrapezoidalRamp.hpp>
 #include <frc/smartdashboard/SmartDashboard.h>
 
 Shooter::Shooter() {
     m_motor1 = std::make_shared<TalonFX>(1);
     m_motor2 = std::make_shared<TalonFX>(2);
+    m_controller = new UnidirectionalTrapezoidalRampController(endpoint, rampTime);
     m_motor1->ConfigFactoryDefault();
     m_motor2->ConfigFactoryDefault();
-    // m_motor1->ConfigClosedloopRamp(0.25);
-    // m_motor2->ConfigClosedloopRamp(0.25);
     m_motor1->SetNeutralMode(NeutralMode::Coast);
     m_motor2->SetNeutralMode(NeutralMode::Coast);
     m_motor2->Follow(*m_motor1);
@@ -21,15 +21,14 @@ Shooter::Shooter() {
 void Shooter::Shoot() {
     m_motor1->SetInverted(true);
     m_motor2->SetInverted(true);
+    float currentRPM = sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity());
     if(m_motor1->GetSelectedSensorVelocity() <= spooling_speed) {
-        m_motor1->ConfigClosedloopRamp(1.0);
-        m_motor2->ConfigClosedloopRamp(1.0);
-        m_motor1->Set(ControlMode::Velocity, spooling_speed);
+        m_motor1->Set(ControlMode::Velocity, RPM_TO_TICKS * m_controller->calculateValue(currentRPM));
+        m_motor2->Set(ControlMode::Velocity, RPM_TO_TICKS * m_controller->calculateValue(currentRPM));
         frc::SmartDashboard::PutBoolean("going", false);
     } else {
-        m_motor1->ConfigClosedloopRamp(0.0);
-        m_motor2->ConfigClosedloopRamp(0.0);
-        m_motor1->Set(ControlMode::Velocity, shootSpeed);
+        m_motor1->Set(ControlMode::Velocity, RPM_TO_TICKS * m_controller->calculateValue(currentRPM));
+        m_motor2->Set(ControlMode::Velocity, RPM_TO_TICKS * m_controller->calculateValue(currentRPM));
         frc::SmartDashboard::PutBoolean("going", true);
     }
     // m_motor1->Set(ControlMode::PercentOutput, 0.1f);
@@ -63,6 +62,10 @@ void Shooter::ShooterStateMachine() {
     frc::SmartDashboard::PutNumber("Shooter percent out", m_motor1->GetMotorOutputPercent());
     frc::SmartDashboard::PutBoolean("speed?", (m_motor1->GetSelectedSensorVelocity() <= spooling_speed));
 
+    if((m_last_state == ShooterState::SHOOT) && (m_state != ShooterState::SHOOT)) {
+        m_controller->exit();
+    }
+
     switch(m_state) {
         case ShooterState::INIT:
             frc::SmartDashboard::PutString("ShooterState", "Init");
@@ -79,6 +82,7 @@ void Shooter::ShooterStateMachine() {
         case ShooterState::SHOOT:
             frc::SmartDashboard::PutString("ShooterState", "Shoot");
             if (m_last_state != ShooterState::SHOOT) {
+                m_controller->enter(sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity()));
                 Shoot();
             }
             m_last_state = ShooterState::SHOOT;
