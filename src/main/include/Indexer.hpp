@@ -4,7 +4,8 @@
 #include <memory>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/DigitalInput.h>
-
+#include "Shooter.hpp"
+#include "Intake.hpp"
 
 enum class IndexerState {
     INIT,
@@ -17,7 +18,7 @@ enum class IndexerState {
 class Indexer {
 public:
 
-    Indexer();
+    Indexer(const std::shared_ptr<Shooter>& shooter, const std::shared_ptr<::Intake>& intake);
     void Init();
     void Waiting();
     void Reverse();
@@ -42,4 +43,7 @@ private:
     frc::DigitalInput *top_input;
 
     IndexerState m_last_state, m_state = IndexerState::INIT;
+    std::shared_ptr<Shooter> m_shooter;
+    std::shared_ptr<::Intake> m_intake;
 };
+

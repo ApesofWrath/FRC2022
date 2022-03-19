@@ -8,7 +8,7 @@ void Robot::RobotInit() {
     m_shooter = std::make_shared<Shooter>();
     m_hood = std::make_shared<Hood>();
     m_intake = std::make_shared<Intake>();
-    m_indexer = std::make_shared<Indexer>();
+    m_indexer = std::make_shared<Indexer>(m_shooter, m_intake);
     m_compressor = std::make_shared<frc::Compressor>(61, frc::PneumaticsModuleType::CTREPCM);
     m_joy_op = new frc::Joystick(0);
     // m_drive = new DriveBase(m_joy_op);
@@ -43,7 +43,8 @@ void Robot::TeleopPeriodic() {
     } else if(m_joy_op->GetRawButton(6)) {
         m_intake->setState(IntakeState::STOP);
     } else {
-        m_intake->setState(IntakeState::WAITING);
+        if (m_intake->getState() != IntakeState::INDEXING)
+            m_intake->setState(IntakeState::WAITING);
         m_shooter->setState(ShooterState::STOP);
         m_indexer->SetState(IndexerState::WAITING);
     }

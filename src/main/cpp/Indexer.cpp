@@ -9,7 +9,7 @@
 // Shoot top: move top ball, then move bottom ball to top
 
 
-Indexer::Indexer() {
+Indexer::Indexer(const std::shared_ptr<Shooter>& shooter, const std::shared_ptr<::Intake>& intake) : m_shooter(shooter), m_intake(intake) {
     m_bottom_motor = std::make_shared<TalonFX>(26);
     m_top_motor = std::make_shared<TalonFX>(25);
 
@@ -71,24 +71,32 @@ void Indexer::Intake() {
 }
 
 void Indexer::Shoot(){
-    //run top motor to push 1st ball into shooter
-    if (top_input->Get()) {
-        m_top_motor->Set(ControlMode::PercentOutput, shooterSpeed);
+    if (m_shooter->readyToShoot()) {
+        //run top motor to push 1st ball into shooter
+        if (top_input->Get()) {
+            m_bottom_motor->Set(ControlMode::PercentOutput, 0);
+            m_top_motor->Set(ControlMode::PercentOutput, shooterSpeed);
+        }
     }
     //turn off top motor
-    m_bottom_motor->Set(ControlMode::PercentOutput, 0);
     //then run bottom motor to push other ball into top slot
     if (bottom_input->Get() && !top_input->Get()) {
-        m_bottom_motor->Set(ControlMode::PercentOutput, shooterSpeed);   
-    } else {
-
+        m_top_motor->Set(ControlMode::PercentOutput, 0);
+        m_bottom_motor->Set(ControlMode::PercentOutput, shooterSpeed);
+        if (!m_intake->isExtended()) {
+            m_intake->setState(IntakeState::INDEXING);
+        }
     }
 }
 
 void Indexer::IndexerStateMachine()
 {
-    frc::SmartDashboard::PutBoolean("bot", bottom_input->Get());
-    frc::SmartDashboard::PutBoolean("top", top_input->Get());
+
+    if (m_last_state == IndexerState::SHOOT && m_state != IndexerState::SHOOT && m_intake->getState() == IntakeState::INDEXING) {
+        m_intake->setState(IntakeState::WAITING);
+    }
+    frc::SmartDashboard::PutBoolean("bottom_inp", bottom_input->Get());
+    frc::SmartDashboard::PutBoolean("top_inp", top_input->Get());
     switch (m_state) {
     case IndexerState::INIT: 
             frc::SmartDashboard::PutString("IndexState", "Init");
@@ -111,16 +119,12 @@ void Indexer::IndexerStateMachine()
             break;
     case IndexerState::INTAKE:
             frc::SmartDashboard::PutString("IndexState", "One Ball");
-            // if (m_last_state != IndexerState::INTAKE) {
-                Intake();
-            // }
+            Intake();
             m_last_state = IndexerState::INTAKE;
             break;
     case IndexerState::SHOOT:
             frc::SmartDashboard::PutString("IndexState", "Shoot");
-            if (m_last_state != IndexerState::SHOOT) {
-                Shoot();
-            }
+            Shoot();
             m_last_state = IndexerState::SHOOT;
             break;
     }

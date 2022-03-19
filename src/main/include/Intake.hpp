@@ -12,7 +12,8 @@ enum class IntakeState {
     STOP,
     WAITING,
     GO,
-    REVERSE
+    REVERSE,
+    INDEXING
 };
 
 class Intake {
@@ -24,6 +25,7 @@ public:
     void Waiting();
     void Go();
     void Reverse();
+    void Indexing();
 
     void IntakeStateMachine();
 
@@ -33,6 +35,8 @@ public:
     double reverseSpeed = -1.0;
     double intakeSpeed = 1.0;
     double waitingSpeed = 0.1;
+
+    inline bool isExtended() const noexcept { return m_state == IntakeState::GO; };
 
 private:
     std::shared_ptr<rev::CANSparkMax> m_intake_spark;

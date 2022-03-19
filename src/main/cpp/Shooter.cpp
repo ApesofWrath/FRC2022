@@ -20,9 +20,15 @@ Shooter::Shooter() {
 void Shooter::Shoot() {
     m_motor1->SetInverted(true);
     m_motor2->SetInverted(true);
-    float currentRPM = sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity());
-    m_motor1->Set(ControlMode::Velocity, RPM_TO_TICKS * m_controller->calculateValue(currentRPM));
-    m_motor2->Set(ControlMode::Velocity, RPM_TO_TICKS * m_controller->calculateValue(currentRPM));
+    float currentRPM = sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity()) / shooterGearRatio;
+    m_motor1->Set(ControlMode::Velocity, RPM_TO_TICKS * shooterGearRatio * m_controller->calculateValue(currentRPM));
+    m_motor2->Set(ControlMode::Velocity, RPM_TO_TICKS * shooterGearRatio * m_controller->calculateValue(currentRPM));
+    frc::SmartDashboard::PutNumber("Shooter RPM", currentRPM);
+}
+
+bool Shooter::readyToShoot() {
+    float currentRPM = sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity()) / shooterGearRatio;
+    return std::abs(endpoint  - currentRPM) <= shootingSpeedTolerance;
 }
 
 /**
@@ -48,7 +54,8 @@ void Shooter::Reverse() {
 }
 
 void Shooter::ShooterStateMachine() {
-    frc::SmartDashboard::PutNumber("Shooter RPM", m_motor1->GetSelectedSensorVelocity());
+    
+    // frc::SmartDashboard::PutNumber("Shooter RPM", m_motor1->GetSelectedSensorVelocity());
     frc::SmartDashboard::PutNumber("Shooter Pos", sensorUnitsToRPM(m_motor2->GetSelectedSensorPosition()));
     frc::SmartDashboard::PutNumber("Shooter percent out", m_motor1->GetMotorOutputPercent());
     frc::SmartDashboard::PutBoolean("speed?", (m_motor1->GetSelectedSensorVelocity() <= spooling_speed));
@@ -73,9 +80,9 @@ void Shooter::ShooterStateMachine() {
         case ShooterState::SHOOT:
             frc::SmartDashboard::PutString("ShooterState", "Shoot");
             if (m_last_state != ShooterState::SHOOT) {
-                m_controller->enter(sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity()));
-                Shoot();
+                m_controller->enter(sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity()) / shooterGearRatio);
             }
+            Shoot();
             m_last_state = ShooterState::SHOOT;
         break;
         case ShooterState::WAITING:

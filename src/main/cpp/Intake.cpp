@@ -33,6 +33,13 @@ void Intake::Waiting() {
     IntakeMotor->Set(TalonFXControlMode::PercentOutput, 0.00);
 }
 
+void Intake::Indexing() {
+    frc::SmartDashboard::PutBoolean("debug", false);
+    m_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
+    // m_left_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
+    IntakeMotor->Set(TalonFXControlMode::PercentOutput, 0.10);
+}
+
 void Intake::Reverse() {
     
 }
@@ -71,6 +78,13 @@ void Intake::IntakeStateMachine() {
                 Reverse();
             }
             m_last_state = IntakeState::REVERSE;
+            break;
+        case IntakeState::INDEXING:
+            frc::SmartDashboard::PutString("IntakeState", "Indexing");
+            if (m_last_state != IntakeState::INDEXING) {
+                Indexing();
+            }
+            m_last_state = IntakeState::INDEXING;
             break;
     }
 }
