@@ -6,7 +6,7 @@
 #include <frc/DoubleSolenoid.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
-#include "Constants.h"
+#include "Constants.hpp"
 
 enum class States {
     INIT,
@@ -29,16 +29,23 @@ class Climber {
 
         std::shared_ptr<frc::DoubleSolenoid> m_solenoid;
 
-        // const float TICKS_PER_ROTATION = 2048.0;
-        float m_arm_gear_ratio = 1 / ((12.0 / 74.0) * (74.0 / 18.0) * (18.0 / 72.0) * (72.0 / 18.0) * (18.0 / 76.0));
-        float climb_up_val = 25.0;
-        float climb_slight_up_val = 5.0;
-        float climb_down_val = 0.0;
-        float back_arm_angle = -10.0;
-        float forward_arm_angle = 50.0;
+        const float TICKS_PER_ROT = 2048.0;
+        const float PI = 3.1415;
+        const float m_arm_ratio = 1 / ((12.0 / 74.0) * (74.0 / 18.0) * (18.0 / 72.0) * (72.0 / 18.0) * (18.0 / 76.0));
+        const float m_elevator_ratio = (82.0 / 12.0);
+        const float m_pulley_diameter = 1.287;
+        
+        const float climb_up = 25.0;
+        const float climb_slight_up = 5.0;
+        const float climb_down = 0.0;
+        const float climb_offset = 1;
+
+        const float back_arm_angle = -10.0;
+        const float forward_arm_angle = 50.0;
+        const float arm_offset = 1.0;
+
         int m_sequence_counter = 0;
-        float m_pulley_diameter = 1.287;
-        float m_elevator_ratio = (82.0 / 12.0);
+
 
     public:
 
@@ -48,6 +55,7 @@ class Climber {
     Climber();
 
     float CalculateAngle(float n); 
+    float CalculateHeight(float n);
     void Init();
     void Stop();
     void Up();
