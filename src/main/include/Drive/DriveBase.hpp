@@ -12,6 +12,8 @@ class DriveBase {
 public:
     DriveBase(frc::Joystick *joy_op, AHRS* ahrs);
     void Controller();
+    void SetBrake();
+    void SetCoast();
 
     /**
      * Makes sure that the target left and right RPM don't

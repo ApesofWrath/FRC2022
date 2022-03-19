@@ -180,3 +180,17 @@ void DriveBase::ChecklrLimits() {
             target_r = -MAX_Y_RPM;
         }
 }
+
+void DriveBase::SetCoast() {
+    m_falcon_left1->SetNeutralMode(NeutralMode::Coast);
+    m_falcon_left2->SetNeutralMode(NeutralMode::Coast);
+    m_falcon_right1->SetNeutralMode(NeutralMode::Coast);
+    m_falcon_right2->SetNeutralMode(NeutralMode::Coast);
+}
+
+void DriveBase::SetBrake() {
+    m_falcon_left1->SetNeutralMode(NeutralMode::Brake);
+    m_falcon_left2->SetNeutralMode(NeutralMode::Brake);
+    m_falcon_right1->SetNeutralMode(NeutralMode::Brake);
+    m_falcon_right2->SetNeutralMode(NeutralMode::Brake);
+}

@@ -24,7 +24,7 @@ void Robot::RobotPeriodic() {
 }
 
 void Robot::AutonomousInit() {
-
+  m_drive->SetBrake();
   m_Container->m_autoSelected = m_Container->m_chooser.GetSelected();
 
   if (m_AutonomousCommand != nullptr) {
@@ -57,13 +57,17 @@ void Robot::TeleopInit() {
     m_AutonomousCommand->Cancel();
     m_AutonomousCommand = nullptr;
   }
+  m_drive->SetCoast();
+
 
 }
 void Robot::TeleopPeriodic() {
   m_drive->Controller();
 }
 
-void Robot::DisabledInit() {}
+void Robot::DisabledInit() {
+  m_drive->SetBrake();
+}
 void Robot::DisabledPeriodic() {}
 
 void Robot::TestInit() {}

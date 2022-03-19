@@ -5,13 +5,13 @@
 #include <units/angle.h>
 
 const double MAX_Y_RPM = 595.0; // placeholder
-const double MAX_YAW_RATE = 11.4; //placeholder
+const double MAX_YAW_RATE = 9.8; //11.4 -> 9.8
 
-const double K_P_L = 0.0001558;
-const double K_P_R = 0.000103;
+const double K_P_L = 0.00014286; //0.0001558
+const double K_P_R = 0.00014286; //0.000103
 const double K_D_L = 0;
 const double K_D_R = 0;
-const double K_P_YAW = 0.08;
+const double K_P_YAW = 0.8;
 const double K_D_YAW = 0;
 
 const double MAX_Y_RPM_L_FORWARDS = 600.0;

@@ -6,10 +6,17 @@
 #include "Auton/Auton.hpp"
 
 const std::string kAutoNameDefault = "Default";
-const std::string kAutoNameCustom = "My Auto";
-const std::string kAutoName_TestPath = "TestPath";
-const std::string kAutoName_UnnamedPath = "UnnamedPath";
-const std::string kAutoName_Unnamed = "Unnamed";
+const std::string kAutoNameCustom = "My Auto";  
+const std::string kAutoName_TestPath = "Test Path";
+const std::string kAutoName_CIL = "Cross Initial Line";
+const std::string kAutoName_ShootPreload = "Shoot Preload";
+
+enum Bozo {
+        CROSS_INIT_LINE,
+        SHOOT_PRELOAD,
+        THREE_BALL,
+        FIVE_BALL
+};
 
 class RobotContainer {
  public:
