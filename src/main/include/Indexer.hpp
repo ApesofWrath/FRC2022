@@ -11,7 +11,11 @@ enum class IndexerState {
     WAITING,
     REVERSE,
     INTAKE,
-    SHOOT
+    SHOOT,
+    MANUALTOP,
+    MANUALBOTTOM,
+    MANUALBOTH,
+    STOP
 };
 
 class Indexer {
@@ -23,6 +27,10 @@ public:
     void Reverse();
     void Intake();
     void Shoot();
+    void ManualTop();
+    void ManualBottom();
+    void ManualBoth();
+    void Stop();
 
     void IndexerStateMachine();
     
@@ -35,11 +43,11 @@ public:
     double waitingSpeed = 0.1;
  
 private:
-    std::shared_ptr<TalonFX> m_motor1;
-    std::shared_ptr<TalonFX> m_motor2;
+    std::shared_ptr<TalonFX> m_top_indexer;
+    std::shared_ptr<TalonFX> m_bottom_indexer;
     
-    frc::DigitalInput input1{1};
-    frc::DigitalInput input2{2};
+    frc::DigitalInput top_sensor{1};
+    frc::DigitalInput bottom_sensor{2};
 
     IndexerState m_last_state, m_state = IndexerState::INIT;
 };

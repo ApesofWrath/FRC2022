@@ -36,11 +36,6 @@ private:
     float m_TargetPosition;
 
     HoodState m_last_state, m_state = HoodState::INIT;
-
-    const float kP = 0;
-    const float kI = 0;
-    const float kD = 0;
-    const float kF = 0;
-
+    
 };
 

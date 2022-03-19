@@ -22,7 +22,7 @@ class Climber {
 
         TalonFX *climber_talon1;
         TalonFX *climber_talon2;
-        TalonFX *arm_talon1; // 12:74:18:76:18:72 = 6.333333333????
+        TalonFX *arm_talon1; // 12:74:18:72:18:76 = 6.333333333????
         TalonFX *arm_talon2;
 
         std::shared_ptr<frc::DoubleSolenoid> m_solenoid;
@@ -31,6 +31,8 @@ class Climber {
         float m_arm_gear_ratio = 1 / ((12.0 / 74.0) * (74.0 / 18.0) * (18.0 / 72.0) * (72.0 / 18.0) * (18.0 / 76.0));
         float climb_up_val = 40480.0;
         float climb_down_val = -40480.0;
+        float back_arm_angle = -10.0;
+        float forward_arm_angle = 50.0;
 
     public:
 
@@ -51,4 +53,3 @@ class Climber {
     void climberStateMachine();
     
 };
-

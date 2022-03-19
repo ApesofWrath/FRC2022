@@ -30,12 +30,12 @@ public:
     void setState(IntakeState state) {m_last_state = m_state; m_state = state;};
     IntakeState getState();
 
-    double reverseSpeed = -1.0;
-    double intakeSpeed = 1.0;
-    double waitingSpeed = 0.1;
+    double reverseSpeed = -0.3;
+    double intakeSpeed = 0.3;
+    double waitingSpeed = 0.0;
 
 private:
-    std::shared_ptr<rev::CANSparkMax> m_intake_spark;
+    std::shared_ptr<TalonFX> m_intake_motor;
     std::shared_ptr<frc::DoubleSolenoid> m_solenoid;
     std::shared_ptr<frc::DoubleSolenoid> m_right_solenoid;
 

@@ -58,8 +58,15 @@ void Robot::TeleopPeriodic()
   }
   else if (m_joy_op->GetRawButton(10)) {
   
+  } else if (m_joy_op->GetPOV() == 0) {
+    m_indexer->SetState(IndexerState::MANUALTOP);
+  } else if (m_joy_op->GetPOV() == 180) {
+    m_indexer->SetState(IndexerState::MANUALBOTTOM);
+  } else if (m_joy_op->GetPOV() == 270) {
+    m_indexer->SetState(IndexerState::MANUALBOTH);
   } else {
     m_intake->setState(IntakeState::WAITING);
+    m_indexer->SetState(IndexerState::INTAKE);
     m_shooter->setState(ShooterState::WAITING);
   }
 
