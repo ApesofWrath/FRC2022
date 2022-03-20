@@ -51,7 +51,7 @@ private:
 
     std::shared_ptr<TalonFX> m_motor1;
     std::shared_ptr<TalonFX> m_motor2;
-    UnidirectionalTrapezoidalRampController *m_controller;
+    UnidirectionalTrapezoidalRampController m_controller;
 
     ShooterState m_state, m_last_state;
 };

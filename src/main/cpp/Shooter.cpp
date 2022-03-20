@@ -1,7 +1,7 @@
 #include <Shooter.hpp>
 #include <frc/smartdashboard/SmartDashboard.h>
 
-Shooter::Shooter() {
+Shooter::Shooter() : m_controller(endpoint, rampTime) {
     m_motor1 = std::make_shared<TalonFX>(1);
     m_motor2 = std::make_shared<TalonFX>(2);
     m_motor1->ConfigFactoryDefault();
@@ -22,8 +22,8 @@ void Shooter::Shoot() {
     m_motor1->SetInverted(true);
     m_motor2->SetInverted(true);
     float currentRPM = sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity()) / shooterGearRatio;
-    m_motor1->Set(ControlMode::Velocity, RPM_TO_TICKS * shooterGearRatio * m_controller->calculateValue(currentRPM));
-    m_motor2->Set(ControlMode::Velocity, RPM_TO_TICKS * shooterGearRatio * m_controller->calculateValue(currentRPM));
+    m_motor1->Set(ControlMode::Velocity, RPM_TO_TICKS * shooterGearRatio * m_controller.calculateValue(currentRPM));
+    m_motor2->Set(ControlMode::Velocity, RPM_TO_TICKS * shooterGearRatio * m_controller.calculateValue(currentRPM));
     frc::SmartDashboard::PutNumber("Shooter RPM", currentRPM);
 }
     // m_motor1->Set(ControlMode::PercentOutput, 0.1f);
@@ -62,7 +62,7 @@ void Shooter::ShooterStateMachine() {
     frc::SmartDashboard::PutBoolean("speed?", (m_motor1->GetSelectedSensorVelocity() <= spooling_speed));
 
     if((m_last_state == ShooterState::SHOOT) && (m_state != ShooterState::SHOOT)) {
-        m_controller->exit();
+        m_controller.exit();
     }
 
     switch(m_state) {
@@ -81,7 +81,7 @@ void Shooter::ShooterStateMachine() {
         case ShooterState::SHOOT:
             frc::SmartDashboard::PutString("ShooterState", "Shoot");
             if (m_last_state != ShooterState::SHOOT) {
-                m_controller->enter(sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity()) / shooterGearRatio);
+                m_controller.enter(sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity()) / shooterGearRatio);
             }
             Shoot();
             m_last_state = ShooterState::SHOOT;

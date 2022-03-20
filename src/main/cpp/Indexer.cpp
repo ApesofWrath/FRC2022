@@ -19,8 +19,8 @@ Indexer::Indexer(const std::shared_ptr<Shooter>& shooter, const std::shared_ptr<
     m_bottom_motor->SetNeutralMode(NeutralMode::Brake);
     m_top_motor->SetNeutralMode(NeutralMode::Brake);
 
-    bottom_input = new frc::DigitalInput(0);
-    top_input = new frc::DigitalInput(1);
+    bottom_input = new frc::DigitalInput(1);
+    top_input = new frc::DigitalInput(0);
 
     //use percentoutput instead of pid
 }
@@ -100,7 +100,7 @@ void Indexer::Shoot(){
 void Indexer::IndexerStateMachine()
 {
     if (m_last_state == IndexerState::SHOOT && m_state != IndexerState::SHOOT && m_intake->getState() == IntakeState::INDEXING) {
-        m_intake->setState(IntakeState::WAITING);
+        m_intake->setState(IntakeState::STOP);
     }
     frc::SmartDashboard::PutBoolean("bot", bottom_input->Get());
     frc::SmartDashboard::PutBoolean("top", top_input->Get());

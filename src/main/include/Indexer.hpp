@@ -39,10 +39,10 @@ public:
     void SetState(IndexerState state) {m_last_state = m_state; m_state = state;};
     IndexerState GetState();
 
-    double reverseSpeed = -0.5;
-    double intakeSpeed = 900.0 * 2048.0 / 600;
-    double shooterSpeed = 900.0 * 2048.0 / 600;
-    double waitingSpeed = 450.0 * 2048.0 / 600;
+    double reverseSpeed = -0.15;
+    double intakeSpeed = 0.15;
+    double shooterSpeed = 0.15;
+    double waitingSpeed = 0.0;
  
 private:
     std::shared_ptr<TalonFX> m_top_motor;

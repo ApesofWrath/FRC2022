@@ -10,7 +10,6 @@
 enum class IntakeState {
     INIT,
     STOP,
-    WAITING,
     GO,
     REVERSE,
     INDEXING

@@ -63,6 +63,8 @@ void Robot::TeleopPeriodic()
       m_shooter->setState(ShooterState::WAITING);
     }
     else if (m_joy_op->GetRawButton(6)) {
+      m_shooter->setState(ShooterState::SHOOT);
+      m_indexer->SetState(IndexerState::SHOOT);
       
     }
     else if (m_joy_op->GetRawButton(7)) {
@@ -90,13 +92,11 @@ void Robot::TeleopPeriodic()
       m_indexer->SetState(IndexerState::MANUALBOTH);
     }
     else if(m_joy_op->GetRawAxis(3) > 0.5) { // Trigger Intake, positive right negative left 
-      m_shooter->setState(ShooterState::SHOOT);
-      m_indexer->SetState(IndexerState::SHOOT);
     }
     else
     {
       if (m_intake->getState() != IntakeState::INDEXING)
-            m_intake->setState(IntakeState::WAITING);
+            m_intake->setState(IntakeState::STOP);
       m_indexer->SetState(IndexerState::WAITING);
       m_shooter->setState(ShooterState::STOP);
     }
