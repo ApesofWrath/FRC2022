@@ -16,6 +16,8 @@ public:
      * exceed the maximum velocity
      */
     void ChecklrLimits();
+    void SetBrakeNeutral();
+    void SetCoastNeutral();
 
     double target_l = 0, 
         target_r = 0, 

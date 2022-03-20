@@ -21,25 +21,31 @@ DriveBase::DriveBase(frc::Joystick *joy_op) {
     m_falcon_left2->Follow(*m_falcon_left1);
     m_falcon_right2->Follow(*m_falcon_right1);
 
-    // m_falcon_right1->ConfigVoltageCompSaturation(12.0);
-    // m_falcon_right1->EnableVoltageCompensation(true);
+    m_falcon_left1->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 30, 30, 10));
+    m_falcon_left2->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 30, 30, 10));
+    m_falcon_right1->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 30, 30, 10));
+    m_falcon_right2->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 30, 30, 10));
 
-    // m_falcon_left1->ConfigVoltageCompSaturation(12.0);
-    // m_falcon_left1->EnableVoltageCompensation(true);
+    m_falcon_left1->ConfigOpenloopRamp(0.15, 0);
+    m_falcon_left2->ConfigOpenloopRamp(0.15, 0);
+    m_falcon_right1->ConfigOpenloopRamp(0.15, 0);
+    m_falcon_right2->ConfigOpenloopRamp(0.15, 0);
 
-    // m_falcon_right2->ConfigVoltageCompSaturation(12.0);
-    // m_falcon_right2->EnableVoltageCompensation(true);
+    m_falcon_right1->ConfigVoltageCompSaturation(12.0);
+    m_falcon_right1->EnableVoltageCompensation(true);
+
+    m_falcon_left1->ConfigVoltageCompSaturation(12.0);
+    m_falcon_left1->EnableVoltageCompensation(true);
+
+    m_falcon_right2->ConfigVoltageCompSaturation(12.0);
+    m_falcon_right2->EnableVoltageCompensation(true);
     
-    // m_falcon_left2->ConfigVoltageCompSaturation(12.0);
-    // m_falcon_left2->EnableVoltageCompensation(true);
+    m_falcon_left2->ConfigVoltageCompSaturation(12.0);
+    m_falcon_left2->EnableVoltageCompensation(true);
 
-    // m_falcon_right1->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 30, 30, 10));
-    // m_falcon_left1->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 30, 30, 10));
+    SetBrakeNeutral();
 
-    m_falcon_right1->SetNeutralMode(NeutralMode::Brake);
-    m_falcon_right2->SetNeutralMode(NeutralMode::Brake);
-    m_falcon_left1->SetNeutralMode(NeutralMode::Brake);
-    m_falcon_left2->SetNeutralMode(NeutralMode::Brake);
+ 
 
     ahrs = new AHRS(frc::SerialPort::kMXP);
 }
@@ -180,4 +186,18 @@ void DriveBase::ChecklrLimits() {
         } else if (target_r < -MAX_Y_RPM) {
             target_r = -MAX_Y_RPM;
         }
+}
+
+void DriveBase::SetBrakeNeutral() {
+    m_falcon_right1->SetNeutralMode(NeutralMode::Brake);
+    m_falcon_right2->SetNeutralMode(NeutralMode::Brake);
+    m_falcon_left1->SetNeutralMode(NeutralMode::Brake);
+    m_falcon_left2->SetNeutralMode(NeutralMode::Brake);
+}
+
+void DriveBase::SetCoastNeutral() {
+    m_falcon_right1->SetNeutralMode(NeutralMode::Coast);
+    m_falcon_right2->SetNeutralMode(NeutralMode::Coast);
+    m_falcon_left1->SetNeutralMode(NeutralMode::Coast);
+    m_falcon_left2->SetNeutralMode(NeutralMode::Coast);
 }
