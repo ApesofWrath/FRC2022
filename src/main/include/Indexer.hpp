@@ -40,9 +40,19 @@ public:
     IndexerState GetState();
 
     double reverseSpeed = -0.15;
+    double reverse_rpm = -900.0 * 2048.0 / 600.0;
+    
     double intakeSpeed = 0.15;
+    double intake_rpm = 900.0 * 2048.0 / 600.0;
+
     double shooterSpeed = 0.15;
+    double shooter_rpm = 1000.0 * 2048.0 / 600;
+
     double waitingSpeed = 0.0;
+
+    double desired_ticks = 2048.0 * -0.25;
+    double desired_position = 0.0;
+    bool finished_top = false;
  
 private:
     std::shared_ptr<TalonFX> m_top_motor;
