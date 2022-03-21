@@ -2,7 +2,7 @@
 
 #define LOG_V(var) frc::SmartDashboard::PutNumber(#var , var)
 
-DriveBase::DriveBase(frc::Joystick *joy_op, AHRS* ahrs) : m_AHRS{ahrs} {
+DriveBase::DriveBase(frc::Joystick *joy_op) {
     m_joy_op = joy_op;
        
     m_falcon_left1 = new WPI_TalonFX(10);
@@ -41,6 +41,7 @@ DriveBase::DriveBase(frc::Joystick *joy_op, AHRS* ahrs) : m_AHRS{ahrs} {
     m_falcon_left1->SetNeutralMode(NeutralMode::Brake);
     m_falcon_left2->SetNeutralMode(NeutralMode::Brake);
 
+    ahrs = new AHRS(frc::SerialPort::kMXP);
 }
 
 void DriveBase::Controller() {
@@ -71,7 +72,7 @@ void DriveBase::Controller() {
 
     ChecklrLimits();
 
-    curr_yaw_rate = -m_AHRS->GetRate();
+    curr_yaw_rate = -ahrs->GetRate();
 
     frc::SmartDashboard::PutNumber("target_r before", target_r);
 	frc::SmartDashboard::PutNumber("target_l before", target_l);
@@ -179,18 +180,4 @@ void DriveBase::ChecklrLimits() {
         } else if (target_r < -MAX_Y_RPM) {
             target_r = -MAX_Y_RPM;
         }
-}
-
-void DriveBase::SetCoast() {
-    m_falcon_left1->SetNeutralMode(NeutralMode::Coast);
-    m_falcon_left2->SetNeutralMode(NeutralMode::Coast);
-    m_falcon_right1->SetNeutralMode(NeutralMode::Coast);
-    m_falcon_right2->SetNeutralMode(NeutralMode::Coast);
-}
-
-void DriveBase::SetBrake() {
-    m_falcon_left1->SetNeutralMode(NeutralMode::Brake);
-    m_falcon_left2->SetNeutralMode(NeutralMode::Brake);
-    m_falcon_right1->SetNeutralMode(NeutralMode::Brake);
-    m_falcon_right2->SetNeutralMode(NeutralMode::Brake);
 }

@@ -6,7 +6,16 @@
 
 void Robot::RobotInit() {
   m_joy_op = new frc::Joystick(0);
+  
   m_drive = new DriveBase(m_joy_op, m_AHRS);
+  m_climber = new Climber();
+  m_shooter = std::make_shared<Shooter>();
+  m_hood = std::make_shared<Hood>();
+  m_intake = std::make_shared<Intake>();
+  m_indexer = std::make_shared<Indexer>(m_shooter, m_intake);
+  m_compressor = std::make_shared<frc::Compressor>(61, frc::PneumaticsModuleType::CTREPCM);
+
+  //why is there a talon here???????
   m_talon = new WPI_TalonFX(0);
 
   m_AHRS = new AHRS(frc::SerialPort::kMXP);
@@ -16,8 +25,14 @@ void Robot::RobotInit() {
 
   m_Container->InitAutoChoices();
 
+  frc::CameraServer::StartAutomaticCapture();
+  cs::CvSink cvSink = frc::CameraServer::GetVideo();
+  cs::CvSource outputStream = frc::CameraServer::PutVideo("Field View", 320, 190);
+}
+
   frc::SmartDashboard::PutData("Auto Modes", &(m_Container->m_chooser));
 }
+
 void Robot::RobotPeriodic() {
   frc2::CommandScheduler::GetInstance().Run();
 
@@ -25,6 +40,7 @@ void Robot::RobotPeriodic() {
 
 void Robot::AutonomousInit() {
   m_drive->SetBrake();
+  m_compressor->EnableDigital();
   m_Container->m_autoSelected = m_Container->m_chooser.GetSelected();
 
   if (m_AutonomousCommand != nullptr) {
@@ -48,6 +64,12 @@ void Robot::AutonomousPeriodic() {
   frc::SmartDashboard::PutNumber("translation x", pose.Translation().X().value());
   frc::SmartDashboard::PutNumber("translation y", pose.Translation().Y().value());
 
+  // ??
+  m_climber->climberStateMachine();
+  m_hood->HoodStateMachine();
+  m_intake->IntakeStateMachine();
+  m_shooter->ShooterStateMachine();
+  m_indexer->IndexerStateMachine();
   
 }
 

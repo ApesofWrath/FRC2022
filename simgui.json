@@ -1,0 +1,12 @@
+{
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Ungrouped/DifferentialDrive[1]": "DifferentialDrive",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/class frc2::SubsystemBase": "Subsystem",
+      "/LiveWindow/Ungrouped/navX-Sensor[1]": "Gyro",
+      "/SmartDashboard/Auto Modes": "String Chooser"
+    }
+  }
+}

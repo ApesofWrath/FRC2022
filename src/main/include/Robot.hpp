@@ -6,12 +6,19 @@
 
 #include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
+#include <frc/Compressor.h>
 
 #include <AHRS.h>
 
 #include "Drive/DriveBase.hpp"
+#include "Climber.hpp"
+#include "Hood.hpp"
+#include "Intake.hpp"
+#include "Shooter.hpp"
+#include "Indexer.hpp"
 #include "RobotContainer.hpp"
 #include "Auton/Auton.hpp"
+#include "cameraserver/CameraServer.h"
 
 #include <frc2/command/Command.h>
 
@@ -34,7 +41,14 @@ public:
 
 private:
   DriveBase *m_drive;
+  Climber *m_climber;
+  std::shared_ptr<Shooter> m_shooter;
+  std::shared_ptr<Indexer> m_indexer;
+  std::shared_ptr<Hood> m_hood;
+  std::shared_ptr<Intake> m_intake;
+  std::shared_ptr<frc::Compressor> m_compressor;
   frc::Joystick *m_joy_op;
+
   WPI_TalonFX *m_talon;
   AutonDrive *m_AutonDrive;
   RobotContainer *m_Container;
