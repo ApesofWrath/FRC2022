@@ -202,38 +202,22 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
                 *config
             );
 
-            //~~~~~~~~~~~~ original (move right to hub) ~~~~~~~~~~~~~
-
-            // config->SetReversed(false);
-            // trajectory1 = frc::TrajectoryGenerator::GenerateTrajectory(
-            //     // get balls
-            //     //frc::Pose2d(0_in, -.1_in, frc::Rotation2d(180_deg))
-            //     frc::Pose2d(0_in, 0_in, frc::Rotation2d(180_deg)),
-            //     points,
-            //     //End against the side wall of the hub
-            //     frc::Pose2d(41_in, -4.140_in, frc::Rotation2d(-22.41_deg)),
-            //     *config
-            // );
-
-            //~~~~~~~~~~~~~~ new (retract intake b4 hub) ~~~~~~~~~~~~~~~
-
-
             config->SetReversed(false);
             trajectory1 = frc::TrajectoryGenerator::GenerateTrajectory(
                 // get balls
                 //frc::Pose2d(0_in, -.1_in, frc::Rotation2d(180_deg))
+                //this might pose a problem bc redifining origin direction as backwards
                 frc::Pose2d(0_in, 0_in, frc::Rotation2d(180_deg)),
                 points,
-                //End against the side wall of the hub
+                //retract intake
                 frc::Pose2d(30_in, 0, frc::Rotation2d(-45_deg)),
                 *config
             );
 
             trajectory2 = frc::TrajectoryGenerator::GenerateTrajectory(
-                // get balls
-                //frc::Pose2d(0_in, -.1_in, frc::Rotation2d(180_deg))
+                // retract intake here
                 frc::Pose2d(30_in, 0, frc::Rotation2d(-45_deg)),
-                points,
+                {},
                 //End against the side wall of the hub
                 frc::Pose2d(41_in, -4.140_in, frc::Rotation2d(-22.41_deg)),
                 *config
@@ -307,7 +291,7 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 
                 frc2::InstantCommand([this] {
                     m_intake->setState(IntakeState::STOP);
-                    m_indexer->SetState(IndexerState::INTAKE);
+                    m_indexer->SetState(IndexerState::WAITING);
                 }),
 
                 std::move(*ramseteCommand2),
@@ -336,9 +320,7 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 void RobotContainer::InitAutoChoices() {
     std::cout << "initauto: step1\n";    
     
-    m_chooser.SetDefaultOption("Robot", Auto::THREE_BALL);
-    
-    // m_chooser.SetDefaultOption("Robot", Auto::SPIN);
+    m_chooser.SetDefaultOption("Robot", Auto::SPIN);
     m_chooser.AddOption("Robot", Auto::CROSS_INIT_LINE);
     m_chooser.AddOption("Robot", Auto::SHOOT_PRELOAD);
     m_chooser.AddOption("Robot", Auto::THREE_BALL);
