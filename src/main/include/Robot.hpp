@@ -15,6 +15,10 @@
 #include "Shooter.hpp"
 #include "Indexer.hpp"
 #include "cameraserver/CameraServer.h"
+#include "RobotContainer.hpp"
+#include "Auton/Auton.hpp"
+
+#include <frc2/command/Command.h>
 
 class Robot : public frc::TimedRobot {
  public:
@@ -37,6 +41,7 @@ class Robot : public frc::TimedRobot {
 
   DriveBase *m_drive;
   Climber *m_climber;
+  AHRS *m_ahrs;
   std::shared_ptr<Shooter> m_shooter;
   std::shared_ptr<Indexer> m_indexer;
   std::shared_ptr<Hood> m_hood;
@@ -44,6 +49,10 @@ class Robot : public frc::TimedRobot {
   std::shared_ptr<frc::Compressor> m_compressor;
   frc::Joystick *m_joy_op;
   frc::Joystick *m_joy_drive;
+  RobotContainer *m_container;
+  AutonDrive *m_autondrive;
+
+  frc2::Command* m_AutonomousCommand = nullptr;
 
   bool m_climb_time = false;
   bool m_climb_mode = false;

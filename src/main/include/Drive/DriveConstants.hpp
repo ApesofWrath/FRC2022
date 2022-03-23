@@ -1,3 +1,5 @@
+#pragma once
+
     const double MAX_Y_RPM = 330.6005859; // placeholder 595.0;
     const double MAX_YAW_RATE = 9.8; // 11.4
 

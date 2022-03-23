@@ -56,7 +56,7 @@ class Climber {
     States current_state;
     States last_state;
 
-    Climber(frc::Joystick* joyOp);
+    Climber();
 
     float CalculateAngle(float n); 
     float CalculateHeight(float n);

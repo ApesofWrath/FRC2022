@@ -57,6 +57,7 @@ public:
     double desired_ticks = 2048.0 * -0.25;
     double desired_position = 0.0;
     bool finished_top = false;
+    IndexerState m_last_state, m_state = IndexerState::INIT;
  
 private:
     std::shared_ptr<TalonFX> m_top_motor;
@@ -65,7 +66,6 @@ private:
     frc::DigitalInput *top_input;
     frc::DigitalInput *bottom_input;
 
-    IndexerState m_last_state, m_state = IndexerState::INIT;
     std::shared_ptr<Shooter> m_shooter;
     std::shared_ptr<::Intake> m_intake;
 };

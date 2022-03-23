@@ -10,24 +10,67 @@ void Robot::RobotInit()
   m_joy_drive = new frc::Joystick(1);
 
   m_drive = new DriveBase(m_joy_drive);
-  m_climber = new Climber(m_joy_op);
   m_shooter = std::make_shared<Shooter>();
   m_hood = std::make_shared<Hood>();
   m_intake = std::make_shared<Intake>();
   m_indexer = std::make_shared<Indexer>(m_shooter, m_intake);
   m_compressor = std::make_shared<frc::Compressor>(61, frc::PneumaticsModuleType::CTREPCM);
 
+  m_ahrs = new AHRS(frc::SerialPort::kMXP);
+
+  m_autondrive = new AutonDrive(10, 12, 11, 13, m_ahrs);
+  m_container = new RobotContainer(m_autondrive);
+
+  m_container->InitAutoChoices();
+
   frc::CameraServer::StartAutomaticCapture();
   cs::CvSink cvSink = frc::CameraServer::GetVideo();
   cs::CvSource outputStream = frc::CameraServer::PutVideo("Field View", 320, 190);
-}
-void Robot::RobotPeriodic() {}
 
-void Robot::AutonomousInit() {}
-void Robot::AutonomousPeriodic() {}
+  frc::SmartDashboard::PutData("Auto Modes", &(m_container->m_chooser));
+}
+void Robot::RobotPeriodic() {
+  frc2::CommandScheduler::GetInstance().Run();
+}
+
+void Robot::AutonomousInit() {
+  m_drive->SetBrakeNeutral();
+  m_compressor->EnableDigital();
+  m_container->m_autoSelected = m_container->m_chooser.GetSelected();
+
+  if (m_AutonomousCommand != nullptr) {
+    m_AutonomousCommand->Cancel();
+    m_AutonomousCommand = nullptr;
+  }
+  m_autondrive->resetOdometry(frc::Pose2d( 0_m, 0_m, frc::Rotation2d(0_deg)));  
+
+  m_AutonomousCommand = m_container->GetAutonomousCommand();
+
+  if (m_AutonomousCommand != nullptr) {
+    m_AutonomousCommand->Schedule();
+  }
+
+}
+void Robot::AutonomousPeriodic() {
+  frc::Pose2d pose = m_autondrive->getPose();
+
+  m_climber->climberStateMachine();
+  m_hood->HoodStateMachine();
+  m_intake->IntakeStateMachine();
+  m_shooter->ShooterStateMachine();
+  m_indexer->IndexerStateMachine();
+}
 
 void Robot::TeleopInit()
 {
+  frc2::CommandScheduler::GetInstance().Disable();
+  if (m_AutonomousCommand != nullptr) {
+    m_AutonomousCommand->Cancel();
+    m_AutonomousCommand = nullptr;
+  }
+  m_drive->SetCoastNeutral();
+
+
   m_compressor->EnableDigital();
   m_climber->Zero();
   m_climber->current_state = States::ARM_FORWARD;

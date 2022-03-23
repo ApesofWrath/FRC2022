@@ -1,6 +1,6 @@
 #include "Climber.hpp"
 
-Climber::Climber(frc::Joystick* joy) : joyOp(joy)
+Climber::Climber()
 {
     m_solenoid = std::make_shared<frc::DoubleSolenoid>(61, frc::PneumaticsModuleType::CTREPCM, 4, 5);
 

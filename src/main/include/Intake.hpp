@@ -5,7 +5,6 @@
 #include <memory>
 #include <frc/smartdashboard/SmartDashboard.h>
 
-#include "rev/CANSparkMax.h"
 
 enum class IntakeState {
     INIT,
