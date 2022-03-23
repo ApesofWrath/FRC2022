@@ -43,6 +43,7 @@ class Robot : public frc::TimedRobot {
   std::shared_ptr<Intake> m_intake;
   std::shared_ptr<frc::Compressor> m_compressor;
   frc::Joystick *m_joy_op;
+  frc::Joystick *m_joy_drive;
 
   bool m_climb_time = false;
   bool m_climb_mode = false;

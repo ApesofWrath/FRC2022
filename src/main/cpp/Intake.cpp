@@ -5,7 +5,8 @@ Intake::Intake() {
     // m_right_solenoid = std::make_shared<frc::DoubleSolenoid>(3, frc::PneumaticsModuleType::CTREPCM, 5, 9);
     // m_intake_motor = std::make_shared<rev::CANSparkMax>(9, rev::CANSparkMax::MotorType::kBrushless);
     m_intake_motor = std::make_shared<TalonFX>(20);
-    m_intake_motor->Config_kP(0, 0.086076 * 2, 50);
+    m_intake_motor->Config_kP(0, 0.45, 50);
+    // m_intake_motor->ConfigStatorCurrentLimit()
 }
 
 void Intake::Init() {
@@ -23,7 +24,7 @@ void Intake::Go() {
 void Intake::Stop() {
     m_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
     // m_right_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
-    m_intake_motor->Set(TalonFXControlMode::Velocity, 0.00);
+    m_intake_motor->Set(TalonFXControlMode::Velocity, indexing_rpm);
 }
 
 void Intake::Indexing() {
@@ -38,6 +39,7 @@ void Intake::Reverse() {
 }
 
 void Intake::IntakeStateMachine() {
+    frc::SmartDashboard::PutNumber("intake speed", m_intake_motor->GetSelectedSensorVelocity() / 2048.0 * 600.0);
     switch (m_state) {
         case IntakeState::INIT:
             frc::SmartDashboard::PutString("IntakeState", "Init");

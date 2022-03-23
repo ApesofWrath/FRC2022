@@ -34,16 +34,16 @@ public:
     inline bool isExtended() const noexcept { return m_state == IntakeState::GO; };
 
     double indexingSpeed = 0.10;
-    double indexing_rpm = 600.0;
+    double indexing_rpm = 600.0 * 2048.0 / 600.0;
 
     double reverseSpeed = -1.0;
     double reverse_rpm = 6000.0;
 
     double intakeSpeed = 0.25;
-    double intake_rpm = 1500.0;
+    double intake_rpm = 2000.0 * 2048.0 / 600.0;
     
     double waitingSpeed = 0.10;
-    double waiting_rpm = 600.0;
+    double waiting_rpm = 600.0 * 2048.0 / 600.0;
 
     std::shared_ptr<TalonFX> m_intake_motor;
 

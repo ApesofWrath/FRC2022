@@ -21,15 +21,21 @@ DriveBase::DriveBase(frc::Joystick *joy_op) {
     m_falcon_left2->Follow(*m_falcon_left1);
     m_falcon_right2->Follow(*m_falcon_right1);
 
-    m_falcon_left1->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 30, 30, 10));
-    m_falcon_left2->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 30, 30, 10));
-    m_falcon_right1->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 30, 30, 10));
-    m_falcon_right2->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 30, 30, 10));
+    m_falcon_left1->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 20, 20, 0.1));
+    m_falcon_left2->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 20, 20, 0.1));
+    m_falcon_right1->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 20, 20, 0.1));
+    m_falcon_right2->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 20, 20, 0.1));
 
-    m_falcon_left1->ConfigOpenloopRamp(0.15, 0);
-    m_falcon_left2->ConfigOpenloopRamp(0.15, 0);
-    m_falcon_right1->ConfigOpenloopRamp(0.15, 0);
-    m_falcon_right2->ConfigOpenloopRamp(0.15, 0);
+    m_falcon_left1->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 33, 33, 0.1));
+    m_falcon_left2->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 33, 33, 0.1));
+    m_falcon_right1->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 33, 33, 0.1));
+    m_falcon_right2->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 33, 33, 0.1));
+
+
+    m_falcon_left1->ConfigOpenloopRamp(0.0, 0);
+    m_falcon_left2->ConfigOpenloopRamp(0.0, 0);
+    m_falcon_right1->ConfigOpenloopRamp(0.0, 0);
+    m_falcon_right2->ConfigOpenloopRamp(0.0, 0);
 
     m_falcon_right1->ConfigVoltageCompSaturation(12.0);
     m_falcon_right1->EnableVoltageCompensation(true);
@@ -43,7 +49,7 @@ DriveBase::DriveBase(frc::Joystick *joy_op) {
     m_falcon_left2->ConfigVoltageCompSaturation(12.0);
     m_falcon_left2->EnableVoltageCompensation(true);
 
-    SetBrakeNeutral();
+    SetCoastNeutral();
 
  
 
@@ -52,7 +58,7 @@ DriveBase::DriveBase(frc::Joystick *joy_op) {
 
 void DriveBase::Controller() {
     throttle = m_joy_op->GetRawAxis(1);
-    wheel = -m_joy_op->GetRawAxis(4);
+    wheel = -m_joy_op->GetRawAxis(2);
 
     double reverse_throttle;
 
