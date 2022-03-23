@@ -18,6 +18,7 @@ enum class IndexerState {
     MANUALREVERSETOP,
     MANUALBOTTOM,
     MANUALBOTH,
+    SHOOTERCHECK,
     STOP
 };
 
@@ -34,6 +35,7 @@ public:
     void ManualBottom();
     void ManualBoth();
     void ManualReverseTop();
+    void ShooterCheck();
     void Stop();
 
     void IndexerStateMachine();

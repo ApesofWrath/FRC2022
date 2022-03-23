@@ -170,6 +170,11 @@ void DriveBase::Controller() {
 
     // total_out_l *= 0.25;
     // total_out_r *= 0.25;
+    if(m_joy_op->GetRawButton(6)) {
+        kOutputPercent = 0.5;
+    } else {
+        kOutputPercent = 1.0;
+    }
 
     m_falcon_left1->Set(TalonFXControlMode::PercentOutput, total_out_l * kOutputPercent);
     m_falcon_right1->Set(TalonFXControlMode::PercentOutput, total_out_r * kOutputPercent);

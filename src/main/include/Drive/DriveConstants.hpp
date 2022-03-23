@@ -16,5 +16,3 @@
     const double SENSOR_TIMESTEP_MINUTE_CONVERSION = 600.0;
     const double TICKS_PER_ROT = 2048.0 * (63.0 / 5.0); // Values for 2020
     const double TICKS_TO_ROT = (63.0 / 5.0);
-
-    constexpr double kOutputPercent = 1;

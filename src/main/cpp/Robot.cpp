@@ -34,10 +34,11 @@ void Robot::TeleopInit() {
 void Robot::TeleopPeriodic()
 {
   frc::SmartDashboard::PutNumber("joy pov", m_joy_op->GetPOV());
-  if (frc::DriverStation::GetMatchTime() > 33)
+  if (false) //frc::DriverStation::GetMatchTime() > 33)
   {
-    if(m_joy_op->GetRawButton(2) && m_joy_op->GetRawButton(5) && m_joy_op->GetRawButton(7)) {
-    m_climb_mode = true;
+    if (m_joy_op->GetRawButton(2) && m_joy_op->GetRawButton(5) && m_joy_op->GetRawButton(7))
+    {
+      m_climb_mode = true;
     }
     m_climb_time = true;
   }
@@ -55,44 +56,19 @@ void Robot::TeleopPeriodic()
   
   
   if (!m_climb_mode)
-  { 
+  {
+    // Indexer
     if (m_joy_op->GetRawButton(1))
-    { // A Manually Triggered Automatic Indexing
+    {
       m_indexer->SetState(IndexerState::INTAKE);
-      m_intake->setState(IntakeState::INDEXING);
     }
     else if (m_joy_op->GetRawButton(2))
-    { // B Intake
-      m_intake->setState(IntakeState::GO);
+    {
       m_indexer->SetState(IndexerState::INTAKE);
     }
-    else if (m_joy_op->GetRawButton(3))
-    { // X Far Shoot
-      m_hood->setState(HoodState::DOWN);
-    }
-    else if (m_joy_op->GetRawButton(4))
-    { // Y Close Shoot
-      m_hood->setState(HoodState::UP);
-    }
-    else if (m_joy_op->GetRawButton(5)) {
-      m_shooter->setState(ShooterState::WAITING);
-    }
-    else if (m_joy_op->GetRawButton(6)) {
-      m_shooter->setState(ShooterState::SHOOT);
+    else if (m_joy_op->GetRawButton(6))
+    {
       m_indexer->SetState(IndexerState::SHOOT);
-      
-    }
-    else if (m_joy_op->GetRawButton(7)) {
-      
-    }
-    else if (m_joy_op->GetRawButton(8)) {
-      
-    }
-    else if (m_joy_op->GetRawButton(9))
-    {
-    }
-    else if (m_joy_op->GetRawButton(10))
-    {
     }
     else if (m_joy_op->GetPOV() == 0)
     {
@@ -108,17 +84,49 @@ void Robot::TeleopPeriodic()
     {
       m_indexer->SetState(IndexerState::MANUALBOTH);
     }
-    else if(m_joy_op->GetRawAxis(3) > 0.5) { // Trigger Intake, positive right negative left 
-    }
     else
     {
-      if (m_intake->getState() != IntakeState::INDEXING)
-            m_intake->setState(IntakeState::STOP);
       m_indexer->SetState(IndexerState::WAITING);
+    }
+
+    // Intake
+    if (m_joy_op->GetRawButton(1))
+    { // A Manually Triggered Automatic Indexing
+      m_intake->setState(IntakeState::INDEXING);
+    }
+    else if (m_joy_op->GetRawButton(2))
+    { // B Intake
+      m_intake->setState(IntakeState::GO);
+    }
+    else if(m_intake->getState() != IntakeState::INDEXING)
+    {
+      m_intake->setState(IntakeState::STOP);
+    }
+
+    // Shooter
+    if (m_joy_op->GetRawButton(5))
+    {
+      m_shooter->setState(ShooterState::WAITING);
+    }
+    else if (m_joy_op->GetRawButton(6))
+    {
+      m_shooter->setState(ShooterState::SHOOT);
+    } else {
       m_shooter->setState(ShooterState::STOP);
     }
-  } /*else {
-    
+
+    // Hood
+    if (m_joy_op->GetRawButton(3))
+    { // X Far Shoot
+      m_hood->setState(HoodState::DOWN);
+    }
+    else if (m_joy_op->GetRawButton(4))
+    { // Y Close Shoot
+      m_hood->setState(HoodState::UP);
+    }
+  }
+  else
+  {
     if (m_joy_op->GetRawButton(5))
     { // Left bumper #1 Climb
       m_climber->current_state = States::DOWN_CLIMB;
@@ -137,7 +145,7 @@ void Robot::TeleopPeriodic()
     }
     
   }
-  */
+  
   m_climber->climberStateMachine();
 
   m_hood->HoodStateMachine();
@@ -148,7 +156,8 @@ void Robot::TeleopPeriodic()
   m_drive->Controller();
 }
 
-void Robot::DisabledInit() {
+void Robot::DisabledInit()
+{
   m_compressor->Disable();
   // m_climber->CoastElevator();
 }
