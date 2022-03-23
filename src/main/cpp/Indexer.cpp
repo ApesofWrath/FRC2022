@@ -151,6 +151,14 @@ void Indexer::ManualReverseTop()
 
 void Indexer::ShooterCheck()
 {
+    if(desired_position < m_top_motor->GetSelectedSensorPosition()) {
+        m_top_motor->Set(TalonFXControlMode::Velocity, -intake_rpm);
+        m_bottom_motor->Set(TalonFXControlMode::PercentOutput, 0.0);
+    } else {
+        m_top_motor->Set(TalonFXControlMode::PercentOutput, 0.0);
+        m_bottom_motor->Set(TalonFXControlMode::PercentOutput, 0.0);
+        m_state = IndexerState::SHOOT;
+    }
 }
 
 void Indexer::IndexerStateMachine()
@@ -215,6 +223,9 @@ void Indexer::IndexerStateMachine()
         m_last_state = IndexerState::MANUALBOTTOM;
         break;
     case IndexerState::SHOOTERCHECK:
+        if(m_last_state != IndexerState::SHOOTERCHECK) {
+            desired_position = m_top_motor->GetSelectedSensorPosition() - 2048.0 * 2.0;
+        }
         ShooterCheck();
         m_last_state = IndexerState::SHOOTERCHECK;
         break;

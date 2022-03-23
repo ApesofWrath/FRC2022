@@ -5,6 +5,7 @@ Intake::Intake() {
     // m_right_solenoid = std::make_shared<frc::DoubleSolenoid>(3, frc::PneumaticsModuleType::CTREPCM, 5, 9);
     // m_intake_motor = std::make_shared<rev::CANSparkMax>(9, rev::CANSparkMax::MotorType::kBrushless);
     m_intake_motor = std::make_shared<TalonFX>(20);
+    m_intake_motor->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 40, 40, 0.3));
     m_intake_motor->Config_kP(0, 0.45, 50);
     // m_intake_motor->ConfigStatorCurrentLimit()
 }

@@ -6,6 +6,7 @@
 #include <memory>
 
 constexpr float endpoint = 3400.0f;
+constexpr float spooling_endpoint = 2800.0f;
 constexpr float reverseSpeed = -0.6f;
 constexpr float shootSpeed = endpoint * 2048.0 / 600.0; //3200 close // 3675 far - 3700-3730ish <- real
 constexpr float waiting_speed = 200.0 * 2048.0 / 600.0;
@@ -26,7 +27,8 @@ enum class ShooterState {
     STOP,
     SHOOT,
     WAITING,
-    REVERSE
+    REVERSE,
+    SPOOLING
 };
 
 constexpr size_t bufferSize = 12;
@@ -44,10 +46,12 @@ public:
     void Stop();
     void Waiting();
     void Reverse();
+    void Spooling();
 
     void ShooterStateMachine();
 
     inline void setState(ShooterState state) { m_state = state; };
+    inline ShooterState get_state() { return m_state; };
 
     bool readyToShoot();
 
@@ -59,6 +63,7 @@ private:
     std::shared_ptr<TalonFX> m_motor1;
     std::shared_ptr<TalonFX> m_motor2;
     UnidirectionalTrapezoidalRampController m_controller;
+    UnidirectionalTrapezoidalRampController m_spooling_controller;
 
 
     ShooterState m_state, m_last_state;
