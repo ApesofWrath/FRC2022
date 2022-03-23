@@ -48,6 +48,7 @@ private:
   std::shared_ptr<Intake> m_intake;
   std::shared_ptr<frc::Compressor> m_compressor;
   frc::Joystick *m_joy_op;
+  frc::Joystick *m_joy_drive;
 
   WPI_TalonFX *m_talon;
   AutonDrive *m_AutonDrive;

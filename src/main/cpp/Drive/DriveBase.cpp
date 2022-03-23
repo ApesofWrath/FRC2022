@@ -3,7 +3,7 @@
 #define LOG_V(var) frc::SmartDashboard::PutNumber(#var , var)
 
 DriveBase::DriveBase(frc::Joystick *joy_op) {
-    m_joy_op = joy_op;
+     m_joy_op = joy_op;
        
     m_falcon_left1 = new WPI_TalonFX(10);
     m_falcon_left2 = new WPI_TalonFX(12);
@@ -21,25 +21,37 @@ DriveBase::DriveBase(frc::Joystick *joy_op) {
     m_falcon_left2->Follow(*m_falcon_left1);
     m_falcon_right2->Follow(*m_falcon_right1);
 
-    // m_falcon_right1->ConfigVoltageCompSaturation(12.0);
-    // m_falcon_right1->EnableVoltageCompensation(true);
+    m_falcon_left1->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 20, 20, 0.1));
+    m_falcon_left2->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 20, 20, 0.1));
+    m_falcon_right1->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 20, 20, 0.1));
+    m_falcon_right2->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 20, 20, 0.1));
 
-    // m_falcon_left1->ConfigVoltageCompSaturation(12.0);
-    // m_falcon_left1->EnableVoltageCompensation(true);
+    m_falcon_left1->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 33, 33, 0.1));
+    m_falcon_left2->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 33, 33, 0.1));
+    m_falcon_right1->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 33, 33, 0.1));
+    m_falcon_right2->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 33, 33, 0.1));
 
-    // m_falcon_right2->ConfigVoltageCompSaturation(12.0);
-    // m_falcon_right2->EnableVoltageCompensation(true);
+
+    m_falcon_left1->ConfigOpenloopRamp(0.0, 0);
+    m_falcon_left2->ConfigOpenloopRamp(0.0, 0);
+    m_falcon_right1->ConfigOpenloopRamp(0.0, 0);
+    m_falcon_right2->ConfigOpenloopRamp(0.0, 0);
+
+    m_falcon_right1->ConfigVoltageCompSaturation(12.0);
+    m_falcon_right1->EnableVoltageCompensation(true);
+
+    m_falcon_left1->ConfigVoltageCompSaturation(12.0);
+    m_falcon_left1->EnableVoltageCompensation(true);
+
+    m_falcon_right2->ConfigVoltageCompSaturation(12.0);
+    m_falcon_right2->EnableVoltageCompensation(true);
     
-    // m_falcon_left2->ConfigVoltageCompSaturation(12.0);
-    // m_falcon_left2->EnableVoltageCompensation(true);
+    m_falcon_left2->ConfigVoltageCompSaturation(12.0);
+    m_falcon_left2->EnableVoltageCompensation(true);
 
-    // m_falcon_right1->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 30, 30, 10));
-    // m_falcon_left1->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 30, 30, 10));
+    SetCoastNeutral();
 
-    m_falcon_right1->SetNeutralMode(NeutralMode::Brake);
-    m_falcon_right2->SetNeutralMode(NeutralMode::Brake);
-    m_falcon_left1->SetNeutralMode(NeutralMode::Brake);
-    m_falcon_left2->SetNeutralMode(NeutralMode::Brake);
+ 
 
     ahrs = new AHRS(frc::SerialPort::kMXP);
 }
@@ -158,6 +170,11 @@ void DriveBase::Controller() {
 
     // total_out_l *= 0.25;
     // total_out_r *= 0.25;
+    if(m_joy_op->GetRawButton(6)) {
+        kOutputPercent = 0.5;
+    } else {
+        kOutputPercent = 1.0;
+    }
 
     m_falcon_left1->Set(TalonFXControlMode::PercentOutput, total_out_l * kOutputPercent);
     m_falcon_right1->Set(TalonFXControlMode::PercentOutput, total_out_r * kOutputPercent);
@@ -180,4 +197,18 @@ void DriveBase::ChecklrLimits() {
         } else if (target_r < -MAX_Y_RPM) {
             target_r = -MAX_Y_RPM;
         }
+}
+
+void DriveBase::SetBrakeNeutral() {
+    m_falcon_right1->SetNeutralMode(NeutralMode::Brake);
+    m_falcon_right2->SetNeutralMode(NeutralMode::Brake);
+    m_falcon_left1->SetNeutralMode(NeutralMode::Brake);
+    m_falcon_left2->SetNeutralMode(NeutralMode::Brake);
+}
+
+void DriveBase::SetCoastNeutral() {
+    m_falcon_right1->SetNeutralMode(NeutralMode::Coast);
+    m_falcon_right2->SetNeutralMode(NeutralMode::Coast);
+    m_falcon_left1->SetNeutralMode(NeutralMode::Coast);
+    m_falcon_left2->SetNeutralMode(NeutralMode::Coast);
 }

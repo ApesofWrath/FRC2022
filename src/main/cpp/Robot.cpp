@@ -6,6 +6,7 @@
 
 void Robot::RobotInit() {
   m_joy_op = new frc::Joystick(0);
+  m_joy_drive = new frc::Joystick(1);
   
   m_drive = new DriveBase(m_joy_op, m_AHRS);
   m_climber = new Climber();
@@ -14,6 +15,10 @@ void Robot::RobotInit() {
   m_intake = std::make_shared<Intake>();
   m_indexer = std::make_shared<Indexer>(m_shooter, m_intake);
   m_compressor = std::make_shared<frc::Compressor>(61, frc::PneumaticsModuleType::CTREPCM);
+
+  frc::CameraServer::StartAutomaticCapture();
+  cs::CvSink cvSink = frc::CameraServer::GetVideo();
+  cs::CvSource outputStream = frc::CameraServer::PutVideo("Field View", 320, 190);
 
   //why is there a talon here???????
   m_talon = new WPI_TalonFX(0);

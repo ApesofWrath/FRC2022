@@ -16,6 +16,8 @@ public:
      * exceed the maximum velocity
      */
     void ChecklrLimits();
+    void SetBrakeNeutral();
+    void SetCoastNeutral();
 
     double target_l = 0, 
         target_r = 0, 
@@ -49,6 +51,9 @@ public:
         p_r_out = 0,
         total_out_l = 0,
         total_out_r = 0;
+
+    double kOutputPercent = 1;
+
     
 private:
     WPI_TalonFX *m_falcon_left1, *m_falcon_left2, 

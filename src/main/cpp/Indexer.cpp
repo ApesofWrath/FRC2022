@@ -1,143 +1,222 @@
 #include "Indexer.hpp"
 
-
 // Init: duh
 // Waiting: set motors to slow to keep balls in index
 // Reverse: reverse both motors
-// Index: move 1st ball to top and 2nd ball to bottom
+// Index 1st: move to top
+// Index 2nd: move to bottom
 // Shoot top: move top ball, then move bottom ball to top
 
+Indexer::Indexer(const std::shared_ptr<Shooter> &shooter, const std::shared_ptr<::Intake> &intake) : m_shooter(shooter), m_intake(intake)
+{
+    m_bottom_motor = std::make_shared<TalonFX>(26);
+    m_top_motor = std::make_shared<TalonFX>(25);
 
-Indexer::Indexer() {
-    m_top_indexer = std::make_shared<TalonFX>(25);
-    m_bottom_indexer = std::make_shared<TalonFX>(26);
+    m_bottom_motor->ConfigFactoryDefault();
+    m_top_motor->ConfigFactoryDefault();
 
-    m_top_indexer->ConfigFactoryDefault();
-    m_bottom_indexer->ConfigFactoryDefault();
+    m_bottom_motor->SetNeutralMode(NeutralMode::Brake);
+    m_top_motor->SetNeutralMode(NeutralMode::Brake);
 
-    m_top_indexer->SetNeutralMode(NeutralMode::Coast);
-    m_bottom_indexer->SetNeutralMode(NeutralMode::Coast);
+    m_top_motor->Config_kP(0, 0.086076 * 2, 50);
+    m_bottom_motor->Config_kP(0, 0.086076 * 2, 50);
 
-    //use percentoutput instead of pid
+    bottom_input = new frc::DigitalInput(0);
+    top_input = new frc::DigitalInput(1);
+
+    // use percentoutput instead of pid
 }
 
 /**
-* @param m_top_indexer: top motor
-* @param m_bottom_indexer: bottom motor
-* @param top_sensor: top sensor
-* @param bottom_sensor: bottom sensor
-**/
-void Indexer::Init() {
-    m_top_indexer->SetInverted(false);
-    m_bottom_indexer->SetInverted(false);
+ * @param m_bottom_motor: top motor
+ * @param m_top_motor: bottom motor
+ * @param bottom_input: top sensor
+ * @param top_input: bottom sensor
+ **/
+void Indexer::Init()
+{
+    m_bottom_motor->SetInverted(false);
+    m_top_motor->SetInverted(false);
 }
 
-void Indexer::Waiting() {
-    m_top_indexer->Set(ControlMode::PercentOutput, waitingSpeed);
-    m_bottom_indexer->Set(ControlMode::PercentOutput, waitingSpeed);
+void Indexer::Waiting()
+{
+    m_bottom_motor->Set(ControlMode::Velocity, waitingSpeed);
+    m_top_motor->Set(ControlMode::Velocity, waitingSpeed);
 }
 
-void Indexer::Reverse() {
-    m_top_indexer->Set(ControlMode::PercentOutput, reverseSpeed);
-    m_bottom_indexer->Set(ControlMode::PercentOutput, reverseSpeed);
+void Indexer::Reverse()
+{
+    // m_bottom_motor->Set(ControlMode::PercentOutput, reverseSpeed);
+    // m_top_motor->Set(ControlMode::PercentOutput, reverseSpeed);
+    m_bottom_motor->Set(TalonFXControlMode::Velocity, reverse_rpm);
+    m_top_motor->Set(TalonFXControlMode::Velocity, reverse_rpm);
 }
 
-void Indexer::Intake() {
+void Indexer::Intake()
+{
     // no balls :(
-    if (!top_sensor.Get() && !bottom_sensor.Get()) {
-        m_top_indexer->Set(ControlMode::PercentOutput, intakeSpeed);
-    } 
+    if (!bottom_input->Get() && !top_input->Get())
+    {
+        m_bottom_motor->Set(ControlMode::Velocity, intake_rpm);
+        m_top_motor->Set(ControlMode::Velocity, intake_rpm);
+        // m_bottom_motor->Set(ControlMode::PercentOutput, intakeSpeed);
+        // m_top_motor->Set(ControlMode::PercentOutput, intakeSpeed);
+    }
     // one ball in (lower slot) :/
-    else if (!top_sensor.Get() && bottom_sensor.Get()) {
-        m_top_indexer->Set(ControlMode::PercentOutput, intakeSpeed);
-        m_bottom_indexer->Set(ControlMode::PercentOutput, intakeSpeed);
-    } 
+    else if (bottom_input->Get() && !top_input->Get())
+    {
+        m_bottom_motor->Set(ControlMode::Velocity, intake_rpm);
+        m_top_motor->Set(ControlMode::Velocity, intake_rpm);
+        finished_top = false;
+        // m_bottom_motor->Set(ControlMode::PercentOutput, intakeSpeed);
+        // m_top_motor->Set(ControlMode::PercentOutput, intakeSpeed);
+    }
     // one ball (upper slot) :)
-    else if(top_sensor.Get() && !bottom_sensor.Get()) {
-        m_bottom_indexer->Set(ControlMode::PercentOutput, intakeSpeed);
-    } 
-    // two balls :3 ToT ^w^ //nya// x_x >:3 7w7 =3= owo7
-    else {
-        m_top_indexer->Set(ControlMode::PercentOutput, 0);
-        m_bottom_indexer->Set(ControlMode::PercentOutput, 0);
+    else if (!bottom_input->Get() && top_input->Get())
+    {
+        // if(!finished_top) {
+        //     desired_position = m_top_motor->GetSelectedSensorPosition() + desired_ticks;
+        //     finished_top = true;
+        // }
+        // if(m_top_motor->GetSelectedSensorPosition() < desired_position){
+        m_top_motor->Set(ControlMode::PercentOutput, 0.0);
+        // } else {
+        // m_top_motor->Set(ControlMode::PercentOutput, -0.1);
+        // }
+        m_bottom_motor->Set(ControlMode::Velocity, intake_rpm);
+        // m_bottom_motor->Set(ControlMode::PercentOutput, intakeSpeed);
+        // m_top_motor->Set(ControlMode::PercentOutput, 0);
+    }
+    // two balls :3
+    else
+    {
+        // m_bottom_motor->Set(ControlMode::PercentOutput, 0);
+        // m_top_motor->Set(ControlMode::PercentOutput, 0);
+        m_bottom_motor->Set(ControlMode::PercentOutput, 0.0);
+        m_top_motor->Set(ControlMode::PercentOutput, 0.0);
     }
 }
 
-void Indexer::Shoot(){
-    //run top motor to push 1st ball into shooter
-    if (top_sensor.Get() && bottom_sensor.Get()) {
-        m_top_indexer->Set(ControlMode::PercentOutput, shooterSpeed);
+void Indexer::ManualBoth()
+{
+    m_bottom_motor->Set(ControlMode::Velocity, intake_rpm);
+    m_top_motor->Set(ControlMode::Velocity, intake_rpm);
+}
+
+void Indexer::ManualTop()
+{
+    m_top_motor->Set(ControlMode::Velocity, intake_rpm);
+    m_bottom_motor->Set(TalonFXControlMode::PercentOutput, 0.0);
+}
+
+void Indexer::ManualBottom()
+{
+    m_top_motor->Set(TalonFXControlMode::PercentOutput, 0);
+    m_bottom_motor->Set(ControlMode::Velocity, intake_rpm);
+}
+
+void Indexer::Shoot()
+{
+    if (m_shooter->readyToShoot())
+    {
+        // run top motor to push 1st ball into shooter
+        if (top_input->Get())
+        {
+            m_bottom_motor->Set(ControlMode::PercentOutput, 0.0);
+            m_top_motor->Set(TalonFXControlMode::Velocity, shooter_rpm);
+            // m_top_motor->Set(ControlMode::PercentOutput, shooterSpeed);
+            m_shooter->loopsCooldown = 80;
+        }
     }
-    //turn off top motor
-    m_top_indexer->Set(ControlMode::PercentOutput, 0);
-    //then run bottom motor to push other ball into top slot
-    if (!top_sensor.Get() && bottom_sensor.Get()) {
-        m_bottom_indexer->Set(ControlMode::PercentOutput, shooterSpeed);   
+    // turn off top motor
+    // then run bottom motor to push other ball into top slot
+    if (bottom_input->Get() && !top_input->Get())
+    {
+        m_top_motor->Set(ControlMode::PercentOutput, 0.0);
+        m_bottom_motor->Set(TalonFXControlMode::Velocity, shooter_rpm);
+        // m_bottom_motor->Set(ControlMode::PercentOutput, shooterSpeed);
+        if (!m_intake->isExtended())
+        {
+            m_intake->setState(IntakeState::INDEXING);
+        }
     }
 }
 
-void Indexer::ManualTop() {
-    m_top_indexer->Set(TalonFXControlMode::PercentOutput, 0.3);
-    m_bottom_indexer->Set(TalonFXControlMode::PercentOutput, 0.0);
+void Indexer::ManualReverseTop()
+{
+    m_top_motor->Set(TalonFXControlMode::Velocity, -intake_rpm);
+    m_bottom_motor->Set(TalonFXControlMode::PercentOutput, 0.0);
 }
 
-void Indexer::ManualBottom() {
-    m_top_indexer->Set(TalonFXControlMode::PercentOutput, 0.0);
-    m_bottom_indexer->Set(TalonFXControlMode::PercentOutput, 0.3);
-}
-
-void Indexer::ManualBoth() {
-    m_top_indexer->Set(TalonFXControlMode::PercentOutput, 0.3);
-    m_bottom_indexer->Set(TalonFXControlMode::PercentOutput, 0.3);
+void Indexer::ShooterCheck()
+{
 }
 
 void Indexer::IndexerStateMachine()
 {
-    switch (m_state) {
-    case IndexerState::INIT: 
-            frc::SmartDashboard::PutString("IndexState", "Init");
-            m_last_state = IndexerState::INIT;
-            m_state = IndexerState::INIT;
+    if (m_last_state == IndexerState::SHOOT && m_state != IndexerState::SHOOT && m_intake->getState() == IntakeState::INDEXING)
+    {
+        m_intake->setState(IntakeState::STOP);
+    }
+    frc::SmartDashboard::PutBoolean("bot", bottom_input->Get());
+    frc::SmartDashboard::PutBoolean("top", top_input->Get());
+
+    frc::SmartDashboard::PutNumber("ind top speed", m_bottom_motor->GetSelectedSensorVelocity() / 2048.0 * 600.0);
+    frc::SmartDashboard::PutNumber("ind bot speed", m_top_motor->GetSelectedSensorVelocity() / 2048.0 * 600.0);
+
+    switch (m_state)
+    {
+    case IndexerState::INIT:
+        frc::SmartDashboard::PutString("IndexState", "Init");
+        m_last_state = IndexerState::INIT;
+        m_state = IndexerState::INIT;
         break;
     case IndexerState::WAITING:
         frc::SmartDashboard::PutString("IndexState", "Waiting");
-        if (m_last_state != IndexerState::WAITING) {
+        if (m_last_state != IndexerState::WAITING)
+        {
             Waiting();
         }
         m_last_state = IndexerState::WAITING;
         break;
     case IndexerState::REVERSE:
         frc::SmartDashboard::PutString("IndexState", "Reverse");
-        if (m_last_state != IndexerState::REVERSE) {
+        if (m_last_state != IndexerState::REVERSE)
+        {
             Reverse();
         }
         m_last_state = IndexerState::REVERSE;
         break;
     case IndexerState::INTAKE:
         frc::SmartDashboard::PutString("IndexState", "One Ball");
-        if (m_last_state != IndexerState::INTAKE) {
-            Intake();
-        }
+        Intake();
         m_last_state = IndexerState::INTAKE;
         break;
     case IndexerState::SHOOT:
         frc::SmartDashboard::PutString("IndexState", "Shoot");
-        if (m_last_state != IndexerState::SHOOT) {
-            Shoot();
-        }
+        Shoot();
         m_last_state = IndexerState::SHOOT;
         break;
+    case IndexerState::MANUALREVERSETOP:
+        frc::SmartDashboard::PutString("IndexState", "Manual Reverse Top");
+        ManualReverseTop();
+        m_last_state = IndexerState::MANUALREVERSETOP;
+    case IndexerState::MANUALBOTH:
+        ManualBoth();
+        m_last_state = IndexerState::MANUALBOTH;
+        break;
     case IndexerState::MANUALTOP:
-        frc::SmartDashboard::PutString("IndexState", "Manual Top");
         ManualTop();
+        m_last_state = IndexerState::MANUALTOP;
         break;
     case IndexerState::MANUALBOTTOM:
-        frc::SmartDashboard::PutString("IndexState", "ManualBottom");
         ManualBottom();
+        m_last_state = IndexerState::MANUALBOTTOM;
         break;
-    case IndexerState::MANUALBOTH:
-        frc::SmartDashboard::PutString("IndexState", "ManualBoth");
-        ManualBoth();
+    case IndexerState::SHOOTERCHECK:
+        ShooterCheck();
+        m_last_state = IndexerState::SHOOTERCHECK;
         break;
     }
 }

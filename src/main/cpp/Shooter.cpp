@@ -1,7 +1,7 @@
 #include <Shooter.hpp>
 #include <frc/smartdashboard/SmartDashboard.h>
 
-Shooter::Shooter() {
+Shooter::Shooter() : m_controller(endpoint, rampTime) {
     m_motor1 = std::make_shared<TalonFX>(1);
     m_motor2 = std::make_shared<TalonFX>(2);
     m_motor1->ConfigFactoryDefault();
@@ -12,28 +12,25 @@ Shooter::Shooter() {
     m_motor2->SetNeutralMode(NeutralMode::Coast);
     m_motor2->Follow(*m_motor1);
     m_motor1->ConfigNominalOutputReverse(0.0);
-    m_motor1->Config_kP(0, 0.086076 * 2, 50); // 9.8429E-05 // 0.086076 * 2
-    m_motor1->Config_kF(0, 0.04973929, 50);
+    m_motor1->Config_kP(0, 0.086076 * 10, 50); // 9.8429E-05 // 0.086076 * 2
+    m_motor1->Config_kF(0, 0.04973929 * 3675.0 / 3730.0 * 3675.0 / 3700.0 , 50);
+
     // m_motor2->SetInverted(true);
     // m_motor1->SetInverted(true);
+
+    rolling = new float[bufferSize];
+    memset(rolling, 0, bufferSize * sizeof(float));
 }
 
 void Shooter::Shoot() {
     m_motor1->SetInverted(true);
     m_motor2->SetInverted(true);
-    if(m_motor1->GetSelectedSensorVelocity() <= spooling_speed) {
-        m_motor1->ConfigClosedloopRamp(1.0);
-        m_motor2->ConfigClosedloopRamp(1.0);
-        m_motor1->Set(ControlMode::Velocity, spooling_speed);
-        frc::SmartDashboard::PutBoolean("going", false);
-    } else {
-        m_motor1->ConfigClosedloopRamp(0.0);
-        m_motor2->ConfigClosedloopRamp(0.0);
-        m_motor1->Set(ControlMode::Velocity, shootSpeed);
-        frc::SmartDashboard::PutBoolean("going", true);
-    }
-    // m_motor1->Set(ControlMode::PercentOutput, 0.1f);
+    float currentRPM = sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity()) / shooterGearRatio;
+    m_motor1->Set(ControlMode::Velocity, RPM_TO_TICKS * shooterGearRatio * m_controller.calculateValue(currentRPM));
+    m_motor2->Set(ControlMode::Velocity, RPM_TO_TICKS * shooterGearRatio * m_controller.calculateValue(currentRPM));
+    
 }
+    // m_motor1->Set(ControlMode::PercentOutput, 0.1f);
 
 /**
  * Ramp up to about 300-500 rpm at idle using ClosedLoopRamp
@@ -57,30 +54,55 @@ void Shooter::Reverse() {
     // m_motor1->Set(ControlMode::PercentOutput, reverseSpeed);
 }
 
+bool Shooter::readyToShoot() {
+    // float currentRPM = sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity()) / shooterGearRatio;
+    return std::abs(endpoint  - avgCurrentRPM) <= shootingSpeedTolerance && loopsCooldown == 0;
+}
+
 void Shooter::ShooterStateMachine() {
-    frc::SmartDashboard::PutNumber("Shooter RPM", m_motor1->GetSelectedSensorVelocity());
+    float currentRPM = sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity()) / shooterGearRatio;
+    rolling[rollingIdx] = currentRPM;
+    rollingIdx = (rollingIdx + 1) % bufferSize;
+    float a = 0.0f;
+    for (size_t i = 0 ; i < bufferSize ; i++) {
+        a += rolling[i];
+    }
+    avgCurrentRPM = a / static_cast<float>(bufferSize);
+
+    if (loopsCooldown > 0) loopsCooldown--;
+    frc::SmartDashboard::PutNumber("loops", loopsCooldown);
+    // frc::SmartDashboard::PutNumber("Shooter RPM", m_motor1->GetSelectedSensorVelocity());
     frc::SmartDashboard::PutNumber("Shooter Pos", sensorUnitsToRPM(m_motor2->GetSelectedSensorPosition()));
     frc::SmartDashboard::PutNumber("Shooter percent out", m_motor1->GetMotorOutputPercent());
     frc::SmartDashboard::PutBoolean("speed?", (m_motor1->GetSelectedSensorVelocity() <= spooling_speed));
+
+    frc::SmartDashboard::PutNumber("Shooter RPM", currentRPM);
+    frc::SmartDashboard::PutNumber("Shooter Avg RPM", avgCurrentRPM);
+
+    if((m_last_state == ShooterState::SHOOT) && (m_state != ShooterState::SHOOT)) {
+        m_controller.exit();
+    }
 
     switch(m_state) {
         case ShooterState::INIT:
             frc::SmartDashboard::PutString("ShooterState", "Init");
             m_last_state = ShooterState::INIT;
             m_state = ShooterState::STOP;
-        break;
+            break;
         case ShooterState::STOP:
             frc::SmartDashboard::PutString("ShooterState", "Stop");
             if (m_last_state != ShooterState::STOP) {
                 Stop();
             }
             m_last_state = ShooterState::STOP;
-        break;
+            break;
         case ShooterState::SHOOT:
             frc::SmartDashboard::PutString("ShooterState", "Shoot");
             if (m_last_state != ShooterState::SHOOT) {
-                Shoot();
+                loopsCooldown = 0;
+                m_controller.enter(sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity()) / shooterGearRatio);
             }
+            Shoot();
             m_last_state = ShooterState::SHOOT;
         break;
         case ShooterState::WAITING:
