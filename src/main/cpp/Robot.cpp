@@ -127,6 +127,7 @@ void Robot::TeleopPeriodic()
   }
   else
   {
+    /*
     if (m_joy_op->GetRawButton(5))
     { // Left bumper #1 Climb
       m_climber->current_state = States::DOWN_CLIMB;
@@ -143,7 +144,7 @@ void Robot::TeleopPeriodic()
     { // Start #3 Climb
       m_climber->current_state = States::ARM_FORWARD;
     }
-    
+    */
   }
   
   m_climber->climberStateMachine();
