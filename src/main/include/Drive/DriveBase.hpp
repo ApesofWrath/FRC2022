@@ -10,7 +10,7 @@
 
 class DriveBase{
 public:
-    DriveBase(frc::Joystick *joy_op);
+    DriveBase(frc::Joystick *joy_op, AHRS *ahrs_);
     void Controller();
 
     /**

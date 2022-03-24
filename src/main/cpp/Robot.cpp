@@ -9,7 +9,6 @@ void Robot::RobotInit()
   m_joy_op = new frc::Joystick(0);
   m_joy_drive = new frc::Joystick(1);
 
-  m_drive = new DriveBase(m_joy_drive);
   m_shooter = std::make_shared<Shooter>();
   m_hood = std::make_shared<Hood>();
   m_intake = std::make_shared<Intake>();
@@ -20,6 +19,8 @@ void Robot::RobotInit()
 
   m_autondrive = new AutonDrive(10, 12, 11, 13, m_ahrs);
   m_container = new RobotContainer(m_autondrive);
+  m_drive = new DriveBase(m_joy_drive, m_ahrs);
+
 
   m_container->InitAutoChoices();
 
