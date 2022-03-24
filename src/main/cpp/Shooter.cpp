@@ -17,6 +17,9 @@ Shooter::Shooter() : m_controller(endpoint, rampTime), m_spooling_controller(spo
     // m_motor2->SetInverted(true);
     // m_motor1->SetInverted(true);
 
+    m_motor1->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 160, 160, 0.3));
+    m_motor2->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 160, 160, 0.3));
+
     rolling = new float[bufferSize];
     memset(rolling, 0, bufferSize * sizeof(float));
 }

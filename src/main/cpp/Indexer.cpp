@@ -141,6 +141,15 @@ void Indexer::Shoot()
             m_intake->setState(IntakeState::INDEXING);
         }
     }
+
+    if(!bottom_input->Get() && !top_input->Get()) {
+        m_top_motor->Set(TalonFXControlMode::Velocity, shooter_rpm);
+        m_bottom_motor->Set(TalonFXControlMode::Velocity, shooter_rpm);
+        if (!m_intake->isExtended())
+        {
+            m_intake->setState(IntakeState::INDEXING);
+        }
+    }
 }
 
 void Indexer::ManualReverseTop()
