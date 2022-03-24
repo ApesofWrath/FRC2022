@@ -35,11 +35,11 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 
     std::cout << "step 2\n";
     // Set up config for trajectory; sets max velocity/acceleraton in very nice sig figs
-    frc::TrajectoryConfig *config = new frc::TrajectoryConfig(kMaxForwardVelocity,//2
-                                units::meters_per_second_squared_t(2));//5
+    frc::TrajectoryConfig *config = new frc::TrajectoryConfig(units::meters_per_second_t(3),//2
+                                units::meters_per_second_squared_t(6));//5
                                 
-    frc::TrajectoryConfig *config2 = new frc::TrajectoryConfig(units::meters_per_second_t(1),
-                                units::meters_per_second_squared_t(2));
+    // frc::TrajectoryConfig *config2 = new frc::TrajectoryConfig(units::meters_per_second_t(1),
+    //                             units::meters_per_second_squared_t(2));
 
     // Add kinematics to ensure max speed is actually obeyed
     std::cout << "step 3\n";
@@ -52,7 +52,7 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
     std::vector<frc::Translation2d> points;
 
     frc::Trajectory trajectory, trajectory1, trajectory2, trajectoryTurn;
-    frc2::RamseteCommand *ramseteCommand, *ramseteCommand1, *ramseteCommand2, *ramseteCommandTurn;
+    frc2::RamseteCommand *ramseteCommand, *ramseteCommand1, *ramseteCommand2;
 
 
 
@@ -116,8 +116,8 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
             config->SetReversed(true);
             trajectory = frc::TrajectoryGenerator::GenerateTrajectory(
                 start,
-                points,
-                end,
+                {},
+                frc::Pose2d(3_m, 1_m, frc::Rotation2d(0_deg)),
                 *config);
             ramseteCommand = new frc2::RamseteCommand(
                 trajectory, [this]() { return m_drive->getPose(); },
@@ -144,13 +144,16 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 
         case SHOOT_PRELOAD:
 
+            //WARNING: MOTOR DIRECTIOON REVERSED!
+            // 1_m IS ACTUALLY BACKWARDS, -1_m IS FORWARDS
+
             start = frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg));
-            end = frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg));
+            end = frc::Pose2d(2_m, 0_m, frc::Rotation2d(0_deg));
             points = {};
             config->SetReversed(false);
             trajectory = frc::TrajectoryGenerator::GenerateTrajectory(
                 start,
-                points,
+                {},
                 end,
                 *config);
             ramseteCommand = new frc2::RamseteCommand(
@@ -169,11 +172,13 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 
             return new frc2::SequentialCommandGroup(
 
-                frc2::InstantCommand([this] {
-                    m_hood->setState(HoodState::DOWN);
+                frc2::InstantCommand([this] {   
+                    m_hood->setState(HoodState::UP);
                     m_shooter->setState(ShooterState::SHOOT);
                     m_indexer->m_state = IndexerState::SHOOT;
                 }),
+
+                frc2::WaitCommand(3_s),
 
                 std::move(*ramseteCommand),
                 frc2::InstantCommand([this] { 
@@ -318,13 +323,14 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 }
 
 void RobotContainer::InitAutoChoices() {
-    std::cout << "initauto: step1\n";    
+    std::cout << "initauto: step 1\n";    
     
-    m_chooser.SetDefaultOption("Robot", Auto::SPIN);
-    m_chooser.AddOption("Robot", Auto::CROSS_INIT_LINE);
-    m_chooser.AddOption("Robot", Auto::SHOOT_PRELOAD);
-    m_chooser.AddOption("Robot", Auto::THREE_BALL);
-    m_chooser.AddOption("Robot", Auto::FIVE_BALL);
+    m_chooser.SetDefaultOption("CIL", Auto::CROSS_INIT_LINE);
+    m_chooser.AddOption("Spin", Auto::SPIN);
+    m_chooser.AddOption("Cross Init", Auto::CROSS_INIT_LINE);
+    m_chooser.AddOption("Shoot Preload", Auto::SHOOT_PRELOAD);
+    m_chooser.AddOption("Three ball", Auto::THREE_BALL);
+    m_chooser.AddOption("Five bal", Auto::FIVE_BALL);
 }                  
 
 
