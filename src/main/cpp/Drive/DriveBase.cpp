@@ -2,7 +2,7 @@
 
 #define LOG_V(var) frc::SmartDashboard::PutNumber(#var , var)
 
-DriveBase::DriveBase(frc::Joystick *joy_op, AHRS ahrs_) {
+DriveBase::DriveBase(frc::Joystick *joy_op, AHRS *ahrs_) {
     m_joy_op = joy_op;
        
     m_falcon_left1 = new WPI_TalonFX(10);
