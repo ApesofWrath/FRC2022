@@ -21,7 +21,7 @@ constexpr auto kRamseteZeta = 0.7 / 1_rad;
 
 constexpr auto kP_ = 0.00019388;
 
-constexpr auto kMaxForwardVelocity = 3.870452_m / 1_s;
+constexpr auto kMaxForwardVelocity = 1.870452_m / 1_s;
 
 const frc::DifferentialDriveKinematics K_DRIVE_KINEMATICS{
     units::meter_t(K_TRACK_WIDTH)};
@@ -63,12 +63,12 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
             trajectory = frc::TrajectoryGenerator::GenerateTrajectory(
                 frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
                 {},
-                frc::Pose2d(0_m, 0_m, frc::Rotation2d(-180_deg)),
+                frc::Pose2d(0_m, 0.1_m, frc::Rotation2d(-181_deg)),
                 *config);
             trajectory2 = frc::TrajectoryGenerator::GenerateTrajectory(
-                frc::Pose2d(0_m, 0_m, frc::Rotation2d(-180_deg)),
+                frc::Pose2d(0_m, 0_m, frc::Rotation2d(-181_deg)),
                 {},
-                frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
+                frc::Pose2d(0_m, 0.1_m, frc::Rotation2d(0_deg)),
                 *config);
             ramseteCommand = new frc2::RamseteCommand(
                 trajectory, [this]() { return m_drive->getPose(); },
@@ -111,13 +111,13 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
         case CROSS_INIT_LINE:
 
             start = frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg));
-            end = frc::Pose2d(2.098_m, 0_m, frc::Rotation2d(0_deg));
+            end = frc::Pose2d(2.098_m, 0_m, frc::Rotation2d(0_deg));     //end = frc::Pose2d(2.098_m, 0_m, frc::Rotation2d(0_deg));
             points = {};
-            config->SetReversed(true);
+            config->SetReversed(false); //true
             trajectory = frc::TrajectoryGenerator::GenerateTrajectory(
                 start,
                 {},
-                frc::Pose2d(3_m, 1_m, frc::Rotation2d(0_deg)),
+                end,
                 *config);
             ramseteCommand = new frc2::RamseteCommand(
                 trajectory, [this]() { return m_drive->getPose(); },
@@ -144,13 +144,11 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 
         case SHOOT_PRELOAD:
 
-            //WARNING: MOTOR DIRECTIOON REVERSED!
-            // 1_m IS ACTUALLY BACKWARDS, -1_m IS FORWARDS
 
             start = frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg));
-            end = frc::Pose2d(2_m, 0_m, frc::Rotation2d(0_deg));
+            end = frc::Pose2d(-1_m, 0_m, frc::Rotation2d(0_deg));
             points = {};
-            config->SetReversed(false);
+            config->SetReversed(true); //false
             trajectory = frc::TrajectoryGenerator::GenerateTrajectory(
                 start,
                 {},
@@ -165,15 +163,15 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
                 [this] { return m_drive->getWheelSpeeds(); },
                 frc2::PIDController(kP_, 0, 0),
                 frc2::PIDController(kP_, 0, 0),
-                [this](auto left, auto right) { m_drive->tankDriveVolts(left, right); },
+                [this](auto left, auto right) { m_drive->tankDriveVolts(-left, -right); },
                 {m_drive});
             
             m_drive->resetOdometry(start);
 
             return new frc2::SequentialCommandGroup(
 
-                frc2::InstantCommand([this] {   
-                    m_hood->setState(HoodState::UP);
+                frc2::InstantCommand([this] {
+                    m_hood->setState(HoodState::DOWN);
                     m_shooter->setState(ShooterState::SHOOT);
                     m_indexer->m_state = IndexerState::SHOOT;
                 }),
@@ -185,6 +183,149 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
                 m_drive->tankDriveVolts(0_V, 0_V);
                 std::cout << "Stop1\n"; 
                 }, {})
+            );
+        break;
+
+
+
+case TWO_BALL:
+
+            //to test: spool speed errors / shooter shooting late error
+
+            //hub -> 1st -> hub
+            
+            // points = {
+            //     frc::Translation2d(-45.074_in, 0_in),
+            //     frc::Translation2d(1.567_in, 101.473_in),
+            // };
+            
+            config->SetReversed(false);
+
+            //trolling
+            trajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+                // get balls
+                // make sure account for intake smasheroo
+                
+                frc::Pose2d(0_in, 0_in, frc::Rotation2d(0_deg)),
+                {},
+                //1st ball
+                frc::Pose2d(45.074_in, 0_in, frc::Rotation2d(0_deg)),
+                *config
+            );
+
+            config->SetReversed(true);
+
+            trajectory1 = frc::TrajectoryGenerator::GenerateTrajectory(
+                
+                frc::Pose2d(45.074_in, 0_in, frc::Rotation2d(0_deg)),
+                {},
+                //retract intake
+                frc::Pose2d(0_in, 0_in, frc::Rotation2d(0_deg)),
+                *config
+            );
+
+            config->SetReversed(false);
+
+            trajectory2 = frc::TrajectoryGenerator::GenerateTrajectory(
+                //this might "pose" a problem bc redifining origin direction as backwards
+                //can always set prev trjectory to end 180 and start positive here
+                frc::Pose2d(0_in, 0_in, frc::Rotation2d(180_deg)),
+                {},
+                //End against the side wall of the hub
+                frc::Pose2d(-41_in, 4.140_in, frc::Rotation2d(157.59_deg)),  //frc::Pose2d(41_in, -4.140_in, frc::Rotation2d(-22.41_deg)),
+                *config
+            );
+
+            m_drive->resetOdometry(start);
+
+            ramseteCommand = new frc2::RamseteCommand(
+                trajectory, [this]() { return m_drive->getPose(); },
+                frc::RamseteController(kRamseteB, kRamseteZeta),
+                frc::SimpleMotorFeedforward<units::meters>(
+                    K_S, K_V, K_A),
+                K_DRIVE_KINEMATICS,
+                [this] { return m_drive->getWheelSpeeds(); },
+                frc2::PIDController(kP_, 0, 0),
+                frc2::PIDController(kP_, 0, 0),
+                [this](auto left, auto right) { m_drive->tankDriveVolts(left, right); },
+                {m_drive});
+            
+            ramseteCommand1 = new frc2::RamseteCommand(
+                trajectory1, [this]() { return m_drive->getPose(); },
+                frc::RamseteController(kRamseteB, kRamseteZeta),
+                frc::SimpleMotorFeedforward<units::meters>(
+                    K_S, K_V, K_A),
+                K_DRIVE_KINEMATICS,
+                [this] { return m_drive->getWheelSpeeds(); },
+                frc2::PIDController(kP_, 0, 0),
+                frc2::PIDController(kP_, 0, 0),
+                [this](auto left, auto right) { m_drive->tankDriveVolts(left, right); },
+                {m_drive});
+
+            ramseteCommand2 = new frc2::RamseteCommand(
+                trajectory2, [this]() { return m_drive->getPose(); },
+                frc::RamseteController(kRamseteB, kRamseteZeta),
+                frc::SimpleMotorFeedforward<units::meters>(
+                    K_S, K_V, K_A),
+                K_DRIVE_KINEMATICS,
+                [this] { return m_drive->getWheelSpeeds(); },
+                frc2::PIDController(kP_, 0, 0),
+                frc2::PIDController(kP_, 0, 0),
+                [this](auto left, auto right) { m_drive->tankDriveVolts(left, right); },
+                {m_drive});
+
+            return new frc2::SequentialCommandGroup(
+
+                // frc2::InstantCommand([this] {
+                //     m_hood->setState(HoodState::DOWN);
+                //     m_shooter->setState(ShooterState::SHOOT);
+                //     m_indexer->m_state = IndexerState::SHOOT;
+                //     m_intake->setState(IntakeState::INDEXING);
+                // }),
+
+                frc2::InstantCommand([this] {
+                    m_intake->setState(IntakeState::GO);
+                    m_indexer->SetState(IndexerState::INTAKE);
+                }),
+
+                frc2::WaitCommand(1.5_s),
+                
+                std::move(*ramseteCommand),
+                frc2::InstantCommand([this] { 
+                m_drive->tankDriveVolts(0_V, 0_V);
+                std::cout << "Stop1\n"; 
+                }, {}),
+
+                frc2::WaitCommand(.5_s),
+                
+                std::move(*ramseteCommand1),
+                frc2::InstantCommand([this] { 
+                m_drive->tankDriveVolts(0_V, 0_V);
+                std::cout << "Stop2\n"; 
+                }, {}),
+
+                frc2::InstantCommand([this] {
+                    m_intake->setState(IntakeState::STOP);
+                    m_indexer->SetState(IndexerState::WAITING);
+                }),
+
+                frc2::WaitCommand(.5_s),
+
+                std::move(*ramseteCommand2),
+                frc2::InstantCommand([this] { 
+                m_drive->tankDriveVolts(0_V, 0_V);
+                std::cout << "Stop3\n"; 
+                }, {}),
+
+                frc2::WaitCommand(1_s),
+
+                frc2::InstantCommand([this] {
+                    m_shooter->setState(ShooterState::SHOOT);
+                    m_indexer->m_state = IndexerState::SHOOT;
+                })
+
+                //wait command needed here to make shooter actually shoot?
+
             );
         break;
 
@@ -275,7 +416,7 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
                     m_intake->setState(IntakeState::INDEXING);
                 }),
 
-                // frc2::WaitCommand(1_s);,
+                frc2::WaitCommand(3_s),
                 
                 std::move(*ramseteCommand),
                 frc2::InstantCommand([this] { 
@@ -283,10 +424,14 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
                 std::cout << "Stop1\n"; 
                 }, {}),
 
+                frc2::WaitCommand(.5_s),
+
                 frc2::InstantCommand([this] {
                     m_intake->setState(IntakeState::GO);
                     m_indexer->SetState(IndexerState::INTAKE);
                 }),
+
+                frc2::WaitCommand(.5_s),
                 
                 std::move(*ramseteCommand1),
                 frc2::InstantCommand([this] { 
@@ -294,16 +439,22 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
                 std::cout << "Stop2\n"; 
                 }, {}),
 
+                frc2::WaitCommand(2_s),
+
                 frc2::InstantCommand([this] {
                     m_intake->setState(IntakeState::STOP);
                     m_indexer->SetState(IndexerState::WAITING);
                 }),
+
+                frc2::WaitCommand(.5_s),
 
                 std::move(*ramseteCommand2),
                 frc2::InstantCommand([this] { 
                 m_drive->tankDriveVolts(0_V, 0_V);
                 std::cout << "Stop3\n"; 
                 }, {}),
+
+                frc2::WaitCommand(1_s),
 
                 frc2::InstantCommand([this] {
                     m_shooter->setState(ShooterState::SHOOT);
@@ -329,6 +480,7 @@ void RobotContainer::InitAutoChoices() {
     m_chooser.AddOption("Spin", Auto::SPIN);
     m_chooser.AddOption("Cross Init", Auto::CROSS_INIT_LINE);
     m_chooser.AddOption("Shoot Preload", Auto::SHOOT_PRELOAD);
+    m_chooser.AddOption("Two ball", Auto::TWO_BALL);
     m_chooser.AddOption("Three ball", Auto::THREE_BALL);
     m_chooser.AddOption("Five bal", Auto::FIVE_BALL);
 }                  

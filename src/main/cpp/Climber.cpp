@@ -4,7 +4,7 @@ Climber::Climber()
 {
     m_solenoid = std::make_shared<frc::DoubleSolenoid>(61, frc::PneumaticsModuleType::CTREPCM, 4, 5);
 
-    climber_talon1 = new TalonFX(30);
+    climber_talon1 = new TalonFX(39);
     climber_talon2 = new TalonFX(31);
     arm_talon1 = new TalonFX(32);
     arm_talon2 = new TalonFX(33);
@@ -88,11 +88,6 @@ void Climber::Up()
     // climber_talon1->Config_kP(0, 0.0005);
     // climber_talon1->Config_kI(0, 0);
     // climber_talon1->Config_kD(0, 0);
-    climber_talon1->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(false, 10, 10, 0.1));
-    climber_talon2->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(false, 10, 10, 0.1));
-        climber_talon1->Config_kP(0, 0.02428 * .8);
-    climber_talon1->Config_kI(0, 0.000003);
-    climber_talon1->Config_kD(0, 0.00025795 / 100);
     m_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
     // if (m_sequence_counter == 0)
     // {
@@ -126,8 +121,6 @@ void Climber::Down()
     // climber_talon1->Config_kP(0, 0.02428 * 2 * 3);
     // climber_talon1->Config_kI(0, 0.000003);
     // climber_talon1->Config_kD(0, 0.00025795 / 100);
-    climber_talon1->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 200, 200, 5.0));
-    climber_talon2->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 200, 200, 5.0));
     if(climber_talon1->GetSelectedSensorPosition() > 2000.0) {
         m_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
         climber_talon1->Set(TalonFXControlMode::PercentOutput, -0.90);
@@ -158,10 +151,21 @@ void Climber::Down()
 
 void Climber::ArmReverse()
 {
-
-    // arm_talon1->Set(TalonFXControlMode::Position, CalculateAngle(-15.0));
-    // arm_talon2->Set(TalonFXControlMode::Position, CalculateAngle(-15.0));
-    // arm_talon2->Set(TalonFXControlMode::PercentOutput, 0.0);
+    if(arm_talon1->GetOutputCurrent() > 5.0 || reach_limit_left) {
+        arm_talon1->Set(TalonFXControlMode::PercentOutput, 0.0);
+        reach_limit_left = true;
+    } else {
+        arm_talon1->Set(TalonFXControlMode::PercentOutput, -0.1);
+    }
+    if(arm_talon2->GetOutputCurrent() > 5.0 || reach_limit_right) {
+        arm_talon2->Set(TalonFXControlMode::PercentOutput, 0.0);
+        reach_limit_right = true;
+    } else {
+        arm_talon2->Set(TalonFXControlMode::PercentOutput, -0.1);
+    }
+    if(reach_limit_right && reach_limit_right) {
+        current_state = States::STOP_CLIMB;
+    }
 }
 
 void Climber::ArmForward()
@@ -207,49 +211,66 @@ void Climber::Zero()
 
 void Climber::climberStateMachine()
 {
+
+    
     // Talon1 Smart Dashboard
-    //  frc::SmartDashboard::PutNumber("Talon1 Voltage", climber_talon1->GetMotorOutputVoltage());
+     frc::SmartDashboard::PutNumber("Talon1 Voltage", climber_talon1->GetMotorOutputVoltage());
      frc::SmartDashboard::PutNumber("Talon1 Percent Out", climber_talon1->GetMotorOutputPercent());
     frc::SmartDashboard::PutNumber("Sensor Pos Climb Talon1", climber_talon1->GetSelectedSensorPosition());
-    // frc::SmartDashboard::PutNumber("Sensor Velocity Talon1", climber_talon1->GetSelectedSensorVelocity());
+    frc::SmartDashboard::PutNumber("Sensor Velocity Talon1", climber_talon1->GetSelectedSensorVelocity());
 
     frc::SmartDashboard::PutNumber("Sensor Pos Arm Talon1", arm_talon1->GetSelectedSensorPosition());
     frc::SmartDashboard::PutNumber("lArm current", arm_talon1->GetOutputCurrent());
     frc::SmartDashboard::PutNumber("rArm current", arm_talon2->GetOutputCurrent());
 
     // Talon2 Smart Dashboard
-    //  frc::SmartDashboard::PutNumber("Talon2 Voltage", climber_talon2->GetMotorOutputVoltage());
+     frc::SmartDashboard::PutNumber("Talon2 Voltage", climber_talon2->GetMotorOutputVoltage());
      frc::SmartDashboard::PutNumber("Talon2 Percent Out", climber_talon2->GetMotorOutputPercent());
     frc::SmartDashboard::PutNumber("Sensor Pos Climb Talon2", climber_talon2->GetSelectedSensorPosition());
-    // frc::SmartDashboard::PutNumber("Sensor Velocity Talon2", climber_talon2->GetSelectedSensorVelocity());
+    frc::SmartDashboard::PutNumber("Sensor Velocity Talon2", climber_talon2->GetSelectedSensorVelocity());
     frc::SmartDashboard::PutNumber("Sensor Pos Arm Talon2", arm_talon2->GetSelectedSensorPosition());
 
     frc::SmartDashboard::PutNumber("Curr State", (int)current_state);
 
-    
+    frc::SmartDashboard::PutNumber("Climber State", static_cast<uint32_t>(current_state));
+
+
     switch (current_state)
     {
     
     case States::INIT:
         Init();
         current_state = States::ZERO_CLIMB;
+        last_state = States::INIT;
         break;
     
     
     case States::STOP_CLIMB:
         // if (last_state != States::STOP_CLIMB) {
-        Stop();
+        // Stop();
+        last_state = States::STOP_CLIMB;
         // }
         break;
 
     case States::UP_CLIMB:
-        // if (last_state != States::UP_CLIMB) {
+        if (last_state != States::UP_CLIMB) {
+            climber_talon1->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(false, 40, 40, 0.5));
+            climber_talon2->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(false, 40, 40, 0.5));
+            climber_talon1->Config_kP(0, 0.02428 * .8);
+            climber_talon1->Config_kI(0, 0.000003);
+            climber_talon1->Config_kD(0, 0.00025795 / 100);
+        }
         Up();
+        last_state = States::UP_CLIMB;
         // }
         break;
     case States::DOWN_CLIMB:
-        // if (last_state != States::DOWN_CLIMB) {
+        if (last_state != States::DOWN_CLIMB) {
+            climber_talon1->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 200, 200, 5.0));
+            climber_talon2->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 200, 200, 5.0));
+        }
         Down();
+        last_state = States::DOWN_CLIMB;
         // }
         break;
     
@@ -261,17 +282,28 @@ void Climber::climberStateMachine()
     
 
     case States::ARM_REVERSE:
+        if(last_state != States::ARM_REVERSE) {
+            reach_limit_right = false;
+            reach_limit_left = false;
+        }
         ArmReverse();
+        last_state = States::ARM_REVERSE;
         break;
 
     case States::ARM_FORWARD:
+        if(last_state != States::ARM_FORWARD) {
+            reach_limit_right = false;
+            reach_limit_left = false;
+        }
         ArmForward();
+        last_state = States::ARM_FORWARD;
         break;
 
     case States::ZERO_CLIMB:
-        // if (last_state != States::ZERO_CLIMB) {
-        Zero();
-        // }
+        if (last_state != States::ZERO_CLIMB) {
+            Zero();
+        }
+        last_state = States::ZERO_CLIMB;
         break;
     }
 }

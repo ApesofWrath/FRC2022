@@ -18,15 +18,17 @@
 #include "Auton/Auton.hpp"
 
 const std::string kAutoNameDefault = "Default";
-const std::string kAutoNameCustom = "My Auto";  
 const std::string kAutoName_TestPath = "Test Path";
 const std::string kAutoName_CIL = "Cross Initial Line";
 const std::string kAutoName_ShootPreload = "Shoot Preload";
+const std::string kAutoName_TwoBall = "Two balls";
+const std::string kAutoName_ThreeBall = "Three ball";
 
 enum Auto {
         SPIN,
         CROSS_INIT_LINE,
         SHOOT_PRELOAD,
+        TWO_BALL,
         THREE_BALL,
         FIVE_BALL
 };

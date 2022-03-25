@@ -39,12 +39,13 @@ public:
     double reverse_rpm = 6000.0;
 
     double intakeSpeed = 0.25;
-    double intake_rpm = 2000.0 * 2048.0 / 600.0;
+    double intake_rpm = 2700.0 * 2048.0 / 600.0;
     
     double waitingSpeed = 0.10;
     double waiting_rpm = 600.0 * 2048.0 / 600.0;
 
     std::shared_ptr<TalonFX> m_intake_motor;
+    int loopsSinceLastTransition = 0;
 
 private:
     std::shared_ptr<frc::DoubleSolenoid> m_solenoid;

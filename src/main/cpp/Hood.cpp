@@ -24,19 +24,19 @@ void Hood::Down() {
 void Hood::HoodStateMachine() {
     switch (m_state) {
         case HoodState::INIT:
-            frc::SmartDashboard::PutString("HoodState", "Init");
+            // frc::SmartDashboard::PutString("HoodState", "Init");
             m_last_state = HoodState::INIT;
             m_state = HoodState::INIT;
         break;
         case HoodState::UP:
-            frc::SmartDashboard::PutString("HoodState", "Up");
+            // frc::SmartDashboard::PutString("HoodState", "Up");
             if (m_last_state != HoodState::UP) {
                 Up();
             }
             m_last_state = HoodState::UP;
         break;
         case HoodState::DOWN:
-            frc::SmartDashboard::PutString("HoodState", "Down");
+            // frc::SmartDashboard::PutString("HoodState", "Down");
             if (m_last_state != HoodState::DOWN) {
                 Down();
             }

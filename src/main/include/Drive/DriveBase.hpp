@@ -20,6 +20,7 @@ public:
     void ChecklrLimits();
     void SetBrakeNeutral();
     void SetCoastNeutral();
+    void UpdateConfigs();
 
     double target_l = 0, 
         target_r = 0, 

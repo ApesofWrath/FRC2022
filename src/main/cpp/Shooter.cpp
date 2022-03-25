@@ -20,13 +20,15 @@ Shooter::Shooter() : m_controller(endpoint, rampTime), m_spooling_controller(spo
     m_motor1->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 160, 160, 0.3));
     m_motor2->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 160, 160, 0.3));
 
+    m_motor1->SetInverted(true);
+    m_motor2->SetInverted(true);
+
+
     rolling = new float[bufferSize];
     memset(rolling, 0, bufferSize * sizeof(float));
 }
 
 void Shooter::Shoot() {
-    m_motor1->SetInverted(true);
-    m_motor2->SetInverted(true);
     float currentRPM = sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity()) / shooterGearRatio;
     m_motor1->Set(ControlMode::Velocity, RPM_TO_TICKS * shooterGearRatio * m_controller.calculateValue(currentRPM));
     m_motor2->Set(ControlMode::Velocity, RPM_TO_TICKS * shooterGearRatio * m_controller.calculateValue(currentRPM));
@@ -34,8 +36,6 @@ void Shooter::Shoot() {
 }
     
 void Shooter::Spooling() {
-    m_motor1->SetInverted(true);
-    m_motor2->SetInverted(true);
     float currentRPM = sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity()) / shooterGearRatio;
     m_motor1->Set(ControlMode::Velocity, RPM_TO_TICKS * shooterGearRatio * m_controller.calculateValue(currentRPM));
     m_motor2->Set(ControlMode::Velocity, RPM_TO_TICKS * shooterGearRatio * m_controller.calculateValue(currentRPM));
@@ -75,14 +75,14 @@ void Shooter::ShooterStateMachine() {
     avgCurrentRPM = a / static_cast<float>(bufferSize);
 
     if (loopsCooldown > 0) loopsCooldown--;
-    frc::SmartDashboard::PutNumber("loops", loopsCooldown);
-    // frc::SmartDashboard::PutNumber("Shooter RPM", m_motor1->GetSelectedSensorVelocity());
-    frc::SmartDashboard::PutNumber("Shooter Pos", sensorUnitsToRPM(m_motor2->GetSelectedSensorPosition()));
-    frc::SmartDashboard::PutNumber("Shooter percent out", m_motor1->GetMotorOutputPercent());
-    frc::SmartDashboard::PutBoolean("speed?", (m_motor1->GetSelectedSensorVelocity() <= spooling_speed));
+    // frc::SmartDashboard::PutNumber("loops", loopsCooldown);
+    frc::SmartDashboard::PutNumber("Shooter RPM", m_motor1->GetSelectedSensorVelocity());
+    // frc::SmartDashboard::PutNumber("Shooter Pos", sensorUnitsToRPM(m_motor2->GetSelectedSensorPosition()));
+    // frc::SmartDashboard::PutNumber("Shooter percent out", m_motor1->GetMotorOutputPercent());
+    // frc::SmartDashboard::PutBoolean("speed?", (m_motor1->GetSelectedSensorVelocity() <= spooling_speed));
 
-    frc::SmartDashboard::PutNumber("Shooter RPM", currentRPM);
-    frc::SmartDashboard::PutNumber("Shooter Avg RPM", avgCurrentRPM);
+    // frc::SmartDashboard::PutNumber("Shooter RPM", currentRPM);
+    // frc::SmartDashboard::PutNumber("Shooter Avg RPM", avgCurrentRPM);
 
     if((m_last_state == ShooterState::SHOOT) && (m_state != ShooterState::SHOOT)) {
         m_controller.exit();
@@ -94,19 +94,19 @@ void Shooter::ShooterStateMachine() {
 
     switch(m_state) {
         case ShooterState::INIT:
-            frc::SmartDashboard::PutString("ShooterState", "Init");
+            // frc::SmartDashboard::PutString("ShooterState", "Init");
             m_last_state = ShooterState::INIT;
             m_state = ShooterState::STOP;
             break;
         case ShooterState::STOP:
-            frc::SmartDashboard::PutString("ShooterState", "Stop");
+            // frc::SmartDashboard::PutString("ShooterState", "Stop");
             if (m_last_state != ShooterState::STOP) {
                 Stop();
             }
             m_last_state = ShooterState::STOP;
             break;
         case ShooterState::SHOOT:
-            frc::SmartDashboard::PutString("ShooterState", "Shoot");
+            // frc::SmartDashboard::PutString("ShooterState", "Shoot");
             if (m_last_state != ShooterState::SHOOT) {
                 loopsCooldown = 0;
                 m_controller.enter(sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity()) / shooterGearRatio);
@@ -115,21 +115,21 @@ void Shooter::ShooterStateMachine() {
             m_last_state = ShooterState::SHOOT;
         break;
         case ShooterState::WAITING:
-            frc::SmartDashboard::PutString("ShooterState", "Waiting");
+            // frc::SmartDashboard::PutString("ShooterState", "Waiting");
             if (m_last_state != ShooterState::WAITING) {
                 Waiting();
             }
             m_last_state = ShooterState::WAITING;
         break;
         case ShooterState::REVERSE:
-            frc::SmartDashboard::PutString("ShooterState", "Reverse");
+            // frc::SmartDashboard::PutString("ShooterState", "Reverse");
             if (m_last_state != ShooterState::REVERSE) {
                 Reverse();
             }
             m_last_state = ShooterState::REVERSE;
         break;
         case ShooterState::SPOOLING:
-            frc::SmartDashboard::PutString("ShooterState", "Spooling");
+            // frc::SmartDashboard::PutString("ShooterState", "Spooling");
             if(m_last_state != ShooterState::SPOOLING) {
                 m_controller.enter(sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity()) / shooterGearRatio);
             }

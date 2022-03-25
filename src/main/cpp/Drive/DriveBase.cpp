@@ -1,6 +1,11 @@
 #include "Drive/DriveBase.hpp"
 
+
+#if 0
 #define LOG_V(var) frc::SmartDashboard::PutNumber(#var , var)
+#else
+#define LOG_V(var)
+#endif
 
 DriveBase::DriveBase(frc::Joystick *joy_op, AHRS *ahrs_) {
     m_joy_op = joy_op;
@@ -10,6 +15,12 @@ DriveBase::DriveBase(frc::Joystick *joy_op, AHRS *ahrs_) {
     m_falcon_right1 = new WPI_TalonFX(11);
     m_falcon_right2 = new WPI_TalonFX(13);
 
+    ahrs = ahrs_;
+
+    UpdateConfigs();
+}
+
+void DriveBase::UpdateConfigs() {
     m_falcon_left1->ConfigFactoryDefault();
     m_falcon_right1->ConfigFactoryDefault();
     m_falcon_left2->ConfigFactoryDefault();
@@ -17,6 +28,9 @@ DriveBase::DriveBase(frc::Joystick *joy_op, AHRS *ahrs_) {
 
     m_falcon_right1->SetInverted(true);
     m_falcon_right2->SetInverted(true);
+
+    m_falcon_left1->SetInverted(false);
+    m_falcon_left2->SetInverted(false);
 
     m_falcon_left2->Follow(*m_falcon_left1);
     m_falcon_right2->Follow(*m_falcon_right1);
@@ -53,7 +67,6 @@ DriveBase::DriveBase(frc::Joystick *joy_op, AHRS *ahrs_) {
 
  
 
-    ahrs = ahrs_;
 }
 
 void DriveBase::Controller() {
@@ -86,17 +99,17 @@ void DriveBase::Controller() {
 
     curr_yaw_rate = -ahrs->GetRate();
 
-    frc::SmartDashboard::PutNumber("target_r before", target_r);
-	frc::SmartDashboard::PutNumber("target_l before", target_l);
-    frc::SmartDashboard::PutNumber("current yaw", curr_yaw_rate);
+    // frc::SmartDashboard::PutNumber("target_r before", target_r);
+	// frc::SmartDashboard::PutNumber("target_l before", target_l);
+    // frc::SmartDashboard::PutNumber("current yaw", curr_yaw_rate);
 
     LOG_V(target_yaw);
 
     target_l -= (target_yaw * MAX_Y_RPM / MAX_YAW_RATE);
     target_r += (target_yaw * MAX_Y_RPM / MAX_YAW_RATE);
 
-    frc::SmartDashboard::PutNumber("target_l after", target_l);
-    frc::SmartDashboard::PutNumber("target_r after", target_r);
+    // frc::SmartDashboard::PutNumber("target_l after", target_l);
+    // frc::SmartDashboard::PutNumber("target_r after", target_r);
 
     yaw_error = target_yaw - curr_yaw_rate;
 	if (std::abs(yaw_error) < .3) { //TODO: maybe get rid of this
@@ -130,6 +143,9 @@ void DriveBase::Controller() {
     
     curr_l_v = SENSOR_TIMESTEP_MINUTE_CONVERSION * (m_falcon_left1->GetSelectedSensorVelocity() / TICKS_PER_ROT);
     curr_r_v = SENSOR_TIMESTEP_MINUTE_CONVERSION * (m_falcon_right1->GetSelectedSensorVelocity() / TICKS_PER_ROT);
+
+    // frc::SmartDashboard::PutNumber("curr_l_v", m_falcon_left1->GetSelectedSensorVelocity());
+    // frc::SmartDashboard::PutNumber("curr_r_v", m_falcon_right1->GetSelectedSensorVelocity());
 
     l_error = target_l - curr_l_v;
     r_error = target_r - curr_r_v;
@@ -182,6 +198,7 @@ void DriveBase::Controller() {
     last_yaw_error = yaw_error;
     last_l_error = l_error;
     last_r_error = r_error;
+
 
 }
 

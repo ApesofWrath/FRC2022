@@ -47,6 +47,8 @@ public:
     void setMaxOutput(double max);
     void resetEncoders();
 
+    void configure();
+
     // double kMetersPerTick = (6.0 *  0.0254) / 2048.0;
     
 

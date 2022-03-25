@@ -23,8 +23,7 @@ enum class States {
 class Climber {
     private:
 
-        TalonFX *climber_talon1;
-        TalonFX *climber_talon2;
+
         TalonFX *arm_talon1; // 12:74:18:72:18:76 = 6.333333333????
         TalonFX *arm_talon2;
 
@@ -52,6 +51,9 @@ class Climber {
         frc::Joystick* joyOp;
 
     public:
+
+            TalonFX *climber_talon1;
+        TalonFX *climber_talon2;
 
     States current_state;
     States last_state;
