@@ -4,8 +4,9 @@
 #include <UnidirectionalTrapezoidalRamp.hpp>
 #include <frc/DriverStation.h>
 #include <memory>
+#include "Hood.hpp"
 
-constexpr float endpoint = 3400.0f;
+constexpr float endpoint = 3000.0f;
 constexpr float spooling_endpoint = 2800.0f;
 constexpr float reverseSpeed = -0.6f;
 constexpr float shootSpeed = endpoint * 2048.0 / 600.0; //3200 close // 3675 far - 3700-3730ish <- real
@@ -63,8 +64,10 @@ private:
     std::shared_ptr<TalonFX> m_motor1;
     std::shared_ptr<TalonFX> m_motor2;
     UnidirectionalTrapezoidalRampController m_controller;
+    // UnidirectionalTrapezoidalRampController m_controller_high;
     UnidirectionalTrapezoidalRampController m_spooling_controller;
 
+    // std::shared_ptr<Hood> m_hood;
 
     ShooterState m_state, m_last_state;
 };

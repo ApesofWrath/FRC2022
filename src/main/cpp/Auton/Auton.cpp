@@ -24,6 +24,18 @@ void AutonDrive::configure() {
     right1_drive.SetSafetyEnabled(false);
     right2_drive.SetSafetyEnabled(false);
     
+    // right2_drive.SetControlFramePeriod(ControlFrame::Control_3_General, 255);
+    // right2_drive.SetControlFramePeriod(ControlFrame::Control_4_Advanced, 255);
+
+    right2_drive.SetStatusFramePeriod(StatusFrame::Status_1_General_, 255);
+    right2_drive.SetStatusFramePeriod(StatusFrame::Status_2_Feedback0_, 255);
+
+    // left2_drive.SetControlFramePeriod(ControlFrame::Control_3_General, 255);
+    // left2_drive.SetControlFramePeriod(ControlFrame::Control_4_Advanced, 255);
+
+    left2_drive.SetStatusFramePeriod(StatusFrame::Status_1_General_, 255);
+    left2_drive.SetStatusFramePeriod(StatusFrame::Status_2_Feedback0_, 255);
+
     left1_drive.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor);
     right1_drive.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor);
     

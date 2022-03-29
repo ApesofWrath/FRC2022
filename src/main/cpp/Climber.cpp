@@ -4,8 +4,8 @@ Climber::Climber()
 {
     m_solenoid = std::make_shared<frc::DoubleSolenoid>(61, frc::PneumaticsModuleType::CTREPCM, 4, 5);
 
-    climber_talon1 = new TalonFX(39);
-    climber_talon2 = new TalonFX(31);
+    climber_talon1 = new TalonFX(31);
+    climber_talon2 = new TalonFX(39);
     arm_talon1 = new TalonFX(32);
     arm_talon2 = new TalonFX(33);
 
@@ -18,18 +18,18 @@ Climber::Climber()
     climber_talon1->Config_kI(0, 0.000003);
     climber_talon1->Config_kD(0, 0.00025795 / 100);
 
-    arm_talon1->Config_kP(0, 0.02428);
-    arm_talon1->Config_kI(0, 0.0025);
-    arm_talon1->Config_kD(0, 0.0004795);
+    // arm_talon1->Config_kP(0, 0.02428);
+    // arm_talon1->Config_kI(0, 0.0025);
+    // arm_talon1->Config_kD(0, 0.0004795);
 
-    arm_talon2->Config_kP(0, 0.02428);
-    arm_talon2->Config_kI(0, 0.0025);
-    arm_talon2->Config_kD(0, 0.0004795);
+    // arm_talon2->Config_kP(0, 0.02428);
+    // arm_talon2->Config_kI(0, 0.0025);
+    // arm_talon2->Config_kD(0, 0.0004795);
 
     climber_talon1->Config_IntegralZone(0, 20000, 50);
     // climber_talon1->ConfigMaxIntegralAccumulator(0, 2048.0 * 3, 0);
 
-    arm_talon1->Config_IntegralZone(0, 1280, 50);
+    // arm_talon1->Config_IntegralZone(0, 1280, 50);
 
     arm_talon1->SetInverted(true);
     arm_talon2->SetInverted(false);
@@ -43,7 +43,7 @@ Climber::Climber()
     // climber_talon2->SetNeutralMode(NeutralMode::Coast);
 
     climber_talon2->Follow(*climber_talon1);
-    arm_talon2->Follow(*arm_talon1);
+    // arm_talon2->Follow(*arm_talon1);
 }
 
 float Climber::CalculateAngle(float n)
@@ -58,7 +58,14 @@ float Climber::CalculateHeight(float n) {
 void Climber::Init()
 {
     climber_talon1->Set(TalonFXControlMode::PercentOutput, 0);
-    climber_talon2->Set(TalonFXControlMode::PercentOutput, 0);
+    // climber_talon2->Set(TalonFXControlMode::PercentOutput, 0);
+    // climber_talon2->SetControlFramePeriod(ControlFrame::Control_3_General, 255);
+    // climber_talon2->SetControlFramePeriod(ControlFrame::Control_4_Advanced, 255);
+    climber_talon2->SetStatusFramePeriod(StatusFrame::Status_1_General_, 255);
+    climber_talon2->SetStatusFramePeriod(StatusFrame::Status_2_Feedback0_, 255);
+
+
+
     arm_talon1->Set(TalonFXControlMode::PercentOutput, 0);
     arm_talon2->Set(TalonFXControlMode::PercentOutput, 0);
 
@@ -77,7 +84,7 @@ void Climber::Stop()
     // climber_talon1->Config_kI(0, 0);
     // climber_talon1->Config_kD(0, 0);
     climber_talon1->Set(TalonFXControlMode::PercentOutput, 0.0);
-    climber_talon2->Set(TalonFXControlMode::PercentOutput, 0.0);
+    // climber_talon2->Set(TalonFXControlMode::PercentOutput, 0.0);
     arm_talon1->Set(TalonFXControlMode::PercentOutput, 0.0);
     arm_talon2->Set(TalonFXControlMode::PercentOutput, 0.0);
     m_solenoid->Set(frc::DoubleSolenoid::Value::kForward);
@@ -163,7 +170,7 @@ void Climber::ArmReverse()
     } else {
         arm_talon2->Set(TalonFXControlMode::PercentOutput, -0.1);
     }
-    if(reach_limit_right && reach_limit_right) {
+    if(reach_limit_left && reach_limit_right) {
         current_state = States::STOP_CLIMB;
     }
 }
@@ -193,7 +200,7 @@ void Climber::ArmForward()
     } else {
         arm_talon2->Set(TalonFXControlMode::PercentOutput, 0.1);
     }
-    if(reach_limit_right && reach_limit_right) {
+    if(reach_limit_left && reach_limit_right) {
         current_state = States::STOP_CLIMB;
     }
 }
@@ -247,7 +254,7 @@ void Climber::climberStateMachine()
     
     case States::STOP_CLIMB:
         // if (last_state != States::STOP_CLIMB) {
-        // Stop();
+        Stop();
         last_state = States::STOP_CLIMB;
         // }
         break;
@@ -266,8 +273,8 @@ void Climber::climberStateMachine()
         break;
     case States::DOWN_CLIMB:
         if (last_state != States::DOWN_CLIMB) {
-            climber_talon1->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 200, 200, 5.0));
-            climber_talon2->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 200, 200, 5.0));
+            climber_talon1->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 140, 140, 5.0));
+            climber_talon2->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 140, 140, 5.0));
         }
         Down();
         last_state = States::DOWN_CLIMB;
