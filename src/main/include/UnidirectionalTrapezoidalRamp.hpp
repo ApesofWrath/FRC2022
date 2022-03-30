@@ -28,7 +28,7 @@ constexpr double constexpr_abs(double a) {
 class UnidirectionalTrapezoidalRamp {
 private:
 
-	const double m_Endpoint, m_RampTime, m_RampActivationThreshold, m_RampSlope;
+	double m_Endpoint, m_RampTime, m_RampActivationThreshold, m_RampSlope;
 
 public:
 
@@ -37,12 +37,12 @@ public:
 	 * @param rampTime How long the ramp should go from 0 to the endpoint
 	 * @param rampActivationThreshold How close should the feedback value be from the endpoint before just returning the endpoint (good for semiunstable systems).  Useful if you are using this for calculating a target and using an actual value as feedback.
 	*/
-	inline constexpr UnidirectionalTrapezoidalRamp(double endpoint, double rampTime, double rampActivationThreshold = 0.0f) : m_Endpoint{ endpoint }, m_RampTime{ rampTime }, m_RampActivationThreshold{ rampActivationThreshold }, m_RampSlope(endpoint / rampTime) { };
+	inline UnidirectionalTrapezoidalRamp(double endpoint, double rampTime, double rampActivationThreshold = 0.0f) : m_Endpoint{ endpoint }, m_RampTime{ rampTime }, m_RampActivationThreshold{ rampActivationThreshold }, m_RampSlope(endpoint / rampTime) { };
 
 	/**
 	 * @brief calculate the time into the ramp based upon the current value, maxing out at the ramp time
 	*/
-	[[nodiscard]] inline constexpr double calculateTimeFromCurrentValue(double currentValue) const noexcept {
+	[[nodiscard]] inline double calculateTimeFromCurrentValue(double currentValue) const noexcept {
 		if (currentValue > m_Endpoint) return m_RampTime;
 		return currentValue / m_RampSlope;
 	};
@@ -50,7 +50,7 @@ public:
 	/**
 	 * @brief naively calculate the current value from the current time (no feedback). if the time is past the ramp time, then this would return the endpoint.
 	*/
-	[[nodiscard]] inline constexpr double calculateValueFromTime(double currentTime) const noexcept {
+	[[nodiscard]] inline double calculateValueFromTime(double currentTime) const noexcept {
 		if (currentTime < m_RampTime) {
 			return currentTime * m_RampSlope;
 		}
@@ -60,19 +60,23 @@ public:
 	/**
 	 * @brief Decide whether the ramp should be active based upon the feedback input.
 	*/
-	[[nodiscard]] inline constexpr bool shouldRamp(double actualCurrentValue) const noexcept {
+	[[nodiscard]] inline bool shouldRamp(double actualCurrentValue) const noexcept {
 		return constexpr_abs(m_Endpoint - actualCurrentValue) > m_RampActivationThreshold;
 	};
 
 	/**
 	 * @brief calculate the current value based on the current time and the feedback from the system (used for the threshold, doesn't effect the actual ramping rate)
 	*/
-	[[nodiscard]] inline constexpr double calculateValueWithFeedback(double currentTime, double actualCurrentValue) const noexcept {
+	[[nodiscard]] inline double calculateValueWithFeedback(double currentTime, double actualCurrentValue) const noexcept {
 		if (shouldRamp(actualCurrentValue)) {
 			return calculateValueFromTime(currentTime);
 		}
 		return m_Endpoint;
 	};
+
+	inline void setEndpoint(float end) { m_Endpoint = end; };
+
+	inline float getEndpoint() { return m_Endpoint; };
 };
 
 /**
@@ -146,4 +150,13 @@ public:
 
 		return kInactiveValue;
 	};
+
+	inline void setEndpoint(float end) { 
+		m_Ramp.setEndpoint(end); 
+	};
+
+	inline float getEndpoint() {
+		return m_Ramp.getEndpoint();
+	};
+
 };
