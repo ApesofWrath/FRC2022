@@ -5,8 +5,12 @@
 #include <frc/DriverStation.h>
 #include <memory>
 
+#include "Hood.hpp"
+
 constexpr float reverseSpeed = -0.6f;
-constexpr float shootSpeed = 3200.0f * 2048.0 / 600.0; //3200 close // 3675 far - 3700-3730ish <- real
+constexpr float shootSpeed_Hub = 3200.0f * 2048.0 / 600.0; //3200 close // 3675 far - 3700-3730ish <- real
+constexpr float shootSpeed_Launchpad = 3200.0f * 2048.0 / 600.0;
+constexpr float shootSpeed_FarWall = 3200.0f * 2048.0 / 600.0;
 constexpr float waiting_speed = 200.0 * 2048.0 / 600.0;
 constexpr float spooling_speed = 1000.0 * 2048.0 / 600.0;
 
@@ -26,7 +30,9 @@ constexpr float RPM_TO_TICKS = 2048.0 / 600.0;
 enum class ShooterState {
     INIT,
     STOP,
-    SHOOT,
+    SHOOT_FARWALL,
+    SHOOT_HUB,
+    SHOOT_LAUNCHPAD,
     WAITING,
     REVERSE
 };
@@ -54,4 +60,5 @@ private:
     UnidirectionalTrapezoidalRampController *m_controller;
 
     ShooterState m_state, m_last_state;
+    float ShootSpeed;
 };

@@ -60,7 +60,8 @@ void Shooter::ShooterStateMachine() {
     frc::SmartDashboard::PutNumber("Shooter percent out", m_motor1->GetMotorOutputPercent());
     frc::SmartDashboard::PutBoolean("speed?", (m_motor1->GetSelectedSensorVelocity() <= spooling_speed));
 
-    if((m_last_state == ShooterState::SHOOT) && (m_state != ShooterState::SHOOT)) {
+    if((m_last_state == ShooterState::SHOOT_FARWALL || m_last_state == ShooterState::SHOOT_HUB || m_last_state == ShooterState::SHOOT_LAUNCHPAD) \
+        && (m_state != ShooterState::SHOOT_FARWALL && m_state != ShooterState::SHOOT_HUB && m_state != ShooterState::SHOOT_LAUNCHPAD)) {
         m_controller->exit();
     }
 
@@ -77,13 +78,33 @@ void Shooter::ShooterStateMachine() {
             }
             m_last_state = ShooterState::STOP;
         break;
-        case ShooterState::SHOOT:
-            frc::SmartDashboard::PutString("ShooterState", "Shoot");
-            if (m_last_state != ShooterState::SHOOT) {
+        case ShooterState::SHOOT_FARWALL:
+            frc::SmartDashboard::PutString("ShooterState", "Far Wall");
+            if (m_last_state != ShooterState::SHOOT_FARWALL) {
+                m_controller->setEndpoint(shootSpeed_FarWall);
                 m_controller->enter(sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity()) / shooterGearRatio);
             }
             Shoot();
-            m_last_state = ShooterState::SHOOT;
+            m_last_state = ShooterState::SHOOT_FARWALL;
+        break;
+        case ShooterState::SHOOT_HUB:
+            frc::SmartDashboard::PutString("ShooterState", "Hub");
+            if (m_last_state != ShooterState::SHOOT_HUB) {
+                m_controller->setEndpoint(shootSpeed_Hub);
+                m_controller->enter(sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity()) / shooterGearRatio);
+            }
+            Shoot();
+            m_last_state = ShooterState::SHOOT_HUB;
+        break;
+        case ShooterState::SHOOT_LAUNCHPAD:
+            frc::SmartDashboard::PutString("ShooterState", "Launchpad");
+            if (m_last_state != ShooterState::SHOOT_LAUNCHPAD) {
+                m_controller->setEndpoint(shootSpeed_Launchpad);
+                m_controller->exit();
+                m_controller->enter(sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity()) / shooterGearRatio);
+            }
+            Shoot();
+            m_last_state = ShooterState::SHOOT_LAUNCHPAD;
         break;
         case ShooterState::WAITING:
             frc::SmartDashboard::PutString("ShooterState", "Waiting");
