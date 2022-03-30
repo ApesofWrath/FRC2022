@@ -91,8 +91,6 @@ void Indexer::Intake()
     // two balls :3
     else
     {
-        // m_bottom_motor->Set(ControlMode::PercentOutput, 0);
-        // m_top_motor->Set(ControlMode::PercentOutput, 0);
         m_bottom_motor->Set(ControlMode::PercentOutput, 0.0);
         m_top_motor->Set(ControlMode::PercentOutput, 0.0);
     }
@@ -163,11 +161,13 @@ void Indexer::ShooterCheck()
     if(desired_position < m_top_motor->GetSelectedSensorPosition()) {
         m_top_motor->Set(TalonFXControlMode::Velocity, -intake_rpm);
         m_bottom_motor->Set(TalonFXControlMode::PercentOutput, 0.0);
+        m_shooter->setIndexerReady(false);
     } else {
         m_top_motor->Set(TalonFXControlMode::PercentOutput, 0.0);
         m_bottom_motor->Set(TalonFXControlMode::PercentOutput, 0.0);
         m_state = IndexerState::SHOOT;
-    }
+        m_shooter->setIndexerReady(true); 
+        }
 }
 
 void Indexer::IndexerStateMachine()

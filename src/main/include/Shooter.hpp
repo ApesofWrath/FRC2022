@@ -4,6 +4,7 @@
 #include <UnidirectionalTrapezoidalRamp.hpp>
 #include <frc/DriverStation.h>
 #include <memory>
+
 #include "Hood.hpp"
 
 constexpr float endpoint = 3000.0f;
@@ -48,7 +49,6 @@ public:
     void Waiting();
     void Reverse();
     void Spooling();
-
     void ShooterStateMachine();
 
     inline void setState(ShooterState state) { m_state = state; };
@@ -56,6 +56,7 @@ public:
 
     bool readyToShoot();
 
+    void setIndexerReady(bool ready);
 
     int loopsCooldown = 0;
 
@@ -63,6 +64,7 @@ private:
 
     std::shared_ptr<TalonFX> m_motor1;
     std::shared_ptr<TalonFX> m_motor2;
+    
     UnidirectionalTrapezoidalRampController m_controller;
     // UnidirectionalTrapezoidalRampController m_controller_high;
     UnidirectionalTrapezoidalRampController m_spooling_controller;
@@ -70,4 +72,6 @@ private:
     // std::shared_ptr<Hood> m_hood;
 
     ShooterState m_state, m_last_state;
+
+    bool m_indexer_ready;
 };

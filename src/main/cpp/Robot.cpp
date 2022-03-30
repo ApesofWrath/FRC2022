@@ -120,7 +120,7 @@ void Robot::TeleopPeriodic()
     }
     else if (m_joy_op->GetRawButton(6))
     {
-      m_indexer->SetState(IndexerState::SHOOT);
+      m_indexer->SetState(IndexerState::SHOOTERCHECK);
     }
     else if (m_joy_op->GetPOV() == 0)
     {
