@@ -230,6 +230,7 @@ void Robot::DisabledInit()
   m_compressor->Disable();
   // m_climber->CoastElevator();
   m_drive->SetBrakeNeutral();
+  frc::SmartDashboard::PutData("Auto Modes", &(m_container->m_chooser));
 }
 void Robot::DisabledPeriodic() {}
 
