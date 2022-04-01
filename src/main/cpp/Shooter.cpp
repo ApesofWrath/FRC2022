@@ -16,7 +16,9 @@ Shooter::Shooter() : m_controller(endpoint, rampTime), m_spooling_controller(spo
     // m_motor2->SetControlFramePeriod(ControlFrame::Control_3_General, 255);
     // m_motor2->SetControlFramePeriod(ControlFrame::Control_4_Advanced, 255);
 
-    m_motor2->SetStatusFramePeriod(StatusFrame::Status_1_General_, 255);
+    configStatusFrames(m_motor1);
+    configStatusFrames(m_motor2);
+    m_motor2->SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 255);
     m_motor2->SetStatusFramePeriod(StatusFrame::Status_2_Feedback0_, 255);
 
     m_motor1->ConfigNominalOutputReverse(0.0);
@@ -73,6 +75,16 @@ bool Shooter::readyToShoot()
 {
     // float currentRPM = sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity()) / shooterGearRatio;
     return std::abs(endpoint - avgCurrentRPM) <= shootingSpeedTolerance && loopsCooldown == 0;
+}
+
+void Shooter::configStatusFrames(std::shared_ptr<TalonFX> motorController) {
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_3_Quadrature, 255);
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_8_PulseWidth, 255);
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_10_Targets, 255);
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_11_UartGadgeteer, 255);
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_12_Feedback1, 255);
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_14_Turn_PIDF1, 255);
+    motorController->SetControlFramePeriod(Control_6_MotProfAddTrajPoint, 255);
 }
 
 void Shooter::ShooterStateMachine()

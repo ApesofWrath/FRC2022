@@ -15,6 +15,9 @@ Indexer::Indexer(const std::shared_ptr<Shooter> &shooter, const std::shared_ptr<
     m_bottom_motor->ConfigFactoryDefault();
     m_top_motor->ConfigFactoryDefault();
 
+    configStatusFrames(m_bottom_motor);
+    configStatusFrames(m_top_motor);
+
     m_bottom_motor->SetNeutralMode(NeutralMode::Brake);
     m_top_motor->SetNeutralMode(NeutralMode::Brake);
 
@@ -168,6 +171,16 @@ void Indexer::ShooterCheck()
         m_state = IndexerState::SHOOT;
         m_shooter->setIndexerReady(true); 
         }
+}
+
+void Indexer::configStatusFrames(std::shared_ptr<TalonFX> motorController) {
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_3_Quadrature, 255);
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_8_PulseWidth, 255);
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_10_Targets, 255);
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_11_UartGadgeteer, 255);
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_12_Feedback1, 255);
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_14_Turn_PIDF1, 255);
+    motorController->SetControlFramePeriod(Control_6_MotProfAddTrajPoint, 255);
 }
 
 void Indexer::IndexerStateMachine()

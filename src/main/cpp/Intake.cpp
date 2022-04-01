@@ -9,6 +9,8 @@ Intake::Intake() {
     m_intake_motor = std::make_shared<TalonFX>(20);
     m_intake_motor->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(false, 40, 40, 0.3));
     m_intake_motor->Config_kP(0, 0.45, 50);
+
+    configStatusFrames(m_intake_motor);
     // m_intake_motor->ConfigStatorCurrentLimit()
 }
 
@@ -51,6 +53,16 @@ void Intake::Indexing() {
 void Intake::Reverse() {
     m_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
     m_intake_motor->Set(TalonFXControlMode::Velocity, reverse_rpm);
+}
+
+void Intake::configStatusFrames(std::shared_ptr<TalonFX> motorController) {
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_3_Quadrature, 255);
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_8_PulseWidth, 255);
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_10_Targets, 255);
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_11_UartGadgeteer, 255);
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_12_Feedback1, 255);
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_14_Turn_PIDF1, 255);
+    motorController->SetControlFramePeriod(Control_6_MotProfAddTrajPoint, 255);
 }
 
 void Intake::IntakeStateMachine() {

@@ -24,7 +24,7 @@ public:
     void Go();
     void Reverse();
     void Indexing();
-
+    void configStatusFrames(std::shared_ptr<TalonFX> motorController);
     void IntakeStateMachine();
 
     void setState(IntakeState state) {m_last_state = m_state; m_state = state;};

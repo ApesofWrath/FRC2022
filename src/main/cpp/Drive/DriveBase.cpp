@@ -10,10 +10,20 @@
 DriveBase::DriveBase(frc::Joystick *joy_op, AHRS *ahrs_) {
     m_joy_op = joy_op;
        
-    m_falcon_left1 = new WPI_TalonFX(10);
-    m_falcon_left2 = new WPI_TalonFX(12);
-    m_falcon_right1 = new WPI_TalonFX(11);
-    m_falcon_right2 = new WPI_TalonFX(13);
+    m_falcon_left1 = std::make_shared<TalonFX>(10);
+    m_falcon_left2 = std::make_shared<TalonFX>(12);
+    m_falcon_right1 = std::make_shared<TalonFX>(11);
+    m_falcon_right2 = std::make_shared<TalonFX>(13);
+
+    configStatusFrames(m_falcon_left1);
+    configStatusFrames(m_falcon_left2);
+    m_falcon_left2->SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 255);
+    m_falcon_left2->SetStatusFramePeriod(StatusFrame::Status_2_Feedback0_, 255);
+
+    configStatusFrames(m_falcon_right1);
+    configStatusFrames(m_falcon_right2);
+    m_falcon_right2->SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 255);
+    m_falcon_right2->SetStatusFramePeriod(StatusFrame::Status_2_Feedback0_, 255);
 
     ahrs = ahrs_;
 
@@ -244,4 +254,14 @@ void DriveBase::SetCoastNeutral() {
     m_falcon_right2->SetNeutralMode(NeutralMode::Coast);
     m_falcon_left1->SetNeutralMode(NeutralMode::Coast);
     m_falcon_left2->SetNeutralMode(NeutralMode::Coast);
+}
+
+void DriveBase::configStatusFrames(std::shared_ptr<TalonFX> motorController) {
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_3_Quadrature, 255);
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_8_PulseWidth, 255);
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_10_Targets, 255);
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_11_UartGadgeteer, 255);
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_12_Feedback1, 255);
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_14_Turn_PIDF1, 255);
+    motorController->SetControlFramePeriod(Control_6_MotProfAddTrajPoint, 255);
 }

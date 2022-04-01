@@ -37,7 +37,7 @@ public:
     void ManualReverseTop();
     void ShooterCheck();
     void Stop();
-
+    void configStatusFrames(std::shared_ptr<TalonFX> motorController);
     void IndexerStateMachine();
     
     void SetState(IndexerState state) {m_last_state = m_state; m_state = state;};

@@ -4,15 +4,25 @@ Climber::Climber()
 {
     m_solenoid = std::make_shared<frc::DoubleSolenoid>(61, frc::PneumaticsModuleType::CTREPCM, 4, 5);
 
-    climber_talon1 = new TalonFX(31);
-    climber_talon2 = new TalonFX(39);
-    arm_talon1 = new TalonFX(32);
-    arm_talon2 = new TalonFX(33);
+    climber_talon1 = std::make_shared<TalonFX>(31);
+    climber_talon2 = std::make_shared<TalonFX>(39);
+    arm_talon1 = std::make_shared<TalonFX>(32);
+    arm_talon2 = std::make_shared<TalonFX>(33);
 
     climber_talon1->ConfigFactoryDefault();
     climber_talon2->ConfigFactoryDefault();
     arm_talon1->ConfigFactoryDefault();
     arm_talon2->ConfigFactoryDefault();
+
+    configStatusFrames(climber_talon1);
+    configStatusFrames(climber_talon2);
+    climber_talon2->SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 255);
+    climber_talon2->SetStatusFramePeriod(StatusFrame::Status_2_Feedback0_, 255);
+
+    configStatusFrames(arm_talon1);
+    configStatusFrames(arm_talon2);
+    arm_talon2->SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 255);
+    arm_talon2->SetStatusFramePeriod(StatusFrame::Status_2_Feedback0_, 255);
 
     climber_talon1->Config_kP(0, 0.02428 * .8);
     climber_talon1->Config_kI(0, 0.000003);
@@ -63,8 +73,6 @@ void Climber::Init()
     // climber_talon2->SetControlFramePeriod(ControlFrame::Control_4_Advanced, 255);
     climber_talon2->SetStatusFramePeriod(StatusFrame::Status_1_General_, 255);
     climber_talon2->SetStatusFramePeriod(StatusFrame::Status_2_Feedback0_, 255);
-
-
 
     arm_talon1->Set(TalonFXControlMode::PercentOutput, 0);
     arm_talon2->Set(TalonFXControlMode::PercentOutput, 0);
@@ -214,6 +222,16 @@ void Climber::Zero()
     arm_talon2->SetSelectedSensorPosition(0.0);
     arm_talon1->Set(TalonFXControlMode::PercentOutput, 0);
     m_solenoid->Set(frc::DoubleSolenoid::Value::kOff);
+}
+
+void Climber::configStatusFrames(std::shared_ptr<TalonFX> motorController) {
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_3_Quadrature, 255);
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_8_PulseWidth, 255);
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_10_Targets, 255);
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_11_UartGadgeteer, 255);
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_12_Feedback1, 255);
+    motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_14_Turn_PIDF1, 255);
+    motorController->SetControlFramePeriod(Control_6_MotProfAddTrajPoint, 255);
 }
 
 void Climber::climberStateMachine()

@@ -49,6 +49,7 @@ public:
     void Waiting();
     void Reverse();
     void Spooling();
+    void configStatusFrames(std::shared_ptr<TalonFX> motorController);
     void ShooterStateMachine();
 
     inline void setState(ShooterState state) { m_state = state; };

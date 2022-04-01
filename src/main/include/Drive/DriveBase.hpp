@@ -22,6 +22,8 @@ public:
     void SetCoastNeutral();
     void UpdateConfigs();
 
+    void configStatusFrames(std::shared_ptr<TalonFX> motorController);
+
     double target_l = 0, 
         target_r = 0, 
         target_yaw = 0, 
@@ -64,8 +66,10 @@ public:
     inline void disableSlowMode() { m_SlowMode = false; m_Precision = 1.0f; };
     
 private:
-    WPI_TalonFX *m_falcon_left1, *m_falcon_left2, 
-        *m_falcon_right1, *m_falcon_right2;
+    std::shared_ptr<TalonFX> m_falcon_left1;
+    std::shared_ptr<TalonFX> m_falcon_left2;
+    std::shared_ptr<TalonFX> m_falcon_right1;
+    std::shared_ptr<TalonFX> m_falcon_right2;
 
     AHRS *ahrs;
 

@@ -24,8 +24,8 @@ class Climber {
     private:
 
 
-        TalonFX *arm_talon1; // 12:74:18:72:18:76 = 6.333333333????
-        TalonFX *arm_talon2;
+        std::shared_ptr<TalonFX> arm_talon1; // 12:74:18:72:18:76 = 6.333333333????
+        std::shared_ptr<TalonFX> arm_talon2;
 
 
         std::shared_ptr<frc::DoubleSolenoid> m_solenoid;
@@ -52,8 +52,8 @@ class Climber {
 
     public:
 
-            TalonFX *climber_talon1;
-        TalonFX *climber_talon2;
+        std::shared_ptr<TalonFX> climber_talon1;
+        std::shared_ptr<TalonFX> climber_talon2;
 
     States current_state;
     States last_state;
@@ -70,7 +70,7 @@ class Climber {
     void ArmForward();
     void Zero();
     void HighUp();
-
+    void configStatusFrames(std::shared_ptr<TalonFX> motorController);
     void climberStateMachine();
     
     void CoastElevator();
