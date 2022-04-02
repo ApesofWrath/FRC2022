@@ -123,7 +123,7 @@ void DriveBase::Controller() {
 
     ChecklrLimits();
 
-    curr_yaw_rate = -ahrs->GetRate();
+    curr_yaw_rate = -1.0 * -ahrs->GetRate();
 
     // frc::SmartDashboard::PutNumber("target_r before", target_r);
 	// frc::SmartDashboard::PutNumber("target_l before", target_l);

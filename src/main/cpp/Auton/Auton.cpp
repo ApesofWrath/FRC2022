@@ -81,7 +81,7 @@ double AutonDrive::getHeading() {
 }
 
 double AutonDrive::getTurnRate() {
-    return ahrs->GetRate();
+    return -1.0 * ahrs->GetRate();
 }
 
 frc::Pose2d AutonDrive::getPose() { 
