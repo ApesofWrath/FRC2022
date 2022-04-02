@@ -3,6 +3,7 @@
 #include <ctre/Phoenix.h>
 #include <frc/DoubleSolenoid.h>
 #include <memory>
+#include <iostream>
 #include <frc/smartdashboard/SmartDashboard.h>
 
 

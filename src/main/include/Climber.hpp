@@ -7,8 +7,6 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/Joystick.h>
 
-#include "Constants.hpp"
-
 enum class States {
     INIT,
     STOP_CLIMB, 

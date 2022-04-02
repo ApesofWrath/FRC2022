@@ -4,6 +4,7 @@
 #include <UnidirectionalTrapezoidalRamp.hpp>
 #include <frc/DriverStation.h>
 #include <memory>
+#include <iostream>
 
 #include "Hood.hpp"
 

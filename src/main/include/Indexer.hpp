@@ -2,6 +2,7 @@
 
 #include <ctre/Phoenix.h>
 #include <memory>
+#include <iostream>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/DigitalInput.h>
 #include "Shooter.hpp"
