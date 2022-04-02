@@ -57,6 +57,11 @@ public:
 
     double kOutputPercent = 1;
 
+    double m_Precision = 1.0f;
+    bool m_SlowMode = false;
+
+    inline void enableSlowMode() { m_SlowMode = true; m_Precision = 0.75f; };
+    inline void disableSlowMode() { m_SlowMode = false; m_Precision = 1.0f; };
     
 private:
     WPI_TalonFX *m_falcon_left1, *m_falcon_left2, 

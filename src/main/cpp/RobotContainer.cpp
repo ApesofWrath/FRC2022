@@ -146,7 +146,7 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 
 
             start = frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg));
-            end = frc::Pose2d(-1_m, 0_m, frc::Rotation2d(0_deg));
+            end = frc::Pose2d(-1.5_m, 0_m, frc::Rotation2d(0_deg));
             points = {};
             config->SetReversed(true); //false
             trajectory = frc::TrajectoryGenerator::GenerateTrajectory(

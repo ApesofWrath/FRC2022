@@ -11,6 +11,12 @@ Shooter::Shooter() : m_controller(endpoint, rampTime), m_spooling_controller(spo
     m_motor1->SetNeutralMode(NeutralMode::Coast);
     m_motor2->SetNeutralMode(NeutralMode::Coast);
     m_motor2->Follow(*m_motor1);
+    // m_motor2->SetControlFramePeriod(ControlFrame::Control_3_General, 255);
+    // m_motor2->SetControlFramePeriod(ControlFrame::Control_4_Advanced, 255);
+
+    m_motor2->SetStatusFramePeriod(StatusFrame::Status_1_General_, 255);
+    m_motor2->SetStatusFramePeriod(StatusFrame::Status_2_Feedback0_, 255);
+
     m_motor1->ConfigNominalOutputReverse(0.0);
     m_motor1->Config_kP(0, 0.086076 * 10, 50); // 9.8429E-05 // 0.086076 * 2
     m_motor1->Config_kF(0, 0.04973929 * 3675.0 / 3730.0 * 3675.0 / 3700.0 , 50);
@@ -31,14 +37,13 @@ Shooter::Shooter() : m_controller(endpoint, rampTime), m_spooling_controller(spo
 void Shooter::Shoot() {
     float currentRPM = sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity()) / shooterGearRatio;
     m_motor1->Set(ControlMode::Velocity, RPM_TO_TICKS * shooterGearRatio * m_controller.calculateValue(currentRPM));
-    m_motor2->Set(ControlMode::Velocity, RPM_TO_TICKS * shooterGearRatio * m_controller.calculateValue(currentRPM));
-    
+    // m_motor2->Set(ControlMode::Velocity, RPM_TO_TICKS * shooterGearRatio * m_controller.calculateValue(currentRPM));    
 }
     
 void Shooter::Spooling() {
     float currentRPM = sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity()) / shooterGearRatio;
     m_motor1->Set(ControlMode::Velocity, RPM_TO_TICKS * shooterGearRatio * m_controller.calculateValue(currentRPM));
-    m_motor2->Set(ControlMode::Velocity, RPM_TO_TICKS * shooterGearRatio * m_controller.calculateValue(currentRPM));
+    // m_motor2->Set(ControlMode::Velocity, RPM_TO_TICKS * shooterGearRatio * m_controller.calculateValue(currentRPM));
 }
 
 

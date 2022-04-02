@@ -26,6 +26,19 @@ void DriveBase::UpdateConfigs() {
     m_falcon_left2->ConfigFactoryDefault();
     m_falcon_right2->ConfigFactoryDefault();
 
+    // m_falcon_right2->SetControlFramePeriod(ControlFrame::, 255);
+    // m_falcon_right2->SetControlFramePeriod(ControlFrame::Control_4_Advanced, 255);
+
+    // m_falcon_left2->SetControlFramePeriod(ControlFrame::Control_3_General, 255);
+    // m_falcon_left2->SetControlFramePeriod(ControlFrame::Control_4_Advanced, 255);
+
+    m_falcon_right2->SetStatusFramePeriod(StatusFrame::Status_1_General_, 255);
+    m_falcon_right2->SetStatusFramePeriod(StatusFrame::Status_2_Feedback0_, 255);
+
+    m_falcon_left2->SetStatusFramePeriod(StatusFrame::Status_1_General_, 255);
+    m_falcon_left2->SetStatusFramePeriod(StatusFrame::Status_2_Feedback0_, 255);
+
+
     m_falcon_right1->SetInverted(true);
     m_falcon_right2->SetInverted(true);
 
@@ -35,15 +48,15 @@ void DriveBase::UpdateConfigs() {
     m_falcon_left2->Follow(*m_falcon_left1);
     m_falcon_right2->Follow(*m_falcon_right1);
 
-    m_falcon_left1->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 20, 20, 0.1));
-    m_falcon_left2->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 20, 20, 0.1));
-    m_falcon_right1->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 20, 20, 0.1));
-    m_falcon_right2->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 20, 20, 0.1));
+    // m_falcon_left1->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 20, 20, 0.1));
+    // m_falcon_left2->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 20, 20, 0.1));
+    // m_falcon_right1->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 20, 20, 0.1));
+    // m_falcon_right2->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 20, 20, 0.1));
 
-    m_falcon_left1->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 33, 33, 0.1));
-    m_falcon_left2->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 33, 33, 0.1));
-    m_falcon_right1->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 33, 33, 0.1));
-    m_falcon_right2->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 33, 33, 0.1));
+    m_falcon_left1->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 100, 100, 0.1));
+    m_falcon_left2->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 100, 100, 0.1));
+    m_falcon_right1->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 100, 100, 0.1));
+    m_falcon_right2->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 100, 100, 0.1));
 
 
     m_falcon_left1->ConfigOpenloopRamp(0.0, 0);
@@ -70,8 +83,11 @@ void DriveBase::UpdateConfigs() {
 }
 
 void DriveBase::Controller() {
-    throttle = m_joy_op->GetRawAxis(1);
-    wheel = -m_joy_op->GetRawAxis(2);
+    throttle = m_joy_op->GetRawAxis(1) * m_Precision;
+    wheel = -m_joy_op->GetRawAxis(2) * m_Precision;
+
+    frc::SmartDashboard::PutNumber("throttle value", throttle);
+    frc::SmartDashboard::PutNumber("wheel value", wheel);
 
     double reverse_throttle;
 

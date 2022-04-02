@@ -202,12 +202,18 @@ void Robot::TeleopPeriodic()
     
   }
 
-  if (m_joy_drive->GetRawButton(5)) {
-    m_climber->climber_talon1->Set(ControlMode::PercentOutput, 0.1);
-  } else {
-    m_climber->climber_talon1->Set(ControlMode::PercentOutput, 0.0);
-  }
+  // if (m_joy_drive->GetRawButton(5)) {
+  //   m_climber->climber_talon1->Set(ControlMode::PercentOutput, 0.1);
+  // } else {
+  //   m_climber->climber_talon1->Set(ControlMode::PercentOutput, 0.0);
+  // }
   
+  if (m_joy_drive->GetRawButton(6)) {
+    m_drive->enableSlowMode();
+  } else {
+    m_drive->disableSlowMode();
+  }
+
   m_climber->climberStateMachine();
 
   m_hood->HoodStateMachine();
