@@ -6,21 +6,21 @@
 
 void Robot::RobotInit()
 {
-  m_joy_op = new frc::Joystick(0);
-  m_joy_drive = new frc::Joystick(1);
+  m_joy_op = std::make_shared<frc::Joystick>(0);
+  m_joy_drive = std::make_shared<frc::Joystick>(1);
 
-  // m_climber = new Climber();
+  m_climber = std::make_shared<Climber>();
   m_shooter = std::make_shared<Shooter>();
   m_hood = std::make_shared<Hood>();
   m_intake = std::make_shared<Intake>();
   m_indexer = std::make_shared<Indexer>(m_shooter, m_intake);
   m_compressor = std::make_shared<frc::Compressor>(61, frc::PneumaticsModuleType::CTREPCM);
 
-  m_ahrs = new AHRS(frc::SerialPort::kMXP);
+  m_ahrs = std::make_shared<AHRS>(frc::SerialPort::kMXP);
 
-  m_autondrive = new AutonDrive(10, 12, 11, 13, m_ahrs);
-  m_container = new RobotContainer(m_autondrive, m_intake, m_indexer, m_shooter, m_hood);
-  m_drive = new DriveBase(m_joy_drive, m_ahrs);
+  m_autondrive = std::make_shared<AutonDrive>(10, 12, 11, 13, m_ahrs);
+  m_container = std::make_shared<RobotContainer>(m_autondrive, m_intake, m_indexer, m_shooter, m_hood);
+  m_drive = std::make_shared<DriveBase>(m_joy_drive, m_ahrs);
 
   m_container->InitAutoChoices();
 
@@ -64,7 +64,6 @@ void Robot::AutonomousPeriodic()
 {
   frc::Pose2d pose = m_autondrive->getPose();
 
-  // m_climber->climberStateMachine();
   m_hood->HoodStateMachine();
   m_intake->IntakeStateMachine();
   m_shooter->ShooterStateMachine();
@@ -85,6 +84,7 @@ void Robot::TeleopInit()
   m_drive->SetCoastNeutral();
 
   m_compressor->EnableDigital();
+
   /*
   m_climber->Zero();
   m_climber->current_state = States::ARM_FORWARD;
@@ -195,7 +195,8 @@ void Robot::TeleopPeriodic()
       m_joy_op->SetRumble(frc::GenericHID::RumbleType::kRightRumble, 1.0);
     }
 
-    /*
+    frc::SmartDashboard::PutString("dost this work", "no");
+
     if (m_joy_drive->GetRawButton(1))
     { // Left bumper #1 Climb
       m_climber->current_state = States::DOWN_CLIMB;
@@ -203,12 +204,11 @@ void Robot::TeleopPeriodic()
     else if (m_joy_drive->GetRawButton(3))
     { // Right bumper #2 Climb
       m_climber->current_state = States::UP_CLIMB;
-    } else if(m_joy_drive->GetRawButton(2)){
-      m_climber->current_state = States::ARM_REVERSE;
-    } else if(m_joy_drive->GetRawButton(4)) {
-      m_climber->current_state = States::ARM_FORWARD;
+    } else if (m_joy_drive->GetRawButton(5)) {
+      m_climber->current_state = States::DOWN_SLOW_CLIMB;
+    } else if (m_climber->current_state == States::DOWN_SLOW_CLIMB) {
+      m_climber->current_state = States::STOP_CLIMB;
     }
-    */
   }
 
   // if (m_joy_drive->GetRawButton(5)) {
@@ -226,7 +226,7 @@ void Robot::TeleopPeriodic()
     m_drive->disableSlowMode();
   }
 
-  // m_climber->climberStateMachine();
+  m_climber->climberStateMachine();
 
   m_hood->HoodStateMachine();
   m_intake->IntakeStateMachine();

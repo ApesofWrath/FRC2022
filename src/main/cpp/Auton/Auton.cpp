@@ -1,10 +1,10 @@
 #include "Auton/Auton.hpp"
 #include <units/length.h>
 
-AutonDrive::AutonDrive(int left1, int left2, int right1, int right2, AHRS* ahrs_)  : 
+AutonDrive::AutonDrive(int left1, int left2, int right1, int right2, const std::shared_ptr<AHRS>& ahrs_)  : 
         left1_drive{left1}, left2_drive{left2}, right1_drive{right1}, right2_drive{right2}, ahrs{ahrs_} {
 
-    power_distribution = new frc::PowerDistribution(0, frc::PowerDistribution::ModuleType::kCTRE);
+    power_distribution = std::make_shared<frc::PowerDistribution>(0, frc::PowerDistribution::ModuleType::kCTRE);
 
     configure();
 
@@ -23,15 +23,9 @@ void AutonDrive::configure() {
     left2_drive.SetSafetyEnabled(false);
     right1_drive.SetSafetyEnabled(false);
     right2_drive.SetSafetyEnabled(false);
-    
-    // right2_drive.SetControlFramePeriod(ControlFrame::Control_3_General, 255);
-    // right2_drive.SetControlFramePeriod(ControlFrame::Control_4_Advanced, 255);
 
     right2_drive.SetStatusFramePeriod(StatusFrame::Status_1_General_, 255);
     right2_drive.SetStatusFramePeriod(StatusFrame::Status_2_Feedback0_, 255);
-
-    // left2_drive.SetControlFramePeriod(ControlFrame::Control_3_General, 255);
-    // left2_drive.SetControlFramePeriod(ControlFrame::Control_4_Advanced, 255);
 
     left2_drive.SetStatusFramePeriod(StatusFrame::Status_1_General_, 255);
     left2_drive.SetStatusFramePeriod(StatusFrame::Status_2_Feedback0_, 255);
@@ -43,9 +37,6 @@ void AutonDrive::configure() {
     left2_drive.SetNeutralMode(NeutralMode::Brake);
     right1_drive.SetNeutralMode(NeutralMode::Brake);
     right2_drive.SetNeutralMode(NeutralMode::Brake);
-
-    // left1_drive.SetInverted(true);
-    // left2_drive.SetInverted(true);
 }
 
 void AutonDrive::Periodic() {

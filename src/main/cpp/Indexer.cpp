@@ -24,8 +24,8 @@ Indexer::Indexer(const std::shared_ptr<Shooter> &shooter, const std::shared_ptr<
     m_top_motor->Config_kP(0, 0.086076 * 2, 50);
     m_bottom_motor->Config_kP(0, 0.086076 * 2, 50);
 
-    bottom_input = new frc::DigitalInput(0);
-    top_input = new frc::DigitalInput(1);
+    bottom_input = std::make_shared<frc::DigitalInput>(0);
+    top_input = std::make_shared<frc::DigitalInput>(1);
 
     // use percentoutput instead of pid
 }
@@ -209,7 +209,6 @@ void Indexer::configStatusFrames(std::shared_ptr<TalonFX> motorController)
     motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_14_Turn_PIDF1, 255);
     motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_15_FirmareApiStatus, 255);
     motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_21_FeedbackIntegrated, 255);
-    motorController->SetControlFramePeriod(Control_6_MotProfAddTrajPoint, 255);
 }
 
 void Indexer::IndexerStateMachine()
