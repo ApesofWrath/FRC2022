@@ -161,7 +161,7 @@ void Indexer::ManualReverseTop()
 
 void Indexer::ShooterCheck()
 {
-    if(desired_position < m_top_motor->GetSelectedSensorPosition()) {
+    if(m_top_motor->GetOutputCurrent() < 90.0) {
         m_top_motor->Set(TalonFXControlMode::Velocity, -intake_rpm);
         m_bottom_motor->Set(TalonFXControlMode::PercentOutput, 0.0);
         m_shooter->setIndexerReady(false);
@@ -170,7 +170,7 @@ void Indexer::ShooterCheck()
         m_bottom_motor->Set(TalonFXControlMode::PercentOutput, 0.0);
         m_state = IndexerState::SHOOT;
         m_shooter->setIndexerReady(true); 
-        }
+    }
 }
 
 void Indexer::configStatusFrames(std::shared_ptr<TalonFX> motorController)
@@ -207,12 +207,13 @@ void Indexer::configStatusFrames(std::shared_ptr<TalonFX> motorController)
 
 void Indexer::IndexerStateMachine()
 {
+    frc::SmartDashboard::PutNumber("topindexcurrent", m_top_motor->GetOutputCurrent());
     if (m_last_state == IndexerState::SHOOT && m_state != IndexerState::SHOOT && m_intake->getState() == IntakeState::INDEXING)
     {
         m_intake->setState(IntakeState::STOP);
     }
-    // frc::SmartDashboard::PutBoolean("bot", bottom_input->Get());
-    // frc::SmartDashboard::PutBoolean("top", top_input->Get());
+    frc::SmartDashboard::PutBoolean("bot", bottom_input->Get());
+    frc::SmartDashboard::PutBoolean("top", top_input->Get());
 
     // frc::SmartDashboard::PutNumber("ind top speed", m_bottom_motor->GetSelectedSensorVelocity() / 2048.0 * 600.0);
     // frc::SmartDashboard::PutNumber("ind bot speed", m_top_motor->GetSelectedSensorVelocity() / 2048.0 * 600.0);
@@ -220,12 +221,12 @@ void Indexer::IndexerStateMachine()
     switch (m_state)
     {
     case IndexerState::INIT:
-        // frc::SmartDashboard::PutString("IndexState", "Init");
+        frc::SmartDashboard::PutString("IndexState", "Init");
         m_last_state = IndexerState::INIT;
         m_state = IndexerState::INIT;
         break;
     case IndexerState::WAITING:
-        // frc::SmartDashboard::PutString("IndexState", "Waiting");
+        frc::SmartDashboard::PutString("IndexState", "Waiting");
         if (m_last_state != IndexerState::WAITING)
         {
             Waiting();
@@ -233,7 +234,7 @@ void Indexer::IndexerStateMachine()
         m_last_state = IndexerState::WAITING;
         break;
     case IndexerState::REVERSE:
-        // frc::SmartDashboard::PutString("IndexState", "Reverse");
+        frc::SmartDashboard::PutString("IndexState", "Reverse");
         if (m_last_state != IndexerState::REVERSE)
         {
             Reverse();
@@ -241,17 +242,17 @@ void Indexer::IndexerStateMachine()
         m_last_state = IndexerState::REVERSE;
         break;
     case IndexerState::INTAKE:
-        // frc::SmartDashboard::PutString("IndexState", "One Ball");
+        frc::SmartDashboard::PutString("IndexState", "Intake");
         Intake();
         m_last_state = IndexerState::INTAKE;
         break;
     case IndexerState::SHOOT:
-        // frc::SmartDashboard::PutString("IndexState", "Shoot");
+        frc::SmartDashboard::PutString("IndexState", "Shoot");
         Shoot();
         m_last_state = IndexerState::SHOOT;
         break;
     case IndexerState::MANUALREVERSETOP:
-        // frc::SmartDashboard::PutString("IndexState", "Manual Reverse Top");
+        frc::SmartDashboard::PutString("IndexState", "Manual Reverse Top");
         ManualReverseTop();
         m_last_state = IndexerState::MANUALREVERSETOP;
     case IndexerState::MANUALBOTH:
@@ -267,8 +268,9 @@ void Indexer::IndexerStateMachine()
         m_last_state = IndexerState::MANUALBOTTOM;
         break;
     case IndexerState::SHOOTERCHECK:
+        frc::SmartDashboard::PutString("IndexState", "Shooter Check");
         if(m_last_state != IndexerState::SHOOTERCHECK) {
-            desired_position = m_top_motor->GetSelectedSensorPosition() - 2048.0 * 2.0;
+            desired_position = m_top_motor->GetSelectedSensorPosition() - 2048.0 * 0.25;
         }
         ShooterCheck();
         m_last_state = IndexerState::SHOOTERCHECK;

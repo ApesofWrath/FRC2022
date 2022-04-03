@@ -9,7 +9,7 @@ void Robot::RobotInit()
   m_joy_op = new frc::Joystick(0);
   m_joy_drive = new frc::Joystick(1);
 
-  m_climber = new Climber();
+  // m_climber = new Climber();
   m_shooter = std::make_shared<Shooter>();
   m_hood = std::make_shared<Hood>();
   m_intake = std::make_shared<Intake>();
@@ -84,8 +84,10 @@ void Robot::TeleopInit()
 
 
   m_compressor->EnableDigital();
+  /*
   m_climber->Zero();
   m_climber->current_state = States::ARM_FORWARD;
+  */
   m_hood->setState(HoodState::UP);
 }
 void Robot::TeleopPeriodic()
@@ -118,7 +120,7 @@ void Robot::TeleopPeriodic()
     {
       m_indexer->SetState(IndexerState::INTAKE);
     }
-    else if (m_joy_op->GetRawButton(6))
+    else if (m_joy_op->GetRawButton(6) && m_indexer->GetState() != IndexerState::SHOOT)
     {
       m_indexer->SetState(IndexerState::SHOOTERCHECK);
     }
@@ -138,7 +140,7 @@ void Robot::TeleopPeriodic()
     {
       m_indexer->SetState(IndexerState::MANUALBOTH);
     }
-    else
+    else if(m_indexer->GetState() != IndexerState::SHOOT)
     {
       m_indexer->SetState(IndexerState::WAITING);
     }
@@ -166,11 +168,11 @@ void Robot::TeleopPeriodic()
     }
     else if (m_joy_op->GetRawButton(5))
     {
-      m_shooter->setState(ShooterState::WAITING);
+      m_shooter->setState(ShooterState::SHOOT_HUB);
     }
     else if (m_joy_op->GetRawButton(6))
     {
-      m_shooter->setState(ShooterState::SHOOT);
+      m_shooter->setState(ShooterState::SHOOT_LAUNCHPAD);
     }
     else if (m_shooter->get_state() != ShooterState::SPOOLING)
     {
@@ -178,15 +180,16 @@ void Robot::TeleopPeriodic()
     }
 
     // Hood
-    if (m_joy_op->GetRawButton(3))
+    if (m_joy_op->GetRawButton(5))
     { // X Far Shoot
       m_hood->setState(HoodState::DOWN);
     }
-    else if (m_joy_op->GetRawButton(4))
+    else if (m_joy_op->GetRawButton(6))
     { // Y Close Shoot
       m_hood->setState(HoodState::UP);
     }
     
+    /*
     if (m_joy_drive->GetRawButton(1))
     { // Left bumper #1 Climb
       m_climber->current_state = States::DOWN_CLIMB;
@@ -199,7 +202,7 @@ void Robot::TeleopPeriodic()
     } else if(m_joy_drive->GetRawButton(4)) {
       m_climber->current_state = States::ARM_FORWARD;
     }
-    
+    */
   }
 
   // if (m_joy_drive->GetRawButton(5)) {
@@ -214,7 +217,7 @@ void Robot::TeleopPeriodic()
     m_drive->disableSlowMode();
   }
 
-  m_climber->climberStateMachine();
+  // m_climber->climberStateMachine();
 
   m_hood->HoodStateMachine();
   m_intake->IntakeStateMachine();
@@ -228,7 +231,6 @@ void Robot::TeleopPeriodic()
 void Robot::DisabledInit()
 {
   m_compressor->Disable();
-  // m_climber->CoastElevator();
   m_drive->SetBrakeNeutral();
   frc::SmartDashboard::PutData("Auto Modes", &(m_container->m_chooser));
 }

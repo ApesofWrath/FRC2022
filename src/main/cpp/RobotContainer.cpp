@@ -172,7 +172,7 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 
                 frc2::InstantCommand([this] {
                     m_hood->setState(HoodState::DOWN);
-                    m_shooter->setState(ShooterState::SHOOT);
+                    m_shooter->setState(ShooterState::SHOOT_LAUNCHPAD);
                     m_indexer->m_state = IndexerState::SHOOT;
                 }),
 
@@ -278,7 +278,7 @@ case TWO_BALL:
 
                 // frc2::InstantCommand([this] {
                 //     m_hood->setState(HoodState::DOWN);
-                //     m_shooter->setState(ShooterState::SHOOT);
+                //     m_shooter->setState(ShooterState::SHOOT_LAUNCHPAD);
                 //     m_indexer->m_state = IndexerState::SHOOT;
                 //     m_intake->setState(IntakeState::INDEXING);
                 // }),
@@ -320,7 +320,7 @@ case TWO_BALL:
                 frc2::WaitCommand(1_s),
 
                 frc2::InstantCommand([this] {
-                    m_shooter->setState(ShooterState::SHOOT);
+                    m_shooter->setState(ShooterState::SHOOT_LAUNCHPAD);
                     m_indexer->m_state = IndexerState::SHOOT;
                 })
 
@@ -411,7 +411,7 @@ case TWO_BALL:
 
                 frc2::InstantCommand([this] {
                     m_hood->setState(HoodState::DOWN);
-                    m_shooter->setState(ShooterState::SHOOT);
+                    m_shooter->setState(ShooterState::SHOOT_LAUNCHPAD);
                     m_indexer->m_state = IndexerState::SHOOT;
                     m_intake->setState(IntakeState::INDEXING);
                 }),
@@ -457,7 +457,7 @@ case TWO_BALL:
                 frc2::WaitCommand(1_s),
 
                 frc2::InstantCommand([this] {
-                    m_shooter->setState(ShooterState::SHOOT);
+                    m_shooter->setState(ShooterState::SHOOT_LAUNCHPAD);
                     m_indexer->m_state = IndexerState::SHOOT;
                 })
 
@@ -621,7 +621,7 @@ case TWO_BALL:
  
                 frc2::InstantCommand([this] {
                     m_hood->setState(HoodState::DOWN);
-                    m_shooter->setState(ShooterState::SHOOT);
+                    m_shooter->setState(ShooterState::SHOOT_LAUNCHPAD);
                     m_indexer->m_state = IndexerState::SHOOT;
                     m_intake->setState(IntakeState::INDEXING);
                 }),
@@ -667,7 +667,7 @@ case TWO_BALL:
                 frc2::WaitCommand(1_s),
  
                 frc2::InstantCommand([this] {
-                    m_shooter->setState(ShooterState::SHOOT);
+                    m_shooter->setState(ShooterState::SHOOT_LAUNCHPAD);
                     m_indexer->m_state = IndexerState::SHOOT;
                 }),
  
@@ -709,7 +709,7 @@ case TWO_BALL:
  
                 frc2::InstantCommand([this] {
                     m_hood->setState(HoodState::UP);
-                    m_shooter->setState(ShooterState::SHOOT);
+                    m_shooter->setState(ShooterState::SHOOT_LAUNCHPAD);
                     m_indexer->m_state = IndexerState::SHOOT;
                     m_intake->setState(IntakeState::INDEXING);
                 })
