@@ -64,10 +64,10 @@ void DriveBase::UpdateConfigs() {
     // m_falcon_right1->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 20, 20, 0.1));
     // m_falcon_right2->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 20, 20, 0.1));
 
-    m_falcon_left1->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 100, 100, 0.1));
-    m_falcon_left2->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 100, 100, 0.1));
-    m_falcon_right1->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 100, 100, 0.1));
-    m_falcon_right2->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 100, 100, 0.1));
+    m_falcon_left1->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 40, 40, 0.1));
+    m_falcon_left2->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 40, 40, 0.1));
+    m_falcon_right1->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 40, 40, 0.1));
+    m_falcon_right2->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 40, 40, 0.1));
 
 
     m_falcon_left1->ConfigOpenloopRamp(0.0, 0);

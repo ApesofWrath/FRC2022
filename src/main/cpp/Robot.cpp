@@ -27,7 +27,7 @@ void Robot::RobotInit()
 
   frc::CameraServer::StartAutomaticCapture();
   cs::CvSink cvSink = frc::CameraServer::GetVideo();
-  cs::CvSource outputStream = frc::CameraServer::PutVideo("Field View", 320, 190);
+  cs::CvSource outputStream = frc::CameraServer::PutVideo("Field View", 160, 90);
 
   frc::SmartDashboard::PutData("Auto Modes", &(m_container->m_chooser));
 }
