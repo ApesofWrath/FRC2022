@@ -130,7 +130,8 @@ void Shooter::ShooterStateMachine()
     // frc::SmartDashboard::PutBoolean("speed?", (m_motor1->GetSelectedSensorVelocity() <= spooling_speed));
 
     // frc::SmartDashboard::PutNumber("Shooter RPM", currentRPM);
-    // frc::SmartDashboard::PutNumber("Shooter Avg RPM", avgCurrentRPM);
+    frc::SmartDashboard::PutNumber("Shooter Avg RPM", avgCurrentRPM);
+    frc::SmartDashboard::PutNumber("Shooter Target", m_controller.getEndpoint());
 
     if ((m_last_state == ShooterState::SHOOT_FARWALL || m_last_state == ShooterState::SHOOT_HUB || m_last_state == ShooterState::SHOOT_LAUNCHPAD) && (m_state != ShooterState::SHOOT_FARWALL && m_state != ShooterState::SHOOT_HUB && m_state != ShooterState::SHOOT_LAUNCHPAD))
     {
@@ -167,8 +168,8 @@ void Shooter::ShooterStateMachine()
                 m_controller.enter(sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity()) / shooterGearRatio);
             }
             Shoot();
+            m_last_state = ShooterState::SHOOT_FARWALL;
         }
-        m_last_state = ShooterState::SHOOT_FARWALL;
         break;
     case ShooterState::SHOOT_HUB:
         frc::SmartDashboard::PutString("ShooterState", "Hub");
@@ -180,8 +181,8 @@ void Shooter::ShooterStateMachine()
                 m_controller.enter(sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity()) / shooterGearRatio);
             }
             Shoot();
+            m_last_state = ShooterState::SHOOT_HUB;
         }
-        m_last_state = ShooterState::SHOOT_HUB;
         break;
     case ShooterState::SHOOT_LAUNCHPAD:
         frc::SmartDashboard::PutString("ShooterState", "Launchpad");
@@ -194,8 +195,8 @@ void Shooter::ShooterStateMachine()
                 m_controller.enter(sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity()) / shooterGearRatio);
             }
             Shoot();
+            m_last_state = ShooterState::SHOOT_LAUNCHPAD;
         }
-        m_last_state = ShooterState::SHOOT_LAUNCHPAD;
         break;
     case ShooterState::WAITING:
         // frc::SmartDashboard::PutString("ShooterState", "Waiting");

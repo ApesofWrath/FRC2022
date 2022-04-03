@@ -161,8 +161,8 @@ void Indexer::ManualReverseTop()
 
 void Indexer::ShooterCheck()
 {
-    if(m_top_motor->GetOutputCurrent() < 90.0) {
-        m_top_motor->Set(TalonFXControlMode::Velocity, -intake_rpm);
+    if(m_top_motor->GetOutputCurrent() < 70.0) {
+        m_top_motor->Set(TalonFXControlMode::Velocity, -intake_rpm / 4 * 3);
         m_bottom_motor->Set(TalonFXControlMode::PercentOutput, 0.0);
         m_shooter->setIndexerReady(false);
     } else {
