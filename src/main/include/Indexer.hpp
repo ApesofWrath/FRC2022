@@ -57,7 +57,9 @@ public:
 
     double desired_ticks = 2048.0 * -0.25;
     double desired_position = 0.0;
+
     bool finished_top = false;
+
     IndexerState m_last_state, m_state = IndexerState::INIT;
  
 private:

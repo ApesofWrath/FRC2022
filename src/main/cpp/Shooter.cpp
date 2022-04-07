@@ -22,6 +22,7 @@ Shooter::Shooter() : m_controller(endpoint, rampTime), m_spooling_controller(spo
     m_motor2->SetStatusFramePeriod(StatusFrame::Status_2_Feedback0_, 255);
 
     m_motor1->ConfigNominalOutputReverse(0.0);
+    // m_motor1->Config_kP(0, 0.086076, 50); // 9.8429E-05 // 0.086076 * 2
     m_motor1->Config_kP(0, 0.086076 * 10, 50); // 9.8429E-05 // 0.086076 * 2
     m_motor1->Config_kF(0, 0.04973929 * 3675.0 / 3730.0 * 3675.0 / 3700.0, 50);
     // m_motor2->SetInverted(true);
@@ -68,13 +69,15 @@ void Shooter::Waiting()
 
 void Shooter::Reverse()
 {
-    // m_motor1->Set(ControlMode::PercentOutput, reverseSpeed);
+    m_motor1->Set(ControlMode::PercentOutput, reverseSpeed);
 }
 
 bool Shooter::readyToShoot()
 {
     // float currentRPM = sensorUnitsToRPM(m_motor1->GetSelectedSensorVelocity()) / shooterGearRatio;
-    return std::abs(m_controller.getEndpoint() - avgCurrentRPM) <= shootingSpeedTolerance && loopsCooldown == 0;
+    // return std::abs(m_controller.getEndpoint() - avgCurrentRPM) <= shootingSpeedTolerance && loopsCooldown == 0;
+    
+    return std::abs(m_controller.getEndpoint() - avgCurrentRPM) <= shootingSpeedTolerance * m_controller.getEndpoint() && loopsCooldown == 0;
 }
 
 void Shooter::configStatusFrames(std::shared_ptr<TalonFX> motorController)
@@ -124,7 +127,8 @@ void Shooter::ShooterStateMachine()
     if (loopsCooldown > 0)
         loopsCooldown--;
     // frc::SmartDashboard::PutNumber("loops", loopsCooldown);
-    frc::SmartDashboard::PutNumber("Shooter RPM", m_motor1->GetSelectedSensorVelocity());
+    frc::SmartDashboard::PutNumber("Shooter RPM 1", m_motor1->GetSelectedSensorVelocity());
+    frc::SmartDashboard::PutNumber("Shooter RPM 2", m_motor2->GetSelectedSensorVelocity());
     // frc::SmartDashboard::PutNumber("Shooter Pos", sensorUnitsToRPM(m_motor2->GetSelectedSensorPosition()));
     // frc::SmartDashboard::PutNumber("Shooter percent out", m_motor1->GetMotorOutputPercent());
     // frc::SmartDashboard::PutBoolean("speed?", (m_motor1->GetSelectedSensorVelocity() <= spooling_speed));
@@ -132,6 +136,9 @@ void Shooter::ShooterStateMachine()
     // frc::SmartDashboard::PutNumber("Shooter RPM", currentRPM);
     frc::SmartDashboard::PutNumber("Shooter Avg RPM", avgCurrentRPM);
     frc::SmartDashboard::PutNumber("Shooter Target", m_controller.getEndpoint());
+
+    frc::SmartDashboard::PutBoolean("Shooter Ready", readyToShoot());
+    frc::SmartDashboard::PutBoolean("Indexer Ready", m_indexer_ready);
 
     if ((m_last_state == ShooterState::SHOOT_FARWALL || m_last_state == ShooterState::SHOOT_HUB || m_last_state == ShooterState::SHOOT_LAUNCHPAD) && (m_state != ShooterState::SHOOT_FARWALL && m_state != ShooterState::SHOOT_HUB && m_state != ShooterState::SHOOT_LAUNCHPAD))
     {
@@ -146,12 +153,12 @@ void Shooter::ShooterStateMachine()
     switch (m_state)
     {
     case ShooterState::INIT:
-        // frc::SmartDashboard::PutString("ShooterState", "Init");
+        frc::SmartDashboard::PutString("ShooterState", "Init");
         m_last_state = ShooterState::INIT;
         m_state = ShooterState::STOP;
         break;
     case ShooterState::STOP:
-        // frc::SmartDashboard::PutString("ShooterState", "Stop");
+        frc::SmartDashboard::PutString("ShooterState", "Stop");
         if (m_last_state != ShooterState::STOP)
         {
             Stop();
@@ -169,6 +176,8 @@ void Shooter::ShooterStateMachine()
             }
             Shoot();
             m_last_state = ShooterState::SHOOT_FARWALL;
+        } else {
+            Reverse();
         }
         break;
     case ShooterState::SHOOT_HUB:

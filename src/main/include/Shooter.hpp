@@ -10,14 +10,16 @@
 
 constexpr float endpoint = 3000.0f;
 constexpr float spooling_endpoint = 2800.0f;
-constexpr float reverseSpeed = -0.6f;
-constexpr float shootSpeed_Hub = 2775.0f; //3200 close // 3675 far - 3700-3730ish <- real
+constexpr float reverseSpeed = -0.3f;
+constexpr float shootSpeed_Hub = 2875.0f; //3200 close // 3675 far - 3700-3730ish <- real
 constexpr float shootSpeed_Launchpad = 3700.0f;
 constexpr float shootSpeed_FarWall = 3200.0f;
 constexpr float waiting_speed = 200.0 * 2048.0 / 600.0;
 constexpr float spooling_speed = 1000.0;
 constexpr float shooterGearRatio = 83.0f / 75.0f;
-constexpr float shootingSpeedTolerance = 0.000405405405405405f;
+// constexpr float shootingSpeedTolerance = 1.5f;
+constexpr float shootingHubSpeedTolerance = 0.00040540540540540505f; // * 2.5;
+constexpr float shootingSpeedTolerance = 0.00040540540540540505f * 0.75; // * 2.5;
 
 constexpr float rampTime = 1.25f;
 

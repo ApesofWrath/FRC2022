@@ -45,6 +45,7 @@ void Indexer::Init()
 void Indexer::Waiting()
 {
     m_bottom_motor->Set(ControlMode::Velocity, waitingSpeed);
+    m_intake->setBottomIndexRunning(false);
     m_top_motor->Set(ControlMode::Velocity, waitingSpeed);
 }
 
@@ -62,6 +63,7 @@ void Indexer::Intake()
     if (!bottom_input->Get() && !top_input->Get())
     {
         m_bottom_motor->Set(ControlMode::Velocity, intake_rpm);
+        m_intake->setBottomIndexRunning(true);
         m_top_motor->Set(ControlMode::Velocity, intake_rpm);
         // m_bottom_motor->Set(ControlMode::PercentOutput, intakeSpeed);
         // m_top_motor->Set(ControlMode::PercentOutput, intakeSpeed);
@@ -70,6 +72,7 @@ void Indexer::Intake()
     else if (bottom_input->Get() && !top_input->Get())
     {
         m_bottom_motor->Set(ControlMode::Velocity, intake_rpm);
+        m_intake->setBottomIndexRunning(true);
         m_top_motor->Set(ControlMode::Velocity, intake_rpm);
         finished_top = false;
         // m_bottom_motor->Set(ControlMode::PercentOutput, intakeSpeed);
@@ -87,6 +90,7 @@ void Indexer::Intake()
         // } else {
         // m_top_motor->Set(ControlMode::PercentOutput, -0.1);
         // }
+        m_intake->setBottomIndexRunning(true);
         m_bottom_motor->Set(ControlMode::Velocity, intake_rpm);
         // m_bottom_motor->Set(ControlMode::PercentOutput, intakeSpeed);
         // m_top_motor->Set(ControlMode::PercentOutput, 0);
@@ -126,6 +130,7 @@ void Indexer::Shoot()
         {
             m_bottom_motor->Set(ControlMode::PercentOutput, 0.0);
             m_top_motor->Set(TalonFXControlMode::Velocity, shooter_rpm);
+            m_intake->setBottomIndexRunning(false);
             // m_top_motor->Set(ControlMode::PercentOutput, shooterSpeed);
             m_shooter->loopsCooldown = 80;
         }
@@ -136,6 +141,7 @@ void Indexer::Shoot()
     {
         m_top_motor->Set(ControlMode::PercentOutput, 0.0);
         m_bottom_motor->Set(TalonFXControlMode::Velocity, shooter_rpm);
+        m_intake->setBottomIndexRunning(true);
         // m_bottom_motor->Set(ControlMode::PercentOutput, shooterSpeed);
         if (!m_intake->isExtended())
         {
@@ -146,6 +152,7 @@ void Indexer::Shoot()
     if(!bottom_input->Get() && !top_input->Get()) {
         m_top_motor->Set(TalonFXControlMode::Velocity, shooter_rpm);
         m_bottom_motor->Set(TalonFXControlMode::Velocity, shooter_rpm);
+        m_intake->setBottomIndexRunning(true);
         if (!m_intake->isExtended())
         {
             m_intake->setState(IntakeState::INDEXING);
@@ -156,12 +163,12 @@ void Indexer::Shoot()
 void Indexer::ManualReverseTop()
 {
     m_top_motor->Set(TalonFXControlMode::PercentOutput, -0.2);
-    m_bottom_motor->Set(TalonFXControlMode::PercentOutput, 0.0);
+    m_bottom_motor->Set(TalonFXControlMode::PercentOutput, -0.2);
 }
 
 void Indexer::ShooterCheck()
 {
-    if(m_top_motor->GetOutputCurrent() < 50.0) {
+    if(m_top_motor->GetOutputCurrent() < 45.0) {
         m_top_motor->Set(TalonFXControlMode::Velocity, -intake_rpm / 2);
         m_bottom_motor->Set(TalonFXControlMode::PercentOutput, 0.0);
         m_shooter->setIndexerReady(false);

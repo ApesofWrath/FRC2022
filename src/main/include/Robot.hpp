@@ -4,6 +4,8 @@
 
 #pragma once
 
+#define LOG_V(var) frc::SmartDashboard::PutNumber(#var , var)
+
 #include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
 #include <frc/Compressor.h>
@@ -19,6 +21,25 @@
 #include "Auton/Auton.hpp"
 
 #include <frc2/command/Command.h>
+
+enum ControllerButtons {
+    INDEXING = 1,
+    SPOOLING = 2,
+    INTAKE_OUT_1 = 5,
+    INTAKE_OUT_2 = 6,
+};
+
+enum ControllerAxes {
+    HUB_SHOOTING = 2,
+    LAUNCHPAD_SHOOTING = 3
+  };
+
+enum ControllerPOVs {
+    MANUAL_TOP = 0,
+    MANUAL_REVERSE_TOP = 90,
+    MANUAL_BOTTOM = 180,
+    MANUAL_BOTH = 270
+};
 
 class Robot : public frc::TimedRobot {
  public:
@@ -36,6 +57,8 @@ class Robot : public frc::TimedRobot {
 
   void TestInit() override;
   void TestPeriodic() override;
+
+  void ProcessButtons();
 
   private:
 
@@ -56,4 +79,9 @@ class Robot : public frc::TimedRobot {
 
   bool m_climb_time = false;
   bool m_climb_mode = false;
+
+  bool  intake_button, index_button, spooling_button, 
+        hub_shooting_trigger, launchpad_shooting_trigger,
+        manual_reverse_top_pov, manual_top_pov, manual_bottom_pov, manual_both_pov; 
+
 };

@@ -12,7 +12,8 @@ enum class IntakeState {
     STOP,
     GO,
     REVERSE,
-    INDEXING
+    INDEXING,
+    ONLY_OUT
 };
 
 class Intake {
@@ -25,11 +26,14 @@ public:
     void Go();
     void Reverse();
     void Indexing();
+    void OnlyOut();
     void configStatusFrames(std::shared_ptr<TalonFX> motorController);
     void IntakeStateMachine();
 
     void setState(IntakeState state) {m_last_state = m_state; m_state = state;};
     IntakeState getState();
+
+    void setBottomIndexRunning(bool running) { bottom_index_running = running; }
 
     inline bool isExtended() const noexcept { return m_state == IntakeState::GO; };
 
@@ -40,10 +44,12 @@ public:
     double reverse_rpm = 6000.0;
 
     double intakeSpeed = 0.25;
-    double intake_rpm = 2700.0 * 2048.0 / 600.0;
+    double intake_rpm = 3400.0 * 2048.0 / 600.0;
     
     double waitingSpeed = 0.10;
     double waiting_rpm = 600.0 * 2048.0 / 600.0;
+
+    int cooldown = 0;
 
     std::shared_ptr<TalonFX> m_intake_motor;
     int loopsSinceLastTransition = 0;
@@ -53,5 +59,7 @@ private:
     std::shared_ptr<frc::DoubleSolenoid> m_right_solenoid;
 
     IntakeState m_last_state, m_state = IntakeState::INIT;
+
+    bool bottom_index_running;
 
 };

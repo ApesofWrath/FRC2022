@@ -58,56 +58,6 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 
     switch (m_autoSelected) {
 
-        case SPIN:
-
-            trajectory = frc::TrajectoryGenerator::GenerateTrajectory(
-                frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
-                {},
-                frc::Pose2d(0_m, 0.1_m, frc::Rotation2d(-181_deg)),
-                *config);
-            trajectory2 = frc::TrajectoryGenerator::GenerateTrajectory(
-                frc::Pose2d(0_m, 0_m, frc::Rotation2d(-181_deg)),
-                {},
-                frc::Pose2d(0_m, 0.1_m, frc::Rotation2d(0_deg)),
-                *config);
-            ramseteCommand = new frc2::RamseteCommand(
-                trajectory, [this]() { return m_drive->getPose(); },
-                frc::RamseteController(kRamseteB, kRamseteZeta),
-                frc::SimpleMotorFeedforward<units::meters>(
-                    K_S, K_V, K_A),
-                K_DRIVE_KINEMATICS,
-                [this] { return m_drive->getWheelSpeeds(); },
-                frc2::PIDController(kP_, 0, 0),
-                frc2::PIDController(kP_, 0, 0),
-                [this](auto left, auto right) { m_drive->tankDriveVolts(left, right); },
-                {m_drive});
-
-            ramseteCommand2 = new frc2::RamseteCommand(
-                trajectory2, [this]() { return m_drive->getPose(); },
-                frc::RamseteController(kRamseteB, kRamseteZeta),
-                frc::SimpleMotorFeedforward<units::meters>(
-                    K_S, K_V, K_A),
-                K_DRIVE_KINEMATICS,
-                [this] { return m_drive->getWheelSpeeds(); },
-                frc2::PIDController(kP_, 0, 0),
-                frc2::PIDController(kP_, 0, 0),
-                [this](auto left, auto right) { m_drive->tankDriveVolts(left, right); },
-                {m_drive});
-
-            m_drive->resetOdometry(start);
-
-            return new frc2::SequentialCommandGroup(
-                std::move(*ramseteCommand),
-                frc2::InstantCommand([this] { m_drive->tankDriveVolts(0_V, 0_V); }, {}),
-                std::move(*ramseteCommand2),
-                frc2::InstantCommand([this] { m_drive->tankDriveVolts(0_V, 0_V); }, {}),
-                std::move(*ramseteCommand),
-                frc2::InstantCommand([this] { m_drive->tankDriveVolts(0_V, 0_V); }, {}),
-                std::move(*ramseteCommand2),
-                frc2::InstantCommand([this] { m_drive->tankDriveVolts(0_V, 0_V); }, {})
-            );
-        break;
-
         case CROSS_INIT_LINE:
 
             start = frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg));
@@ -536,7 +486,7 @@ case TWO_BALL:
  
             config->SetReversed(false);
             trajectory5 = frc::TrajectoryGenerator::GenerateTrajectory(
-                // get balls and end against human player station
+                // go from human player station
                 frc::Pose2d(-17.31_in, 256.52_in, frc::Rotation2d(132.25_deg)),
                 {},
                 frc::Pose2d(14.75_in, 176.0_in, frc::Rotation2d(67.5_deg)),
@@ -719,7 +669,7 @@ case TWO_BALL:
 
             default:
             std::cout << "df\n";
-            return new frc2::InstantCommand([this] { frc::SmartDashboard::PutString("status","you forgot to run auton...");});
+            return new frc2::InstantCommand([this] { frc::SmartDashboard::PutString("status","you forgot to run auton 💀");});
 
         break;
         

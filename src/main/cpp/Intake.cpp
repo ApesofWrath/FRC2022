@@ -21,10 +21,13 @@ void Intake::Init() {
 }
 
 void Intake::Go() {
-    m_intake_motor->Set(TalonFXControlMode::Velocity, intake_rpm);
-
+            m_intake_motor->Set(TalonFXControlMode::Velocity, intake_rpm);
     if (loopsSinceLastTransition <= 0) {
         m_solenoid->Set(frc::DoubleSolenoid::Value::kForward);
+        if(cooldown < 0) {
+        } else {
+            cooldown--;
+        }
     } else {
         loopsSinceLastTransition--;
     }
@@ -33,8 +36,11 @@ void Intake::Go() {
 void Intake::Stop() {
     m_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
     // m_right_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
-    if (loopsSinceLastTransition <= 0) {
+    if (loopsSinceLastTransition <= 0 && bottom_index_running) {
         m_intake_motor->Set(TalonFXControlMode::Velocity, indexing_rpm);
+    } else if (loopsSinceLastTransition <= 0 && !bottom_index_running) {
+        m_intake_motor->Set(TalonFXControlMode::Velocity, indexing_rpm);
+        cooldown = 200;
     } else {
         loopsSinceLastTransition--;
     }
@@ -43,8 +49,9 @@ void Intake::Stop() {
 void Intake::Indexing() {
     m_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
     // m_left_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
-    if (loopsSinceLastTransition <= 0) {
+    if (loopsSinceLastTransition <= 0 && bottom_index_running) {
         m_intake_motor->Set(TalonFXControlMode::Velocity, indexing_rpm);
+        cooldown = 20;
     } else {
         loopsSinceLastTransition--;
     }
@@ -53,6 +60,11 @@ void Intake::Indexing() {
 void Intake::Reverse() {
     m_solenoid->Set(frc::DoubleSolenoid::Value::kReverse);
     m_intake_motor->Set(TalonFXControlMode::Velocity, reverse_rpm);
+}
+
+void Intake::OnlyOut() {
+    m_solenoid->Set(frc::DoubleSolenoid::kForward);
+    m_intake_motor->Set(TalonFXControlMode::PercentOutput, 0.0);
 }
 
 void Intake::configStatusFrames(std::shared_ptr<TalonFX> motorController)
@@ -88,15 +100,17 @@ void Intake::configStatusFrames(std::shared_ptr<TalonFX> motorController)
 }
 
 void Intake::IntakeStateMachine() {
+    frc::SmartDashboard::PutNumber("intake cooldown", cooldown);
+    frc::SmartDashboard::PutBoolean("index bot wheel", bottom_index_running);
     // frc::SmartDashboard::PutNumber("intake speed", m_intake_motor->GetSelectedSensorVelocity() / 2048.0 * 600.0);
     switch (m_state) {
         case IntakeState::INIT:
-            // frc::SmartDashboard::PutString("IntakeState", "Init");
+            frc::SmartDashboard::PutString("IntakeState", "Init");
             m_last_state = IntakeState::INIT;
             m_state = IntakeState::INIT;
             break;
         case IntakeState::STOP:
-            // frc::SmartDashboard::PutString("IntakeState", "Stop");
+            frc::SmartDashboard::PutString("IntakeState", "Stop");
             if (m_last_state != IntakeState::STOP) {
                 loopsSinceLastTransition = LOOPS_S;
             }
@@ -104,7 +118,7 @@ void Intake::IntakeStateMachine() {
             m_last_state = IntakeState::STOP;
             break;
         case IntakeState::INDEXING:
-            // frc::SmartDashboard::PutString("IntakeState", "Waiting");
+            frc::SmartDashboard::PutString("IntakeState", "Waiting");
             if (m_last_state != IntakeState::INDEXING) {
                 loopsSinceLastTransition = LOOPS_S;
             }
@@ -112,7 +126,7 @@ void Intake::IntakeStateMachine() {
             m_last_state = IntakeState::INDEXING;
             break;
         case IntakeState::GO:
-            // frc::SmartDashboard::PutString("IntakeState", "Intake");
+            frc::SmartDashboard::PutString("IntakeState", "Intake");
             if (m_last_state != IntakeState::GO) {
                 loopsSinceLastTransition = LOOPS_S;
             }
@@ -120,12 +134,17 @@ void Intake::IntakeStateMachine() {
             m_last_state = IntakeState::GO;
             break;
         case IntakeState::REVERSE:
-            // frc::SmartDashboard::PutString("IntakeState", "Reverse");
+            frc::SmartDashboard::PutString("IntakeState", "Reverse");
             if (m_last_state != IntakeState::REVERSE) {
                 Reverse();
             }
             m_last_state = IntakeState::REVERSE;
             break;
+        case IntakeState::ONLY_OUT:
+            frc::SmartDashboard::PutString("IntakeState", "Only out");
+            OnlyOut();
+            break;
+        
     }
 }
 

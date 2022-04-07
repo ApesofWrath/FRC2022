@@ -7,7 +7,7 @@
     const double K_P_R = 0.00014286; // 0.000103;
     const double K_D_L = 0;
     const double K_D_R = 0;
-    const double K_P_YAW = 0.8;
+    const double K_P_YAW = 0.8 * 20.0; //10
     const double K_D_YAW = 0;
 
     const double MAX_Y_RPM_L_FORWARDS = 331.1132813; // 600.0;

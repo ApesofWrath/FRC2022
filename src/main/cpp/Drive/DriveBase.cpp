@@ -102,6 +102,10 @@ void DriveBase::Controller() {
 
     double reverse_throttle;
 
+    if(std::abs(wheel) < 0.05) {
+        wheel = 0.0;
+    }
+
     // directional multipliers
     if (throttle > 0.0) {
 		reverse_throttle = 1;
@@ -118,9 +122,9 @@ void DriveBase::Controller() {
 	}
     LOG_V(throttle * throttle * throttle);
     LOG_V(wheel * wheel * wheel * wheel);
-    target_l = MAX_Y_RPM * reverse_throttle * (throttle * throttle * throttle * throttle);
+    target_l = MAX_Y_RPM * reverse_throttle * std::abs(throttle);// * throttle * throttle * throttle);
     target_r = target_l;
-    target_yaw = MAX_YAW_RATE * reverse_wheel * (wheel * wheel * wheel * wheel);
+    target_yaw = MAX_YAW_RATE * reverse_wheel * std::abs(wheel);// * wheel * wheel * wheel);
 
     ChecklrLimits();
 
