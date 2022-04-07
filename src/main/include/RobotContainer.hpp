@@ -34,13 +34,13 @@ enum Auto {
 };
 
 class RobotContainer {
- public:
-  RobotContainer(AutonDrive* drive, std::shared_ptr<Intake> intake, 
+public:
+  inline RobotContainer(const std::shared_ptr<AutonDrive>& drive, std::shared_ptr<Intake> intake, 
         std::shared_ptr<Indexer> indexer, std::shared_ptr<Shooter> shooter,
         std::shared_ptr<Hood> hood) : m_drive(drive), m_intake(intake),
         m_indexer(indexer), m_shooter(shooter), m_hood(hood) {};
 
-  AutonDrive* m_drive;
+  std::shared_ptr<AutonDrive> m_drive;
   std::shared_ptr<Intake> m_intake;
   std::shared_ptr<Indexer> m_indexer;
   std::shared_ptr<Shooter> m_shooter;

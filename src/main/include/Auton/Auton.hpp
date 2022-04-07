@@ -28,7 +28,7 @@
 
 class AutonDrive : public frc2::SubsystemBase {
 public:
-    AutonDrive(int left1, int left2, int right1, int right2, AHRS* ahrs);
+    AutonDrive(int left1, int left2, int right1, int right2, const std::shared_ptr<AHRS>& ahrs);
 
 
     void Periodic() override;
@@ -56,8 +56,8 @@ private:
 
     WPI_TalonFX left1_drive, left2_drive, right1_drive, right2_drive;
 
-    AHRS* ahrs;
-    frc::PowerDistribution *power_distribution;
+    std::shared_ptr<AHRS> ahrs;
+    std::shared_ptr<frc::PowerDistribution> power_distribution;
 
     frc::SpeedControllerGroup left_motors{left1_drive, left2_drive};
     frc::SpeedControllerGroup right_motors{right1_drive, right2_drive};

@@ -66,8 +66,8 @@ private:
     std::shared_ptr<TalonFX> m_top_motor;
     std::shared_ptr<TalonFX> m_bottom_motor;
 
-    frc::DigitalInput *top_input;
-    frc::DigitalInput *bottom_input;
+    std::shared_ptr<frc::DigitalInput> top_input;
+    std::shared_ptr<frc::DigitalInput> bottom_input;
 
     std::shared_ptr<Shooter> m_shooter;
     std::shared_ptr<::Intake> m_intake;

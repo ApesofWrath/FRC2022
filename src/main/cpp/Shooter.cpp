@@ -8,13 +8,9 @@ Shooter::Shooter() : m_controller(endpoint, rampTime), m_spooling_controller(spo
 
     m_motor1->ConfigFactoryDefault();
     m_motor2->ConfigFactoryDefault();
-    // m_motor1->ConfigClosedloopRamp(0.25);
-    // m_motor2->ConfigClosedloopRamp(0.25);
     m_motor1->SetNeutralMode(NeutralMode::Coast);
     m_motor2->SetNeutralMode(NeutralMode::Coast);
     m_motor2->Follow(*m_motor1);
-    // m_motor2->SetControlFramePeriod(ControlFrame::Control_3_General, 255);
-    // m_motor2->SetControlFramePeriod(ControlFrame::Control_4_Advanced, 255);
 
     configStatusFrames(m_motor1);
     configStatusFrames(m_motor2);
@@ -25,8 +21,6 @@ Shooter::Shooter() : m_controller(endpoint, rampTime), m_spooling_controller(spo
     // m_motor1->Config_kP(0, 0.086076, 50); // 9.8429E-05 // 0.086076 * 2
     m_motor1->Config_kP(0, 0.086076 * 10, 50); // 9.8429E-05 // 0.086076 * 2
     m_motor1->Config_kF(0, 0.04973929 * 3675.0 / 3730.0 * 3675.0 / 3700.0, 50);
-    // m_motor2->SetInverted(true);
-    // m_motor1->SetInverted(true);
 
     m_motor1->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 160, 160, 0.3));
     m_motor2->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 160, 160, 0.3));
@@ -109,7 +103,6 @@ void Shooter::configStatusFrames(std::shared_ptr<TalonFX> motorController)
     motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_14_Turn_PIDF1, 255);
     motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_15_FirmareApiStatus, 255);
     motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_21_FeedbackIntegrated, 255);
-    motorController->SetControlFramePeriod(Control_6_MotProfAddTrajPoint, 255);
 }
 
 void Shooter::ShooterStateMachine()

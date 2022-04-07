@@ -2,7 +2,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 Hood::Hood() {
-    m_DoubleSolenoid = new frc::DoubleSolenoid(61, frc::PneumaticsModuleType::CTREPCM, 2, 3);
+    m_DoubleSolenoid = std::make_shared<frc::DoubleSolenoid>(61, frc::PneumaticsModuleType::CTREPCM, 2, 3);
 }
 
 // does not move hood

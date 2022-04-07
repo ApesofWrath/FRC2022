@@ -42,7 +42,7 @@ enum ControllerPOVs {
 };
 
 class Robot : public frc::TimedRobot {
- public:
+public:
   void RobotInit() override;
   void RobotPeriodic() override;
 
@@ -62,18 +62,18 @@ class Robot : public frc::TimedRobot {
 
   private:
 
-  DriveBase *m_drive;
-  Climber *m_climber;
-  AHRS *m_ahrs;
+  std::shared_ptr<DriveBase> m_drive;
+  std::shared_ptr<Climber> m_climber;
+  std::shared_ptr<AHRS> m_ahrs;
   std::shared_ptr<Shooter> m_shooter;
   std::shared_ptr<Indexer> m_indexer;
   std::shared_ptr<Hood> m_hood;
   std::shared_ptr<Intake> m_intake;
   std::shared_ptr<frc::Compressor> m_compressor;
-  frc::Joystick *m_joy_op;
-  frc::Joystick *m_joy_drive;
-  RobotContainer *m_container;
-  AutonDrive *m_autondrive;
+  std::shared_ptr<frc::Joystick> m_joy_op;
+  std::shared_ptr<frc::Joystick> m_joy_drive;
+  std::shared_ptr<RobotContainer> m_container;
+  std::shared_ptr<AutonDrive> m_autondrive;
 
   frc2::Command* m_AutonomousCommand = nullptr;
 

@@ -11,7 +11,7 @@
 
 class DriveBase{
 public:
-    DriveBase(frc::Joystick *joy_op, AHRS *ahrs_);
+    DriveBase(const std::shared_ptr<frc::Joystick> &joy_op, const std::shared_ptr<AHRS> &ahrs_);
     void Controller();
 
     /**
@@ -72,8 +72,8 @@ private:
     std::shared_ptr<TalonFX> m_falcon_right1;
     std::shared_ptr<TalonFX> m_falcon_right2;
 
-    AHRS *ahrs;
+    std::shared_ptr<AHRS> ahrs;
 
-    frc::Joystick *m_joy_op;
+    std::shared_ptr<frc::Joystick> m_joy_op;
 
 };

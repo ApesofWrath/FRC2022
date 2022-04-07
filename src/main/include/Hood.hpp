@@ -31,7 +31,7 @@ public:
 
 private:
     std::unordered_map<HoodState,float> m_PositionMap;
-    frc::DoubleSolenoid *m_DoubleSolenoid;
+    std::shared_ptr<frc::DoubleSolenoid> m_DoubleSolenoid;
 
     float m_TargetPosition;
 

@@ -79,7 +79,7 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
                 frc2::PIDController(kP_, 0, 0),
                 frc2::PIDController(kP_, 0, 0),
                 [this](auto left, auto right) { m_drive->tankDriveVolts(left, right); },
-                {m_drive});
+                {m_drive.get()});
             
             m_drive->resetOdometry(start);
 
@@ -114,7 +114,7 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
                 frc2::PIDController(kP_, 0, 0),
                 frc2::PIDController(kP_, 0, 0),
                 [this](auto left, auto right) { m_drive->tankDriveVolts(-left, -right); },
-                {m_drive});
+                {m_drive.get()});
             
             m_drive->resetOdometry(start);
 
@@ -198,7 +198,7 @@ case TWO_BALL:
                 frc2::PIDController(kP_, 0, 0),
                 frc2::PIDController(kP_, 0, 0),
                 [this](auto left, auto right) { m_drive->tankDriveVolts(left, right); },
-                {m_drive});
+                {m_drive.get()});
             
             ramseteCommand1 = new frc2::RamseteCommand(
                 trajectory1, [this]() { return m_drive->getPose(); },
@@ -210,7 +210,7 @@ case TWO_BALL:
                 frc2::PIDController(kP_, 0, 0),
                 frc2::PIDController(kP_, 0, 0),
                 [this](auto left, auto right) { m_drive->tankDriveVolts(left, right); },
-                {m_drive});
+                {m_drive.get()});
 
             ramseteCommand2 = new frc2::RamseteCommand(
                 trajectory2, [this]() { return m_drive->getPose(); },
@@ -222,7 +222,7 @@ case TWO_BALL:
                 frc2::PIDController(kP_, 0, 0),
                 frc2::PIDController(kP_, 0, 0),
                 [this](auto left, auto right) { m_drive->tankDriveVolts(left, right); },
-                {m_drive});
+                {m_drive.get()});
 
             return new frc2::SequentialCommandGroup(
 
@@ -331,7 +331,7 @@ case TWO_BALL:
                 frc2::PIDController(kP_, 0, 0),
                 frc2::PIDController(kP_, 0, 0),
                 [this](auto left, auto right) { m_drive->tankDriveVolts(left, right); },
-                {m_drive});
+                {m_drive.get()});
             
             ramseteCommand1 = new frc2::RamseteCommand(
                 trajectory1, [this]() { return m_drive->getPose(); },
@@ -343,7 +343,7 @@ case TWO_BALL:
                 frc2::PIDController(kP_, 0, 0),
                 frc2::PIDController(kP_, 0, 0),
                 [this](auto left, auto right) { m_drive->tankDriveVolts(left, right); },
-                {m_drive});
+                {m_drive.get()});
 
             ramseteCommand2 = new frc2::RamseteCommand(
                 trajectory2, [this]() { return m_drive->getPose(); },
@@ -355,7 +355,7 @@ case TWO_BALL:
                 frc2::PIDController(kP_, 0, 0),
                 frc2::PIDController(kP_, 0, 0),
                 [this](auto left, auto right) { m_drive->tankDriveVolts(left, right); },
-                {m_drive});
+                {m_drive.get()});
 
             return new frc2::SequentialCommandGroup(
 
@@ -505,7 +505,7 @@ case TWO_BALL:
                 frc2::PIDController(kP_, 0, 0),
                 frc2::PIDController(kP_, 0, 0),
                 [this](auto left, auto right) { m_drive->tankDriveVolts(left, right); },
-                {m_drive});
+                {m_drive.get()});
            
             ramseteCommand1 = new frc2::RamseteCommand(
                 trajectory1, [this]() { return m_drive->getPose(); },
@@ -517,7 +517,7 @@ case TWO_BALL:
                 frc2::PIDController(kP_, 0, 0),
                 frc2::PIDController(kP_, 0, 0),
                 [this](auto left, auto right) { m_drive->tankDriveVolts(left, right); },
-                {m_drive});
+                {m_drive.get()});
  
             ramseteCommand2 = new frc2::RamseteCommand(
                 trajectory2, [this]() { return m_drive->getPose(); },
@@ -529,7 +529,7 @@ case TWO_BALL:
                 frc2::PIDController(kP_, 0, 0),
                 frc2::PIDController(kP_, 0, 0),
                 [this](auto left, auto right) { m_drive->tankDriveVolts(left, right); },
-                {m_drive});
+                {m_drive.get()});
  
                 ramseteCommand3 = new frc2::RamseteCommand(
                 trajectory2, [this]() { return m_drive->getPose(); },
@@ -541,7 +541,7 @@ case TWO_BALL:
                 frc2::PIDController(kP_, 0, 0),
                 frc2::PIDController(kP_, 0, 0),
                 [this](auto left, auto right) { m_drive->tankDriveVolts(left, right); },
-                {m_drive});
+                {m_drive.get()});
  
                 ramseteCommand4 = new frc2::RamseteCommand(
                 trajectory2, [this]() { return m_drive->getPose(); },
@@ -553,7 +553,7 @@ case TWO_BALL:
                 frc2::PIDController(kP_, 0, 0),
                 frc2::PIDController(kP_, 0, 0),
                 [this](auto left, auto right) { m_drive->tankDriveVolts(left, right); },
-                {m_drive});
+                {m_drive.get()});
  
                 ramseteCommand5 = new frc2::RamseteCommand(
                 trajectory2, [this]() { return m_drive->getPose(); },
@@ -565,7 +565,7 @@ case TWO_BALL:
                 frc2::PIDController(kP_, 0, 0),
                 frc2::PIDController(kP_, 0, 0),
                 [this](auto left, auto right) { m_drive->tankDriveVolts(left, right); },
-                {m_drive});
+                {m_drive.get()});
  
             return new frc2::SequentialCommandGroup(
  

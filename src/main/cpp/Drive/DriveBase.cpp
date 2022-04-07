@@ -7,7 +7,7 @@
 #define LOG_V(var)
 #endif
 
-DriveBase::DriveBase(frc::Joystick *joy_op, AHRS *ahrs_) {
+DriveBase::DriveBase(const std::shared_ptr<frc::Joystick> &joy_op, const std::shared_ptr<AHRS> &ahrs_) : ahrs{ahrs_}, m_joy_op{joy_op} {
     m_joy_op = joy_op;
        
     m_falcon_left1 = std::make_shared<TalonFX>(10);
@@ -36,12 +36,6 @@ void DriveBase::UpdateConfigs() {
     m_falcon_right1->ConfigFactoryDefault();
     m_falcon_left2->ConfigFactoryDefault();
     m_falcon_right2->ConfigFactoryDefault();
-
-    // m_falcon_right2->SetControlFramePeriod(ControlFrame::, 255);
-    // m_falcon_right2->SetControlFramePeriod(ControlFrame::Control_4_Advanced, 255);
-
-    // m_falcon_left2->SetControlFramePeriod(ControlFrame::Control_3_General, 255);
-    // m_falcon_left2->SetControlFramePeriod(ControlFrame::Control_4_Advanced, 255);
 
     m_falcon_right2->SetStatusFramePeriod(StatusFrame::Status_1_General_, 255);
     m_falcon_right2->SetStatusFramePeriod(StatusFrame::Status_2_Feedback0_, 255);
@@ -290,5 +284,4 @@ void DriveBase::configStatusFrames(std::shared_ptr<TalonFX> motorController)
     motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_14_Turn_PIDF1, 255);
     motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_15_FirmareApiStatus, 255);
     motorController->SetStatusFramePeriod(StatusFrameEnhanced::Status_21_FeedbackIntegrated, 255);
-    motorController->SetControlFramePeriod(Control_6_MotProfAddTrajPoint, 255);
 }
