@@ -60,12 +60,12 @@ void Climber::Up()
 }
 
 void Climber::Down() {
-    if(climber_talon1->GetSelectedSensorPosition() > kElevatorThreshold) {
-        climber_talon1->Set(TalonFXControlMode::PercentOutput, -0.30);
-    } else {
-        climber_talon1->Set(TalonFXControlMode::PercentOutput, 0.0);
-        current_state = States::STOP_CLIMB;
-    }
+    climber_talon1->Set(TalonFXControlMode::PercentOutput, -0.80);
+    // if(climber_talon1->GetSelectedSensorPosition() > 0) {
+    // } else {
+    //     climber_talon1->Set(TalonFXControlMode::PercentOutput, 0.0);
+    //     current_state = States::STOP_CLIMB;
+    // }
     frc::SmartDashboard::PutString("Climber State", "Down");
 }
 
@@ -172,8 +172,10 @@ void Climber::climberStateMachine()
         break;
     case States::DOWN_CLIMB:
         if (last_state != States::DOWN_CLIMB) {
-            climber_talon1->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 140, 140, 5.0));
-            climber_talon2->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 140, 140, 5.0));
+            climber_talon1->SetNeutralMode(NeutralMode::Brake);
+            climber_talon2->SetNeutralMode(NeutralMode::Brake);
+            climber_talon1->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(false, 280, 280, 10.0));
+            climber_talon2->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(false, 280, 280, 10.0));
         }
         frc::SmartDashboard::PutString("Climber Stateisms", "Down");
         Down();

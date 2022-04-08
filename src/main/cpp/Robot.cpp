@@ -85,8 +85,9 @@ void Robot::TeleopInit()
 
   m_compressor->EnableDigital();
 
-  /*
   m_climber->Zero();
+
+  /*
   m_climber->current_state = States::ARM_FORWARD;
   */
   m_indexer->SetState(IndexerState::INIT);
@@ -206,9 +207,14 @@ void Robot::TeleopPeriodic()
       m_climber->current_state = States::UP_CLIMB;
     } else if (down_slow_climb_button) {
       m_climber->current_state = States::DOWN_SLOW_CLIMB;
-    } else if (m_climber->current_state == States::DOWN_SLOW_CLIMB) {
+    } else if (m_climber->current_state == States::DOWN_SLOW_CLIMB || m_climber->current_state == States::DOWN_CLIMB) {
       m_climber->current_state = States::STOP_CLIMB;
     }
+
+    if (m_joy_drive->GetRawButtonPressed(7)) {
+      m_climber->current_state = States::ZERO_CLIMB;
+    }
+
   }
 
   // if (m_joy_drive->GetRawButton(5)) {
