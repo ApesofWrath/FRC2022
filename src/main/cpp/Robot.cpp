@@ -101,7 +101,7 @@ void Robot::TeleopPeriodic()
   m_joy_op->SetRumble(frc::GenericHID::RumbleType::kRightRumble, 0.0);
 
   // frc::SmartDashboard::PutNumber("joy pov", m_joy_op->GetPOV());
-  if (/*frc::DriverStation::GetMatchTime() > 33 || */ (m_joy_op->GetRawButton(SPOOLING) && m_joy_op->GetRawButton(INTAKE_OUT_1) && m_joy_op->GetRawButton(7))) // frc::DriverStation::GetMatchTime() > 33)
+  if (/*frc::DriverStation::GetMatchTime() > 33 || */ (m_joy_op->GetRawButton(ControllerButtons::SPOOLING) && m_joy_op->GetRawButton(ControllerButtons::INTAKE_OUT_1) && m_joy_op->GetRawButton(7))) // frc::DriverStation::GetMatchTime() > 33)
   {
     m_climb_mode = true;
   }
@@ -109,31 +109,31 @@ void Robot::TeleopPeriodic()
   if (!m_climb_mode)
   {
     // Indexer
-    if (m_joy_op->GetRawButton(ControllerButtons::INDEXING))
+    if (index_button)
     {
       m_indexer->SetState(IndexerState::INTAKE);
     }
-    else if (m_joy_op->GetRawButton(ControllerButtons::INTAKE_OUT_1) || m_joy_op->GetRawButton(ControllerButtons::INTAKE_OUT_2))
+    else if (intake_button)
     {
       m_indexer->SetState(IndexerState::INTAKE);
     }
-    else if ((m_joy_op->GetRawAxis(2) > 0.6 && m_indexer->GetState() != IndexerState::SHOOT) || (m_joy_op->GetRawAxis(3) > 0.6 && m_indexer->GetState() != IndexerState::SHOOT))
+    else if ((hub_shooting_trigger && m_indexer->GetState() != IndexerState::SHOOT) || (launchpad_shooting_trigger && m_indexer->GetState() != IndexerState::SHOOT))
     {
       m_indexer->SetState(IndexerState::SHOOTERCHECK);
     }
-    else if (m_joy_op->GetPOV() == 0)
+    else if (manual_top_pov)
     {
       m_indexer->SetState(IndexerState::MANUALTOP);
     }
-    else if (m_joy_op->GetPOV() == 90)
+    else if (manual_reverse_top_pov)
     {
       m_indexer->SetState(IndexerState::MANUALREVERSETOP);
     }
-    else if (m_joy_op->GetPOV() == 180)
+    else if (manual_bottom_pov)
     {
       m_indexer->SetState(IndexerState::MANUALBOTTOM);
     }
-    else if (m_joy_op->GetPOV() == 270)
+    else if (manual_both_pov)
     {
       m_indexer->SetState(IndexerState::MANUALBOTH);
     }
@@ -143,16 +143,16 @@ void Robot::TeleopPeriodic()
     }
 
     // Intake
-    if (m_joy_op->GetRawButton(ControllerButtons::INDEXING))
+    if (index_button)
     { // A Manually Triggered Automatic Indexing
       m_intake->setState(IntakeState::INDEXING);
     }
-    else if (m_joy_op->GetRawButton(ControllerButtons::INTAKE_OUT_1) || m_joy_op->GetRawButton(ControllerButtons::INTAKE_OUT_2))
+    else if (intake_button)
     { // B Intake
       m_intake->setState(IntakeState::GO);
-      m_joy_op->SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 0.4);
-      m_joy_op->SetRumble(frc::GenericHID::RumbleType::kRightRumble, 0.4);
-    } else if (m_joy_op->GetRawButton(4)) {
+      m_joy_op->SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 0.0);
+      m_joy_op->SetRumble(frc::GenericHID::RumbleType::kRightRumble, 0.0);
+    } else if (intake_out_button) {
       m_intake->setState(IntakeState::ONLY_OUT);
     } else if (m_intake->getState() != IntakeState::INDEXING)
     {
@@ -185,26 +185,26 @@ void Robot::TeleopPeriodic()
     if (hub_shooting_trigger)
     { // X Far Shoot
       m_hood->setState(HoodState::DOWN);
-      m_joy_op->SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 1.0);
+      m_joy_op->SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 0.0);
       m_joy_op->SetRumble(frc::GenericHID::RumbleType::kRightRumble, 0.0);
     }
     else if (launchpad_shooting_trigger)
     { // Y Close Shoot
       m_hood->setState(HoodState::UP);
       m_joy_op->SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 0.0);
-      m_joy_op->SetRumble(frc::GenericHID::RumbleType::kRightRumble, 1.0);
+      m_joy_op->SetRumble(frc::GenericHID::RumbleType::kRightRumble, 0.0);
     }
 
     frc::SmartDashboard::PutString("dost this work", "no");
 
-    if (m_joy_drive->GetRawButton(1))
+    if (down_climb_button)
     { // Left bumper #1 Climb
       m_climber->current_state = States::DOWN_CLIMB;
     }
-    else if (m_joy_drive->GetRawButton(3))
+    else if (up_climb_button)
     { // Right bumper #2 Climb
       m_climber->current_state = States::UP_CLIMB;
-    } else if (m_joy_drive->GetRawButton(5)) {
+    } else if (down_slow_climb_button) {
       m_climber->current_state = States::DOWN_SLOW_CLIMB;
     } else if (m_climber->current_state == States::DOWN_SLOW_CLIMB) {
       m_climber->current_state = States::STOP_CLIMB;
@@ -217,7 +217,7 @@ void Robot::TeleopPeriodic()
   //   m_climber->climber_talon1->Set(ControlMode::PercentOutput, 0.0);
   // }
 
-  if (m_joy_drive->GetRawButton(ControllerButtons::INTAKE_OUT_2))
+  if (slow_mode_button)
   {
     m_drive->enableSlowMode();
   }
@@ -252,12 +252,21 @@ void Robot::ProcessButtons()
   // this.SetState(HandState::THUMBS_UP);
   index_button = m_joy_op->GetRawButton(ControllerButtons::INDEXING);
   spooling_button = m_joy_op->GetRawButton(ControllerButtons::SPOOLING);
-  hub_shooting_trigger = m_joy_op->GetRawAxis(ControllerAxes::HUB_SHOOTING);
+  intake_out_button = m_joy_op->GetRawButton(ControllerButtons::INTAKE_ONLY_OUT);
+
   launchpad_shooting_trigger = m_joy_op->GetRawAxis(ControllerAxes::LAUNCHPAD_SHOOTING);
+  hub_shooting_trigger = m_joy_op->GetRawAxis(ControllerAxes::HUB_SHOOTING);
+
   manual_reverse_top_pov = m_joy_op->GetPOV() == ControllerPOVs::MANUAL_REVERSE_TOP;
   manual_top_pov = m_joy_op->GetPOV() == ControllerPOVs::MANUAL_TOP;
   manual_bottom_pov = m_joy_op->GetPOV() == ControllerPOVs::MANUAL_BOTTOM;
   manual_both_pov = m_joy_op->GetPOV() == ControllerPOVs::MANUAL_BOTH;
+  
+  up_climb_button = m_joy_drive->GetRawButton(DriveControllerButtons::UP_CLIMB);
+  down_slow_climb_button = m_joy_drive->GetRawButton(DriveControllerButtons::DOWN_SLOW_CLIMB);
+  down_climb_button = m_joy_drive->GetRawButton(DriveControllerButtons::DOWN_CLIMB);
+  slow_mode_button = m_joy_drive->GetRawButton(DriveControllerButtons::SLOW_MODE);
+
 
   (m_joy_op->GetRawButton(ControllerButtons::INTAKE_OUT_1) || m_joy_op->GetRawButton(ControllerButtons::INTAKE_OUT_2))
       ? intake_button = true

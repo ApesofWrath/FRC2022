@@ -8,6 +8,9 @@ Climber::Climber()
     climber_talon1->ConfigFactoryDefault();
     climber_talon2->ConfigFactoryDefault();
 
+    // climber_talon1->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 150, 150, 10));
+    // climber_talon2->ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 150, 150, 10));
+
     configStatusFrames(climber_talon1);
     configStatusFrames(climber_talon2);
     climber_talon2->SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 255);

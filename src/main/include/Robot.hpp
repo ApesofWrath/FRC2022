@@ -25,8 +25,16 @@
 enum ControllerButtons {
     INDEXING = 1,
     SPOOLING = 2,
+    INTAKE_ONLY_OUT = 4,
     INTAKE_OUT_1 = 5,
-    INTAKE_OUT_2 = 6,
+    INTAKE_OUT_2 = 6
+};
+
+enum DriveControllerButtons {
+    DOWN_CLIMB = 1,
+    UP_CLIMB = 3,
+    DOWN_SLOW_CLIMB = 5,
+    SLOW_MODE = 6
 };
 
 enum ControllerAxes {
@@ -82,6 +90,8 @@ public:
 
   bool  intake_button, index_button, spooling_button, 
         hub_shooting_trigger, launchpad_shooting_trigger,
-        manual_reverse_top_pov, manual_top_pov, manual_bottom_pov, manual_both_pov; 
+        manual_reverse_top_pov, manual_top_pov, manual_bottom_pov, manual_both_pov,
+        intake_out_button, up_climb_button, down_slow_climb_button, slow_mode_button,
+        down_climb_button;
 
 };
